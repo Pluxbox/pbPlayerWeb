@@ -31,7 +31,7 @@ PB.Player.Plugin.register(PB.Class(PB.Player.Plugin.Core, {
 			ogg = ('no' != audio.canPlayType(this.codec.ogg)) && ('' != audio.canPlayType(this.codec.ogg)),
 			mp3 = ('no' != audio.canPlayType(this.codec.mp3)) && ('' != audio.canPlayType(this.codec.mp3));
 		
-		if( !ogg || !mp3 ) {
+		if( !ogg && !mp3 ) {
 			
 			return false;
 		}

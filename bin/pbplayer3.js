@@ -1,5 +1,5 @@
 /*!
- * pbPlayer v3.3.2
+ * pbPlayer v3.3.3
  * https://github.com/Pluxbox/pbPlayer
  *
  * Requires pbjs javascript framework (> 0.5)
@@ -38,7 +38,7 @@ local.instances = [];
 
 $.Player = $.Class({
 
-	VERSION: '3.3.2',
+	VERSION: '3.3.3',
 
 	construct: function ( files, options ) {
 
@@ -580,7 +580,7 @@ PB.Player.Plugin.register(PB.Class(PB.Player.Plugin.Core, {
 			ogg = ('no' != audio.canPlayType(this.codec.ogg)) && ('' != audio.canPlayType(this.codec.ogg)),
 			mp3 = ('no' != audio.canPlayType(this.codec.mp3)) && ('' != audio.canPlayType(this.codec.mp3));
 
-		if( !ogg || !mp3 ) {
+		if( !ogg && !mp3 ) {
 
 			return false;
 		}
