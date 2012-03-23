@@ -18,8 +18,6 @@ local.id = 0;
 /**
  *
  */
-local.instances = [];
-
 $.Player = $.Class({
 	
 	VERSION: '<%= PB_VERSION %>',

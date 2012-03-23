@@ -10,7 +10,7 @@
 	
 if( typeof global.PB === 'undefined' ) {
 	
-	throw new Error('pbjs required! Please visit https://github.com/Saartje87/pbjs');
+	throw new Error('pbjs required. Visit https://github.com/Saartje87/pbjs for the latest release!');
 }
 
 var local = {};

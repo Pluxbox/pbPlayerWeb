@@ -9,7 +9,7 @@
 
 if( typeof global.PB === 'undefined' ) {
 
-	throw new Error('pbjs required! Please visit https://github.com/Saartje87/pbjs');
+	throw new Error('pbjs required. Visit https://github.com/Saartje87/pbjs for the latest release!');
 }
 
 var local = {};
@@ -34,8 +34,6 @@ local.id = 0;
 /**
  *
  */
-local.instances = [];
-
 $.Player = $.Class({
 
 	VERSION: '3.3.3',
