@@ -108,7 +108,10 @@ package {
 		public function timeupdate (event:Event):void {
 			
 			position = audio.position;
-			callPBArg('timeupdate', (audio.position / 1000).toString());
+			callPBArg('timeupdate', {
+				
+				seconds: audio.position / 1000
+			});
 		}
 		
 		/**
@@ -188,7 +191,10 @@ package {
 			
 			timeupdateTimer.stop();
 			
-			callPBArg('timeupdate', '0');
+			callPBArg('timeupdate', {
+				
+				seconds: 0
+			});
 			callPB('stop');
 		}
 		
@@ -201,7 +207,10 @@ package {
 			position = seconds * 1000;
 			play();
 			
-			callPBArg('timeupdate', (position / 1000).toString());
+			callPBArg('timeupdate', {
+				
+				seconds: position / 1000
+			});
 		}
 		
 		/**
@@ -222,7 +231,10 @@ package {
 			transform.volume = volume;
 			audio.soundTransform = transform;
 			
-			callPBArg('volumechange', (volume*100).toString());
+			callPBArg('volumechange', {
+				
+				volume: volume*100
+			});
 		}
 		
 		/**
@@ -230,12 +242,12 @@ package {
 		 */
 		public function callPB ( type:String ):void {
 			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.fire', type);
+			ExternalInterface.call('PB.Player.instances["'+pbPlayerId+'"].emit', type);
 		}
 		
-		public function callPBArg ( type:String, arg:String ):void {
+		public function callPBArg ( type:String, arg:Object ):void {
 			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.fire', type, [arg]);
+			ExternalInterface.call('PB.Player.instances["'+pbPlayerId+'"].emit', type, arg);
 		}
 		
 		/**
@@ -253,8 +265,14 @@ package {
 		
 		private function completeHandler(event:Event):void {
 			
-			callPBArg('loadProgress', '100');
-			callPBArg('duration', ((sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000).toString());
+			callPBArg('progress', {
+				
+				loaded: 100
+			});
+			callPBArg('duration', {
+				
+				seconds: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+			});
         }
 
         private function ioErrorHandler(event:Event):void {
@@ -262,7 +280,10 @@ package {
 			stop();
 
 			debug("File not found: "+audioURL);
-			callPBArg('error', 'Failed to load fle');
+			callPBArg('error', {
+				
+				message: 'File not found'
+			});
         }
 
         private function progressHandler(event:ProgressEvent):void {
@@ -275,8 +296,20 @@ package {
 			
 			progressTrottle = (new Date()).getTime();
 			
-			callPBArg('loadProgress', Math.ceil( (event.bytesLoaded / event.bytesTotal) * 100 ).toString());
-			callPBArg('duration', ((sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000).toString());
+			callPBArg('progress', {
+				
+				loaded: (event.bytesLoaded / event.bytesTotal) * 100
+			});
+			
+			if( isNaN((sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000) ) {
+				
+				return;
+			}
+			
+			callPBArg('duration', {
+				
+				seconds: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+			});
         }
 
 		private function soundCompleteHandler(event:Event):void {

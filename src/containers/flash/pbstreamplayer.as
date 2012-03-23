@@ -307,12 +307,12 @@ package {
 		 */
 		public function callPB ( type:String ):void {
 			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.fire', type);
+			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.emit', type);
 		}
 		
 		public function callPBArg ( type:String, arg:String ):void {
 			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.fire', type, [arg]);
+			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.emit', type, [arg]);
 		}
 		
 		/**

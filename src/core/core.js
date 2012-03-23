@@ -1,0 +1,3 @@
+//= require "./player"
+//= require "./defaults"
+
