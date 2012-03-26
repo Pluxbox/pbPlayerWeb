@@ -110,7 +110,8 @@ package {
 			position = audio.position;
 			callPBArg('timeupdate', {
 				
-				seconds: audio.position / 1000
+				position: audio.position / 1000,
+				progress: (audio.position*(100 / sound.length)) || 0
 			});
 		}
 		
@@ -193,7 +194,8 @@ package {
 			
 			callPBArg('timeupdate', {
 				
-				seconds: 0
+				position: 0,
+				progress: 0
 			});
 			callPB('stop');
 		}
@@ -209,7 +211,8 @@ package {
 			
 			callPBArg('timeupdate', {
 				
-				seconds: position / 1000
+				position: position / 1000,
+				progress: audio.position*(100 / sound.length)
 			});
 		}
 		
@@ -271,7 +274,7 @@ package {
 			});
 			callPBArg('duration', {
 				
-				seconds: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+				position: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
 			});
         }
 
@@ -308,7 +311,7 @@ package {
 			
 			callPBArg('duration', {
 				
-				seconds: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+				position: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
 			});
         }
 
