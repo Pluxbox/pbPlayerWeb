@@ -28,11 +28,6 @@ var html5 = PB.Class({
 			mp3 = ('no' != audio.canPlayType(codecs.mp3)) && ('' != audio.canPlayType(codecs.mp3)),
 			aac = ('no' != audio.canPlayType(codecs.aac)) && ('' != audio.canPlayType(codecs.aac));
 		
-	/*	if( !ogg && !mp3 && !aac ) {
-			
-			return false;
-		}*/
-		
 		// Safari 4 issues
 		try {
 			
@@ -151,6 +146,7 @@ var html5 = PB.Class({
 			
 			case 'timeupdate':
 				args.seconds = this.element.currentTime;
+				args.progress = (this.element.currentTime*(100 / this.element.duration)) || 0;
 				break;
 			
 			case 'volumechange':

@@ -2,7 +2,7 @@ duration
 
 {
 	type: 'duration',
-	seconds: float
+	position: float
 }
 
 error
@@ -55,6 +55,6 @@ timeupdate
 
 {
 	type: 'timeupdate',
-	seconds: float,
-	progress: float `in percents`
+	position: float,
+	progress: float `percentage played`
 }

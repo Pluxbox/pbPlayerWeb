@@ -288,11 +288,6 @@ var html5 = PB.Class({
 			mp3 = ('no' != audio.canPlayType(codecs.mp3)) && ('' != audio.canPlayType(codecs.mp3)),
 			aac = ('no' != audio.canPlayType(codecs.aac)) && ('' != audio.canPlayType(codecs.aac));
 
-	/*	if( !ogg && !mp3 && !aac ) {
-
-			return false;
-		}*/
-
 		try {
 
 			if( PB.browser.isSafari && !PB.browser.isNokiaBrowser ) {
@@ -408,6 +403,7 @@ var html5 = PB.Class({
 
 			case 'timeupdate':
 				args.seconds = this.element.currentTime;
+				args.progress = (this.element.currentTime*(100 / this.element.duration)) || 0;
 				break;
 
 			case 'volumechange':
@@ -525,7 +521,7 @@ var flash = PB.Class({
 
 		this.context = context;
 
-		this.maxTries = 25;		// 25 * 50 = 1250ms to load flash..
+		this.maxTries = 25;		// 25 * 50 = 1250ms max time to load flash..
 		this.queue = [];
 		this.flashReady = false;
 
@@ -560,6 +556,9 @@ var flash = PB.Class({
 		this.isLoadedTimer = setInterval( this._isLoaded, 50 );
 	},
 
+	/**
+	 * Check if flash is loaded, then execute queue
+	 */
 	isLoaded: function () {
 
 		try {
