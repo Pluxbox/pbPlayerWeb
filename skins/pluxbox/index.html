@@ -3,93 +3,110 @@
 <head>
 	<meta charset="utf-8">	
 	<link rel="stylesheet" href="css/helpers.css">
-	<link rel="stylesheet" href="css/stylesheet.css">	
-	<!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<script>window.html5 || document.write('<script src="js/libs/html5.js"><\/script>')</script>
-	<![endif]-->
+	<link rel="stylesheet" href="css/stylesheet.css">
+	
+	<script type="text/javascript" src="/pbjs/bin/pbjs.js"></script>
+	<script type="text/javascript" src="/pbPlayer/bin/pbplayer.js"></script>
+	
+	<script type="text/javascript" src="pbplayer-pluxbox.js"></script>
 </head>
 <body>
 	
-	<!-- pbplayer start -->
-	<div class="pbplayer">
+	<div id="pbplayer">
 		
-		<!-- background glow -->
-		<div class="bg-glow"></div>
+		<!-- pbplayer start -->
+		<div class="pbplayer">
+		
+			<!-- background glow -->
+			<div class="bg-glow"></div>
 				
-		<!-- player control start -->
-		<div class="control-main">
-			<!-- emboss background -->
-			<div class="emboss pb-opacity-020"></div>
+			<!-- player control start -->
+			<div class="control-main">
+				<!-- emboss background -->
+				<div class="emboss pb-opacity-020"></div>
 			
-			<!-- fysical button -->
-			<div class="control-holder">
-				<!-- control-play / control-pause / control-stop -->
-				<a href="/" class="control-stop">
-					<span class="skin"></span><span class="button"></span>
-				</a>
+				<!-- fysical button -->
+				<div class="control-holder">
+					<!-- control-play / control-pause / control-stop -->
+					<a href="/" class="control-stop">
+						<span class="skin"></span><span class="button"></span>
+					</a>
+				</div>
+			
+				<!-- divider -->
+				<div class="divide pb-opacity-020"></div>
 			</div>
-			
-			<!-- divider -->
-			<div class="divide pb-opacity-020"></div>
-		</div>
 		
-		<!-- player control stop -->
-		<div class="player">
-			<!-- relative inner start -->
-			<div class="player-inner">
+			<!-- player control stop -->
+			<div class="player">
+				<!-- relative inner start -->
+				<div class="player-inner">
 				
-				<!-- top start -->
-				<div class="top">
-					<!-- emboss background -->
-					<div class="info-emboss pb-opacity-020"></div>
+					<!-- top start -->
+					<div class="top">
+						<!-- emboss background -->
+						<div class="info-emboss pb-opacity-020"></div>
 					
-					<!-- track info -->
-					<div class="info-holder">
-						<div class="info">Imogen Heap - Minds without fear</div>
-					</div>
+						<!-- track info -->
+						<div class="info-holder">
+							<div class="info">Imogen Heap - Minds without fear</div>
+						</div>
 					
-					<!-- volume start -->
-					<div class="volume-holder">
-						<div class="inner">
-							<a href="/" class="volume">
-								<!-- volume-low / volume-high / volume-off -->
-								<span class="button volume-off"><span>
-							</a>
-							<div class="volume-bar-holder">
-								<div class="loudness-bar">
-									<div class="loudness"><a href="#" class="dragger"></a></div>
+						<!-- volume start -->
+						<div class="volume-holder">
+							<div class="inner">
+								<a href="/" class="volume">
+									<!-- volume-low / volume-high / volume-off -->
+									<span class="button volume-off"><span>
+								</a>
+								<div class="volume-bar-holder">
+									<div class="loudness-bar">
+										<div class="loudness"><a href="#" class="dragger"></a></div>
+									</div>
 								</div>
 							</div>
 						</div>
+						<!-- volume stop  -->
 					</div>
-					<!-- volume stop  -->
-				</div>
-				<!-- top stop  -->
+					<!-- top stop  -->
 				
-				<!-- bottom start -->
-				<div class="bottom">
-					<div class="inner">
-						<!-- progress bar start -->
-						<div class="progress">
-							<div class="bar-holder">
-								<div class="bar"><a href="#" class="dragger"></a></div>
+					<!-- bottom start -->
+					<div class="bottom">
+						<div class="inner">
+							<!-- progress bar start -->
+							<div class="progress">
+								<div class="bar-holder">
+									<div class="bar"><a href="#" class="dragger"></a></div>
+								</div>
 							</div>
-						</div>
-						<!-- progress bar stop  -->
+							<!-- progress bar stop  -->
 						
-						<!-- progress time start -->
-						<div class="time-holder">00:14 / 03:45</div>
-						<!-- progress time stop  -->
+							<!-- progress time start -->
+							<div class="time-holder"><span>00:00</span> / <span>00:00</span></div>
+							<!-- progress time stop  -->
+						</div>
 					</div>
-				</div>
-				<!-- bottom stop  -->
+					<!-- bottom stop  -->
 				
+				</div>
+				<!-- relative inner stop  -->
 			</div>
-			<!-- relative inner stop  -->
 		</div>
+		<!-- pbplayer stop  -->
+	
 	</div>
-	<!-- pbplayer stop  -->
+	
+	<script type="text/javascript" charset="utf-8">
+	
+	var player = PB.Player('/bla.mp3', {
+		
+		autostart: true,
+		swfPath: '/pbPlayer/bin/flex/',
+		renderTo: 'pbplayer',
+		skin: 'Pluxbox',
+		volume: 0
+	})
+	</script>
 
 </body>
 </html>
