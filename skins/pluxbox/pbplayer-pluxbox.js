@@ -1,5 +1,16 @@
 (function ( $, context ) {
 	
+	var formatTime = function ( seconds ) {
+		
+		var date = new Date( seconds*1000 ),
+			minutes = date.getMinutes(),
+			seconds = date.getSeconds();
+		
+		return (minutes < 10 ? '0': '')+minutes
+			+':'
+			+(seconds < 10 ? '0': '')+seconds;
+	};
+	
 	var pluxbox = PB.Class(/* PB.Player.Skin, */ {
 		
 		construct: function ( context ) {
@@ -25,6 +36,9 @@
 			this.elDuration = element.find('div.time-holder')[0].last();
 			this.elProgress = element.find('div.progress > .bar-holder > .bar')[0];
 			this.elLoudness = element.find('div.loudness')[0];
+			this.elVolumeHover = element.find('a.volume')[0];
+			this.elVolumeContainer = element.find('div.volume-bar-holder')[0];
+			this.elVolume = element.find('a.volume')[0];
 			
 			element = null;
 		},
@@ -35,8 +49,10 @@
 			this.context.on('duration error progress loaded pause play volumechange ended timeupdate stop'
 				, this.delegatePlayerEvents.bind(this));
 			
-			
 			// Dom events
+			this.elAction.on('click', this.toggle.bind(this));
+			this.elVolumeHover.on('mouseenter', this.showVolume.bind(this));
+			this.elVolumeContainer.on('mouseleave', this.hideVolume.bind(this));
 		},
 		
 		delegatePlayerEvents: function ( e ) {
@@ -62,12 +78,12 @@
 			
 				// Duration
 				case 'duration':
-					this.elDuration.text( e.length );
+					this.elDuration.text( formatTime(e.length) );
 					return;
 				
 				// Duration
 				case 'timeupdate':
-					this.elTime.text( e.position );
+					this.elTime.text( formatTime(e.position) );
 					this.elProgress.width( e.progress+'%' );
 					return;
 				
@@ -75,6 +91,34 @@
 						console.log(e.type);
 					break;
 			}
+		},
+		
+		toggle: function ( e ) {
+			
+			e.stop();
+			
+			if( this.elAction.hasClass('control-play') ) {
+				
+				this.context.play()
+			} else {
+				
+				this.context.pause();
+			}
+		},
+		
+		showVolume: function () {
+			
+			this.elVolumeContainer.show();
+		},
+		
+		hideVolume: function () {
+			
+			this.elVolumeContainer.hide();
+		},
+		
+		toggleVolume: function ( e ) {
+			
+			e.stop();
 		}
 	});
 	
