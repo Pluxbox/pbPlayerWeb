@@ -3,7 +3,7 @@
  * pbPlayer v<%= PB_VERSION %>
  * https://github.com/Pluxbox/pbPlayer
  *
- * Requires pbjs javascript framework (> 0.5)
+ * Requires pbjs javascript framework (>= 0.5.4)
  * https://github.com/Saartje87/pbjs
  */
 (function ( context, undefined ){
@@ -27,7 +27,7 @@ var PB = context.PB,
 
 //= require "./core/core"
 
-//= require "./containers/containers"
+//= require "./plugins/plugins"
 
 })( this );
 

@@ -19,6 +19,7 @@ PB.Player = PB.Class(PB.Observer, {
 		// Playlist position
 		this.position = 0;
 		this.id = 'pb-player-'+PB.id();
+		// Clone defaults and overwrite with given config
 		this.config = PB.overwrite(PB.overwrite({}, PB.Player.defaults), config);
 		
 		this.setMedia( files );	// Do some more checking with these
@@ -50,23 +51,23 @@ PB.Player = PB.Class(PB.Observer, {
 		}
 		
 		// Kill self
+		PB.Player.instances[this.id] = null;
 	},
 	
-	setMedia: function ( files, isPlaylist ) {
+	setMedia: function ( files ) {
 		
-		if( this.config.playlist || isPlaylist ) {
+		if( PB.is('String', files) ) {
 			
-			this.setPlaylist( files );
-		} else {
+			files = [this.formatMediaObject({
+				
+				url: files
+			})];
+		} else if ( PB.is('Object', files) ) {
 			
-			this.setFile( files );
+			files = [this.formatMediaObject(files)];
 		}
-	},
-	
-	// Should be fixed for a 'best select'
-	setFile: function ( file ) {
 		
-		this.files = [ this.formatMediaObject(file) ];
+		this.setPlaylist( files );
 	},
 	
 	setPlaylist: function ( files ) {
@@ -93,12 +94,12 @@ PB.Player = PB.Class(PB.Observer, {
 				codec,
 				i;
 			
-			if( i = url.indexOf('?') ) {
+			if( (i = url.indexOf('?')) > 0 ) {
 				
 				url = url.substr( 0, i );
 			}
 			
-			if( i = url.lastIndexOf('.') ) {
+			if( (i = url.lastIndexOf('.')) > 0 ) {
 				
 				file.codec = url.substr( i+1 );
 			} else {
@@ -133,27 +134,31 @@ PB.Player = PB.Class(PB.Observer, {
 			return;
 		}
 		
-		var files = this.files,
+		var files = this.files[this.position],
 			position = this.position;
 		
-		PB.each(PB.Player.plugins, function ( key, plugin ) {
+		if( PB.is('Object', files) ) {
 			
-			// if( Array.isArray(files[position]) )
-			// files[position].forEach()
-			// else
+			files = [files];
+		}
+		
+		files.forEach(function ( file ){
 			
-			if( plugin.supports(files[position]) ) {
-				
-				this.stream = !!files[position].stream;
-				
-				this.plugin = new PB.Player.plugins[key]( this );
-				
-				// Set defaults
-				this.plugin.set( files[position].url );
-				this.plugin.volume( this.config.volume );
-				
-				return true;
-			}
+			PB.each(PB.Player.plugins, function ( key, plugin ) {
+
+				if( plugin.supports(file) ) {
+
+					this.stream = !!file.stream;
+
+					this.plugin = new PB.Player.plugins[key]( this );
+
+					// Set defaults
+					this.plugin.set( file.url );
+					this.plugin.volume( this.config.volume );
+
+					return true;
+				}
+			}, this);
 		}, this);
 	},
 	

@@ -2,7 +2,7 @@
  * pbPlayer v3.4.0Beta
  * https://github.com/Pluxbox/pbPlayer
  *
- * Requires pbjs javascript framework (> 0.5)
+ * Requires pbjs javascript framework (>= 0.5.4)
  * https://github.com/Saartje87/pbjs
  */
 (function ( context, undefined ){
@@ -70,22 +70,23 @@ PB.Player = PB.Class(PB.Observer, {
 			this.plugin.destroy();
 		}
 
+		PB.Player.instances[this.id] = null;
 	},
 
-	setMedia: function ( files, isPlaylist ) {
+	setMedia: function ( files ) {
 
-		if( this.config.playlist || isPlaylist ) {
+		if( PB.is('String', files) ) {
 
-			this.setPlaylist( files );
-		} else {
+			files = [this.formatMediaObject({
 
-			this.setFile( files );
+				url: files
+			})];
+		} else if ( PB.is('Object', files) ) {
+
+			files = [this.formatMediaObject(files)];
 		}
-	},
 
-	setFile: function ( file ) {
-
-		this.files = [ this.formatMediaObject(file) ];
+		this.setPlaylist( files );
 	},
 
 	setPlaylist: function ( files ) {
@@ -111,12 +112,12 @@ PB.Player = PB.Class(PB.Observer, {
 				codec,
 				i;
 
-			if( i = url.indexOf('?') ) {
+			if( (i = url.indexOf('?')) > 0 ) {
 
 				url = url.substr( 0, i );
 			}
 
-			if( i = url.lastIndexOf('.') ) {
+			if( (i = url.lastIndexOf('.')) > 0 ) {
 
 				file.codec = url.substr( i+1 );
 			} else {
@@ -150,23 +151,30 @@ PB.Player = PB.Class(PB.Observer, {
 			return;
 		}
 
-		var files = this.files,
+		var files = this.files[this.position],
 			position = this.position;
 
-		PB.each(PB.Player.plugins, function ( key, plugin ) {
+		if( PB.is('Object', files) ) {
 
+			files = [files];
+		}
 
-			if( plugin.supports(files[position]) ) {
+		files.forEach(function ( file ){
 
-				this.stream = !!files[position].stream;
+			PB.each(PB.Player.plugins, function ( key, plugin ) {
 
-				this.plugin = new PB.Player.plugins[key]( this );
+				if( plugin.supports(file) ) {
 
-				this.plugin.set( files[position].url );
-				this.plugin.volume( this.config.volume );
+					this.stream = !!file.stream;
 
-				return true;
-			}
+					this.plugin = new PB.Player.plugins[key]( this );
+
+					this.plugin.set( file.url );
+					this.plugin.volume( this.config.volume );
+
+					return true;
+				}
+			}, this);
 		}, this);
 	},
 
