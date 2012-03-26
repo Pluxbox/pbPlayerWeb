@@ -1,4 +1,4 @@
-PB.Player = PB.Class(PB.Observer, {
+var PBPlayer = PB.Class(PB.Observer, {
 	
 	VERSION: '<%= PB_VERSION %>',
 	
@@ -9,11 +9,6 @@ PB.Player = PB.Class(PB.Observer, {
 		
 		// Construct observer
 		this.parent();
-		
-		if( arguments.length == 1 ) {
-			
-			config = files;
-		}
 		
 		this.plugin;
 		// Playlist position
@@ -34,6 +29,17 @@ PB.Player = PB.Class(PB.Observer, {
 			this.config.renderTo = scripts[scripts.length - 1];
 		}
 		
+		if( config.skin ) {
+			
+			if( !PB.Player.skins[ config.skin ] ) {
+				
+				throw new Error('Skin '+config.skin+' not found');
+			} else {
+				
+				this.skin = new PB.Player.skins[ config.skin ]( this );
+			}
+		}
+		
 		if( this.config.autostart ) {
 			
 			this.play();
@@ -48,6 +54,12 @@ PB.Player = PB.Class(PB.Observer, {
 		if( this.plugin ) {
 			
 			this.plugin.destroy();
+		}
+		
+		if( this.skin ) {
+			
+			this.skin.destroy();
+			this.skin = null;
 		}
 		
 		// Kill self
@@ -218,11 +230,24 @@ PB.Player = PB.Class(PB.Observer, {
 	}
 });
 
+PB.Player = function ( files, config ) {
+	
+	if( arguments.length == 1 ) {
+		
+		config = files;
+	}
+	
+	return new PBPlayer( files, config );
+};
+
 // Helds pbplayer instances
 PB.Player.instances = {};
 
 // Helds container instances
 PB.Player.plugins = {};
+
+// Helds skin instances
+PB.Player.skins = {};
 
 /**
  * Register containers to PB.Player
@@ -231,4 +256,12 @@ PB.Player.register = function ( name, klasse ) {
 	
 	klasse.supports = klasse.prototype.supports;
 	PB.Player.plugins[name] = klasse;
+};
+
+/**
+ * Register containers to PB.Player
+ */
+PB.Player.registerSkin = function ( name, klasse ) {
+	
+	PB.Player.skins[name] = klasse;
 };

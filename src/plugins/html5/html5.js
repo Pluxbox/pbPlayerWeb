@@ -91,7 +91,7 @@ var html5 = PB.Class({
 		
 		this.context.emit('duration', {
 			
-			seconds: this.element.duration
+			length: this.element.duration
 		});
 	},
 	
@@ -145,7 +145,7 @@ var html5 = PB.Class({
 		switch( e.type ) {
 			
 			case 'timeupdate':
-				args.seconds = this.element.currentTime;
+				args.position = this.element.currentTime;
 				args.progress = (this.element.currentTime*(100 / this.element.duration)) || 0;
 				break;
 			
@@ -203,6 +203,8 @@ var html5 = PB.Class({
 		try { this.element.currentTime = 0; } catch (e){};
 		
 		this.element.src = src;
+		
+		this.context.emit('stop');
 	},
 	
 	/**

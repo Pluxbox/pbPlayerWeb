@@ -2,7 +2,7 @@ duration
 
 {
 	type: 'duration',
-	position: float
+	length: float
 }
 
 error

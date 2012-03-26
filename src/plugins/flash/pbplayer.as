@@ -268,13 +268,15 @@ package {
 		
 		private function completeHandler(event:Event):void {
 			
+			callPB('loaded');
+			
 			callPBArg('progress', {
 				
 				loaded: 100
 			});
 			callPBArg('duration', {
 				
-				position: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+				length: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
 			});
         }
 
@@ -311,7 +313,7 @@ package {
 			
 			callPBArg('duration', {
 				
-				position: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+				length: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
 			});
         }
 
