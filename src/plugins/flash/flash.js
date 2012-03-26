@@ -24,7 +24,7 @@ var flash = PB.Class({
 		
 		this.context = context;
 		
-		this.maxTries = 25;		// 25 * 50 = 1250ms to load flash..
+		this.maxTries = 25;		// 25 * 50 = 1250ms max time to load flash..
 		this.queue = [];
 		this.flashReady = false;
 		
@@ -62,6 +62,9 @@ var flash = PB.Class({
 		this.isLoadedTimer = setInterval( this._isLoaded, 50 );
 	},
 	
+	/**
+	 * Check if flash is loaded, then execute queue
+	 */
 	isLoaded: function () {
 		
 		try {
@@ -120,7 +123,7 @@ var flash = PB.Class({
 	/**
 	 * Set src
 	 */
-	set: function ( src ) {	
+	set: function ( src ) {
 		
 		if( !this.flashReady ) {
 			
