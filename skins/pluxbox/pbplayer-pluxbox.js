@@ -107,7 +107,7 @@
 					return;
 				
 				default:
-						console.log(e.type);
+				//	console.log(e.type);
 					break;
 			}
 		},
