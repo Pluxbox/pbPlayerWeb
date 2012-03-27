@@ -256,7 +256,7 @@ body {margin: 300px 80px 0 80px; }
 				
 				// volume bar
 				.volume-bar-holder {
-					.block;
+					display: none;
 					.absolute;
 					.height(100px);
 					.rounded(3px);
@@ -281,8 +281,8 @@ body {margin: 300px 80px 0 80px; }
 						.relative;
 						.rounded(3px);
 						.width(4px);
-						.height(50%);
-						background-color: darken(#dddcdc, 60%);
+						.height(100%);
+						background-color: darken(#dddcdc, 50%);
 						
 						// dragger
 						.dragger {
@@ -329,13 +329,17 @@ body {margin: 300px 80px 0 80px; }
 					.rounded(3px);
 					margin: 7px 0 0 0;
 					background-color: #828282;
+					
+					&.processing{
+						background-color: darken(#dddcdc, 50%);
+					}
 				}
 				
 				// bar
 				.bar {
 					.block;
 					.relative;
-					.width(50%);
+					.width(0%);
 					.height(6px);
 					.rounded(3px);
 					.inner-shadow(1px, 1px, 0, 0.1);
