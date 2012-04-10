@@ -177,21 +177,32 @@
 				
 				case 'play':
 					this.elAction.removeClass('control-play control-stop').addClass('control-pause');
-					return;
+					break;
 
+				case 'ended':
+					this.context.stop();
+					break;
+				
 				case 'pause':
-					this.elAction.removeClass('control-pause control-stop').addClass('control-play');
-					return;
-
 				case 'stop':
-					this.elAction.removeClass('control-play control-pause').addClass('control-play');
-					return;
+					this.elAction.removeClass('control-pause control-stop').addClass('control-play');
+					break;
 				
 				// Volume
 				case 'volumechange':
-					this.volumeLevel = e.volume;
+					
+					if( e.volume - this.volumeLevel > 30 || e.volume - this.volumeLevel < -30 ) {
+						
+						this.elLoudness.morph({
+							
+							height: (100 - e.volume)+'%'
+						}, .1);
+					} else {
+						
+						this.elLoudness.height( (100 - e.volume)+'%' );
+					}
 				
-					this.elLoudness.height( (100 - e.volume)+'%' );
+					this.volumeLevel = e.volume;
 					
 					if( e.volume == 0 ) {
 						
@@ -204,19 +215,19 @@
 						this.elVolumeIcon.addClass('volume-high').removeClass('volume-off volume-low');
 					}
 					
-					return;
+					break;
 			
 				// Duration
 				case 'duration':
 					this.duration = e.length;
 					this.elDuration.text( formatTime(e.length) );
-					return;
+					break;
 				
 				// Duration
 				case 'timeupdate':
 					this.elTime.text( formatTime(e.position) );
 					this.elProgress.width( e.progress+'%' );
-					return;
+					break;
 				
 				default:
 				//	console.log(e.type);
