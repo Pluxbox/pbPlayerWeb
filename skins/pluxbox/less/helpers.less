@@ -13,17 +13,14 @@
 .test(@color) {	background-color: @color; }
 
 .absolute {position: absolute;}
-
 .relative {position: relative;}
-
 .block {display: block;}
+.hide {display: none;}
 
 .floatLft {float: left;}
-
 .floatRgt {float: right;}
 
 .width(@px) { width: @px; }
-
 .height(@px) { height: @px; }
 
 .rounded(@radius: 2px) {
@@ -32,13 +29,11 @@
   border-radius: @radius;
   -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; 
 }
-
 .inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
   -webkit-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
   -moz-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
   box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
 }
-
 .drop-shadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
   -webkit-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
   -moz-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
