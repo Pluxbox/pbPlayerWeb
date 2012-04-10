@@ -231,7 +231,7 @@ var flash = PB.Class({
 		}
 		
 		this.element._playAt( position );
-	},
+	}
 });
 
 PB.Player.register('flash', flash);

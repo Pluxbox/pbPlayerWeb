@@ -237,7 +237,7 @@ var html5 = PB.Class({
 	playAt: function ( position ) {
 		
 		this.element.currentTime = position;
-	},
+	}
 });
 
 PB.Player.register('html5', html5);

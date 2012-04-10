@@ -171,7 +171,7 @@ var flash = PB.Class({
 
 			this.element.SetTime( position * 1000 ); // Miliseconds
 		} catch (e){};
-	},
+	}
 });
 
 PB.Player.register('flash', flash);

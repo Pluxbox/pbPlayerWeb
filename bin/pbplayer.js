@@ -527,7 +527,7 @@ var html5 = PB.Class({
 	playAt: function ( position ) {
 
 		this.element.currentTime = position;
-	},
+	}
 });
 
 PB.Player.register('html5', html5);
@@ -761,7 +761,7 @@ var flash = PB.Class({
 		}
 
 		this.element._playAt( position );
-	},
+	}
 });
 
 PB.Player.register('flash', flash);
