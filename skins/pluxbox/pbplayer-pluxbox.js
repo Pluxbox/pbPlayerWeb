@@ -1,6 +1,93 @@
 (function ( $, context ) {
 	
-	var formatTime = function ( seconds ) {
+	var html = '<!-- pbplayer start -->\
+	<div class="pbplayer">\
+	\
+		<!-- background glow -->\
+		<div class="bg-glow"></div>\
+			\
+		<!-- player control start -->\
+		<div class="control-main">\
+			<!-- emboss background -->\
+			<div class="emboss pb-opacity-020"></div>\
+		\
+			<!-- fysical button -->\
+			<div class="control-holder">\
+				<!-- control-play / control-pause / control-stop -->\
+				<a href="/" class="control-stop">\
+					<span class="skin"></span><span class="button"></span>\
+				</a>\
+			</div>\
+		\
+			<!-- divider -->\
+			<div class="divide pb-opacity-020"></div>\
+		</div>\
+	\
+		<!-- player control stop -->\
+		<div class="player">\
+			<!-- relative inner start -->\
+			<div class="player-inner">\
+			\
+				<!-- top start -->\
+				<div class="top">\
+					<!-- emboss background -->\
+					<div class="info-emboss pb-opacity-020"></div>\
+				\
+					<!-- track info -->\
+					<div class="info-holder">\
+						<div class="info">Imogen Heap - Minds without fear</div>\
+					</div>\
+				\
+					<!-- volume start -->\
+					<div class="volume-holder">\
+						<div class="inner">\
+							<a href="/" class="volume">\
+								<!-- volume-low / volume-high / volume-off -->\
+								<span class="button volume-off"><span>\
+							</a>\
+							<div class="volume-bar-holder">\
+								<div class="loudness-bar">\
+									<div class="loudness"><a href="#" class="dragger"></a></div>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					<!-- volume stop  -->\
+				</div>\
+				<!-- top stop  -->\
+			\
+				<!-- bottom start -->\
+				<div class="bottom">\
+					<div class="inner">\
+						<!-- progress bar start -->\
+						<div class="progress">\
+							<!-- \
+							Add `processing` class for loading state.\
+							`bar-holder` can be duplicated and wrapped around current `bar-holder`-div.\
+							 -->\
+							<div class="bar-holder processing">\
+								<div class="bar"><a href="#" class="dragger"></a></div>\
+							</div>\
+						</div>\
+						<!-- progress bar stop  -->\
+					\
+						<!-- progress time start -->\
+						<div class="time-holder"><span>00:00</span> / <span>00:00</span></div>\
+						<!-- progress time stop  -->\
+					</div>\
+				</div>\
+				<!-- bottom stop  -->\
+			\
+			</div>\
+			<!-- relative inner stop  -->\
+		</div>\
+	</div>\
+	<!-- pbplayer stop  -->';
+	
+	/**
+	 * Format seconds to i:s
+	 */
+	function formatTime ( seconds ) {
 		
 		var date = new Date( seconds*1000 ),
 			minutes = date.getMinutes(),
@@ -16,6 +103,8 @@
 		construct: function ( context ) {
 			
 			this.context = context;
+			
+			$(html).appendTo( this.context.config.renderTo );
 			
 			this.findElements();
 			
@@ -42,6 +131,7 @@
 			this.elVolumeHover = element.find('a.volume')[0];
 			this.elVolumeContainer = element.find('div.volume-bar-holder')[0];
 			this.elVolume = element.find('a.volume')[0];
+			this.elVolumeIcon = this.elVolume.first();
 			
 			element = null;
 		},
@@ -92,6 +182,18 @@
 				// Volume
 				case 'volumechange':
 					this.elLoudness.height( (100 - e.volume)+'%' );
+					
+					if( e.volume == 0 ) {
+						
+						this.elVolumeIcon.addClass('volume-off').removeClass('volume-low volume-high');
+					} else if ( e.volume < 70 ) {
+						
+						this.elVolumeIcon.addClass('volume-low').removeClass('volume-off volume-high');
+					} else {
+
+						this.elVolumeIcon.addClass('volume-high').removeClass('volume-off volume-low');
+					}
+					
 					return;
 			
 				// Duration
