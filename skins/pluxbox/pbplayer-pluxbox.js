@@ -1,5 +1,8 @@
 (function ( $, context ) {
 	
+	/**
+	 * Html layout
+	 */
 	var html = '<!-- pbplayer start -->\
 	<div class="pbplayer">\
 	\
@@ -103,8 +106,9 @@
 		construct: function ( context ) {
 			
 			this.context = context;
+			this.volTimer = null;
 			
-			$(html).appendTo( this.context.config.renderTo );
+			this.element = $(html).appendTo( this.context.config.renderTo );
 			
 			this.findElements();
 			
@@ -118,7 +122,7 @@
 		
 		findElements: function () {
 			
-			var element = this.context.config.renderTo;
+			var element = this.element;
 			
 			this.elAction = element.find('a.control-stop')[0];	// control-play
 			this.elTime = element.find('div.time-holder')[0].first();
@@ -138,14 +142,18 @@
 		
 		addEvents: function () {
 			
+			// Wrappers
+			this._hideVolume = this.hideVolume.bind(this);
+			
 			// Player events
 			this.context.on('duration error progress loaded pause play volumechange ended timeupdate stop'
 				, this.delegatePlayerEvents.bind(this));
 			
 			// Dom events
 			this.elAction.on('click', this.toggle.bind(this));
-			this.elVolumeHover.on('mouseenter', this.showVolume.bind(this));
-			this.elVolumeContainer.on('mouseleave', this.hideVolume.bind(this));
+			this.elVolumeContainer.parent().on('mouseenter', this.showVolume.bind(this));
+			this.elVolumeContainer.parent().on('mouseleave', this._hideVolume);
+			this.elVolume.on('click', this.toggleVolume.bind(this))
 		
 			// Draggables
 			this._progressDragUpdate = this.progressDragUpdate.bind(this);
@@ -181,6 +189,8 @@
 				
 				// Volume
 				case 'volumechange':
+					this.volumeLevel = e.volume;
+				
 					this.elLoudness.height( (100 - e.volume)+'%' );
 					
 					if( e.volume == 0 ) {
@@ -229,13 +239,18 @@
 		
 		showVolume: function () {
 			
+			clearTimeout(this.volTimer);
+			
 			this.elVolumeContainer.show();
 		},
 		
 		hideVolume: function () {
 			
+			clearTimeout(this.volTimer);
+			
 			if( this.volumeDrag ) {
 				
+				this.volTimer = setTimeout(this._hideVolume, 100);
 				return;
 			}
 			
@@ -245,6 +260,15 @@
 		toggleVolume: function ( e ) {
 			
 			e.stop();
+			
+			if( this.volumeLevel == 0 ) {
+				
+				this.context.volume( this.prevVolumeLevel );
+			} else {
+				
+				this.prevVolumeLevel = this.volumeLevel;
+				this.context.volume( 0 );
+			}
 		},
 		
 		stop: function ( e ) {
