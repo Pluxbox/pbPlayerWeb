@@ -195,7 +195,7 @@
 		volumePoint: function ( e ) {
 			
 			var position = this.elLoudness.getXY(true),
-				height = this.elLoudness.height(),
+				height = this.elLoudness.parent().height(),
 				y = e.pageY - position.top,
 				percent = y / (height / 100);
 			
