@@ -1,18 +1,13 @@
 var flash = PB.Class({
 	
 	/**
-	 * Html5 availeble and supports audio file?
+	 * Flash installed? Version 9 is the required version
 	 */
 	supports: function ( metadata ) {
 		
 		var codecs = { mp3: true, mp4: true };
 		
-		if( PB.browser.flash && PB.browser.flash > 8 && codecs[metadata.codec] ) {
-			
-			return true;
-		}
-		
-		return false;
+		return PB.browser.flash && PB.browser.flash >= 9 && codecs[metadata.codec];
 	},
 	
 	/**
