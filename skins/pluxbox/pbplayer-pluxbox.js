@@ -99,7 +99,7 @@
 		return (minutes < 10 ? '0': '')+minutes
 			+':'
 			+(seconds < 10 ? '0': '')+seconds;
-	};
+	}
 	
 	var pluxbox = PB.Class(/* PB.Player.Skin, */ {
 		
