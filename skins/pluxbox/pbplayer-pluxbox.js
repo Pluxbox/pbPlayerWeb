@@ -17,7 +17,7 @@
 			<!-- fysical button -->\
 			<div class="control-holder">\
 				<!-- control-play / control-pause / control-stop -->\
-				<a href="/" class="control-stop">\
+				<a href="/" class="control-play">\
 					<span class="skin"></span><span class="button"></span>\
 				</a>\
 			</div>\
@@ -124,7 +124,7 @@
 			
 			var element = this.element;
 			
-			this.elAction = element.find('a.control-stop')[0];	// control-play
+			this.elAction = element.find('a.control-play')[0];	// control-play
 			this.elTime = element.find('div.time-holder')[0].first();
 			this.elDuration = element.find('div.time-holder')[0].last();
 			this.elProgressContainer = element.find('div.bar-holder')[0];

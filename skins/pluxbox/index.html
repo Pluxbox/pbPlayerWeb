@@ -12,7 +12,7 @@
 	
 	PB.Player.config({
 		
-		swfPath: '/pbPlayer/bin/flex/'
+		swfPath: '/pbPlayer/bi2n/flex/'
 	});
 	
 	</script>
@@ -25,14 +25,20 @@
 	
 	<script type="text/javascript" charset="utf-8">
 	
-	PB.Player('/bla.mp3', {
+	var player = PB.Player('/bla.mp3', {
 		
 		autostart: false,
 	//	swfPath: '/pbPlayer/bin/flex/',
 	//	renderTo: 'pbplayer',
 		skin: 'Pluxbox',
 		volume: 0
+	});
+	
+	player.on('error', function ( e ) {
+		
+		console.log( e );
 	})
+	
 	</script>
 
 </body>

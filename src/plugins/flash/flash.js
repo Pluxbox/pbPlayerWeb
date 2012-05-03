@@ -88,7 +88,8 @@ var flash = PB.Class({
 			
 			this.context.emit('error', {
 				
-				message: 'Forgot to set swfPath?'
+				message: 'Flash file not found in `'+this.context.config.swfPath+'`',
+				code: 404
 			});
 		}
 	},
