@@ -1,3 +1,3 @@
 //= require "./player"
-//= require "./defaults"
+//= require "./config"
 

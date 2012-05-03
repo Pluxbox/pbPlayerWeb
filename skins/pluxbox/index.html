@@ -8,6 +8,15 @@
 	<script type="text/javascript" src="/pbjs/bin/pbjs.js"></script>
 	<script type="text/javascript" src="/pbPlayer/bin/pbplayer.js"></script>
 	
+	<script type="text/javascript" charset="utf-8">
+	
+	PB.Player.config({
+		
+		swfPath: '/pbPlayer/bin/flex/'
+	});
+	
+	</script>
+	
 	<script type="text/javascript" src="pbplayer-pluxbox.js"></script>
 </head>
 <body style="margin: 120px 80px 0;">
@@ -16,13 +25,13 @@
 	
 	<script type="text/javascript" charset="utf-8">
 	
-	var player = PB.Player('/bla.mp3', {
+	PB.Player('/bla.mp3', {
 		
-		autostart: true,
-		swfPath: '/pbPlayer/bin/flex/',
-		renderTo: 'pbplayer',
+		autostart: false,
+	//	swfPath: '/pbPlayer/bin/flex/',
+	//	renderTo: 'pbplayer',
 		skin: 'Pluxbox',
-		volume: 100
+		volume: 0
 	})
 	</script>
 

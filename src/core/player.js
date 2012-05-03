@@ -24,9 +24,11 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.config.renderTo = PB(this.config.renderTo);
 		} else {
 			
-			var scripts = document.getElementsByTagName('script');
+			var script = document.getElementsByTagName('script');
 			
-			this.config.renderTo = scripts[scripts.length - 1];
+			script = PB(script[script.length - 1]);
+			
+			this.config.renderTo = script.prev() || script.next() || script.parent();
 		}
 		
 		if( config.skin ) {

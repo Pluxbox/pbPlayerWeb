@@ -48,9 +48,11 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.config.renderTo = PB(this.config.renderTo);
 		} else {
 
-			var scripts = document.getElementsByTagName('script');
+			var script = document.getElementsByTagName('script');
 
-			this.config.renderTo = scripts[scripts.length - 1];
+			script = PB(script[script.length - 1]);
+
+			this.config.renderTo = script.prev() || script.next() || script.parent();
 		}
 
 		if( config.skin ) {
@@ -280,19 +282,29 @@ PB.Player.registerSkin = function ( name, klasse ) {
 
 	PB.Player.skins[name] = klasse;
 };
+/**
+ * Defaults config for instances
+ */
 PB.Player.defaults = {
 
-	swfPath: 'static/pbplayer/',	// Used to get skin, swf, etc...
+	swfPath: 'static/pbplayer/',
 	skinPath: 'static/pbplayer/skins/',
 	volume: 80,
 	autostart: false,
 	skin: false,
-	renderTo: null,				// Render skin to
-	timeFormat: 'i:s',
+	renderTo: null,
 	loop: false,
 	simple: true,
 	playlist: true
 };
+
+/**
+ * Overwrite defaults
+ */
+PB.Player.config = function ( config ) {
+
+	PB.overwrite(PB.Player.defaults, config);
+}
 
 
 var html5 = PB.Class({
@@ -535,18 +547,13 @@ PB.Player.register('html5', html5);
 var flash = PB.Class({
 
 	/**
-	 * Html5 availeble and supports audio file?
+	 * Flash installed? Version 9 is the required version
 	 */
 	supports: function ( metadata ) {
 
 		var codecs = { mp3: true, mp4: true };
 
-		if( PB.browser.flash && PB.browser.flash > 8 && codecs[metadata.codec] ) {
-
-			return true;
-		}
-
-		return false;
+		return PB.browser.flash && PB.browser.flash >= 9 && codecs[metadata.codec];
 	},
 
 	/**
