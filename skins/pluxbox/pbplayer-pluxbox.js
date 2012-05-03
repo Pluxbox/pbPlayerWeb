@@ -136,6 +136,10 @@
 			this.elVolumeContainer = element.find('div.volume-bar-holder')[0];
 			this.elVolume = element.find('a.volume')[0];
 			this.elVolumeIcon = this.elVolume.first();
+			this.elName = element.find('.info')[0];
+			
+			//
+			this.elName.text( this.context.current().name );
 			
 			element = null;
 		},

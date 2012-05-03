@@ -17,8 +17,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 		// Clone defaults and overwrite with given config
 		this.config = PB.overwrite(PB.overwrite({}, PB.Player.defaults), config);
 		
-		this.setMedia( files );	// Do some more checking with these
+		// Do some more checking with these
+		this.setMedia( files );
 		
+		// 
 		if( this.config.renderTo ) {
 			
 			this.config.renderTo = PB(this.config.renderTo);
@@ -84,6 +86,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.setPlaylist( files );
 	},
 	
+	// Think this trough :)
 	setPlaylist: function ( files ) {
 		
 		if( Array.isArray(files) === false ) {
@@ -122,6 +125,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 			}
 		}
 		
+		if( !file.name ) {
+			
+			var pos = file.url.lastIndexOf('/');
+			
+			file.name = file.url.substr( pos === -1 ? 0 : (pos + 1) );
+		}
+		
 		return file;
 	},
 	
@@ -148,8 +158,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			return;
 		}
 		
-		var files = this.files[this.position],
-			position = this.position;
+		var files = this.current();
 		
 		if( PB.is('Object', files) ) {
 			
@@ -174,6 +183,12 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
+	},
+	
+	// Playlist helpers
+	current: function () {
+
+		return this.files[this.position];
 	},
 	
 	// Trigger events, delegation to plugins

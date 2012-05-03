@@ -12,7 +12,7 @@
 	
 	PB.Player.config({
 		
-		swfPath: '/pbPlayer/bi2n/flex/'
+		swfPath: '/pbPlayer/bin/flex/'
 	});
 	
 	</script>
@@ -25,10 +25,13 @@
 	
 	<script type="text/javascript" charset="utf-8">
 	
-	var player = PB.Player('/bla.mp3', {
+	var player = PB.Player({
+		
+		url: '/bla.mp3',
+		name: 'Slipknot - Psycho!'
+	}, {
 		
 		autostart: false,
-	//	swfPath: '/pbPlayer/bin/flex/',
 	//	renderTo: 'pbplayer',
 		skin: 'Pluxbox',
 		volume: 0
