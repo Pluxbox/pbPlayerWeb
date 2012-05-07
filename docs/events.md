@@ -17,7 +17,7 @@ loadProgress(<3.4) -> progress
 
 {
 	type: 'progress',
-	loaded: int	`in percents`
+	percent: int	`in percents`
 }
 
 load(<3.4) -> loaded

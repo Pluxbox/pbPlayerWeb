@@ -45,8 +45,7 @@
 					<div class="volume-holder">\
 						<div class="inner">\
 							<a href="/" class="volume">\
-								<!-- volume-low / volume-high / volume-off -->\
-								<span class="button volume-off"><span>\
+								<span class="button volume-off"></span>\
 							</a>\
 							<div class="volume-bar-holder">\
 								<div class="loudness-bar">\
@@ -68,8 +67,10 @@
 							Add `processing` class for loading state.\
 							`bar-holder` can be duplicated and wrapped around current `bar-holder`-div.\
 							 -->\
-							<div class="bar-holder processing">\
-								<div class="bar"><a href="#" class="dragger"></a></div>\
+							<div class="bar-holder">\
+								<div class="bar-holder processing" style="width: 0%;">\
+									<div class="bar"><a href="#" class="dragger"></a></div>\
+								</div>\
 							</div>\
 						</div>\
 						<!-- progress bar stop  -->\
@@ -128,7 +129,8 @@
 			this.elTime = element.find('div.time-holder')[0].first();
 			this.elDuration = element.find('div.time-holder')[0].last();
 			this.elProgressContainer = element.find('div.bar-holder')[0];
-			this.elProgress = element.find('div.progress > .bar-holder > .bar')[0];
+			this.elLoaded = element.find('.bar-holder.processing')[0];
+			this.elProgress = element.find('div.progress > .bar-holder > .bar-holder > .bar')[0];
 			this.elProgressHandler = this.elProgress.first();
 			this.elLoudness = element.find('div.loudness')[0];
 			this.elLoudnessHandler = this.elLoudness.first();
@@ -233,8 +235,17 @@
 					this.elProgress.width( e.progress+'%' );
 					break;
 				
+				case 'progress':
+					this.elLoaded.width( e.percent+'%' );
+					break;
+				
+				case 'loaded':
+					this.elLoaded.width( '100%' );
+					break;
+				
 				default:
 				//	console.log(e.type);
+					console.log( e.type );
 					break;
 			}
 		},
