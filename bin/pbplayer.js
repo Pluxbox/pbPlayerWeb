@@ -564,7 +564,7 @@ var flash = PB.Class({
 
 		var codecs = { mp3: true, mp4: true };
 
-		return PB.browser.flash && PB.browser.flash >= 9 && codecs[metadata.codec];
+		return PB.support.flash && PB.support.flash >= 9 && codecs[metadata.codec];
 	},
 
 	/**
