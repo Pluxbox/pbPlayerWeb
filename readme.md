@@ -1,4 +1,4 @@
-# pbPlayer 3.4
+# pbPlayer
 =============
 
 pbPlayer is cross-browser/cross-platform audio player build upon [pbjs]([https://github.com/Saartje87/pbjs]).
