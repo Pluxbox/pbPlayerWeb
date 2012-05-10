@@ -21,24 +21,6 @@ To Define a global config
 The global config can be used for all default values, the recommend global config properties are swfPath, skinPath, skin
 
 
-### Config
-
-* **swfPath** <string>
-	* Path to swf files
-* **skinPath** <string>
-	* Path to skin files/folder structure
-* **volume** <number>
-	* Volume in percent, default: 80
-* **autostart** <boolean>
-	* Default: false
-* **skin**
-	* Default: false
-* **renderTo** <Node/String/PBDom>
-	* Element where the pbplayer should be rendered to. Default: null, Note: If none given, renders after script tag
-
-> All path values must end with a slash
-
-
 ### PB.Player
 
 	var player = PB.Player({
@@ -66,6 +48,23 @@ The global config can be used for all default values, the recommend global confi
 		
 		alert('Audio playing!');
 	});
+
+### Config
+
+* **swfPath** <string>
+	* Path to swf files
+* **skinPath** <string>
+	* Path to skin files/folder structure
+* **volume** <number>
+	* Volume in percent, default: 80
+* **autostart** <boolean>
+	* Default: false
+* **skin**
+	* Default: false
+* **renderTo** <Node/String/PBDom>
+	* Element where the pbplayer should be rendered to. Default: null, Note: If none given, renders after script tag
+
+> All path values must end with a slash
 
 
 ### Compatibility
