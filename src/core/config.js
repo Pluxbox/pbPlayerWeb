@@ -10,7 +10,7 @@ PB.Player.defaults = {
 	skin: false,
 	// Append skin to ...
 	renderTo: null,
-	loop: false,
+//	loop: false,
 	simple: true,
 	playlist: true
 };

@@ -304,7 +304,6 @@ PB.Player.defaults = {
 	autostart: false,
 	skin: false,
 	renderTo: null,
-	loop: false,
 	simple: true,
 	playlist: true
 };
