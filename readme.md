@@ -8,9 +8,6 @@ Usage
 
 ### Global config
 
-> The global config is inherence by all single PB.Player instances.	
-The global config can be used for all default values, the recommend global config properties are swfPath, skinPath, skin
-
 To Define a global config
 
 	PB.Player.config({
@@ -20,9 +17,11 @@ To Define a global config
 		skin: 'skin_name'
 	});
 
-### Config
+> The global config is inherence by all single PB.Player instances.	
+The global config can be used for all default values, the recommend global config properties are swfPath, skinPath, skin
 
-> All path values must and with a slash
+
+### Config
 
 * **swfPath** <string>
 	* Path to swf files
@@ -37,6 +36,9 @@ To Define a global config
 * **renderTo** <Node/String/PBDom>
 	* Element where the pbplayer should be rendered to. Default: null, Note: If none given, renders after script tag
 
+> All path values must end with a slash
+
+
 ### PB.Player
 
 	var player = PB.Player({
@@ -50,9 +52,10 @@ To Define a global config
 		volume: 50
 	});
 
+
 ### Listen to the player
 
-	// Trace pbplayer error
+	// Listen to pbplayer error(s)
 	player.on('error', function ( e ) {
 		
 		console.log( e );
@@ -64,6 +67,7 @@ To Define a global config
 		alert('Audio playing!');
 	});
 
+
 ### Compatibility
 
 - IE7+
@@ -73,7 +77,6 @@ To Define a global config
 - Chrome
 - IOS
 - Android
-
 
 
 License
