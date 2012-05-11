@@ -6,13 +6,11 @@
 	
 	local.formatTime = function ( seconds ) {
 		
-		var date = new Date( seconds*1000 ),
+
+		var date = new Date( seconds * 1000 ),
 			minutes = date.getMinutes(),
 			seconds = date.getSeconds();
-		
-		return (minutes < 10 ? '0': '')+minutes
-			+':'
-			+(seconds < 10 ? '0': '')+seconds;
+		return ( minutes < 10 ? '0': '') + minutes + ':' + ( seconds < 10 ? '0': '' ) + seconds;
 	};
 	
 	var npo = PB.Class({
@@ -113,17 +111,20 @@
 		addEvents: function () {
 			
 			// Play/pause toggle
-			this._playPause.on('click', function ( e ){
+			this._playPause.on('click', function ( e ) {
 				
 				e.stop();
 				
 				if( this._playPause.hasClass('pbplayer-play') === true ) {
-					
+
 					this.player.play();
+
 				} else if ( this._playPause.hasClass('pbplayer-pause') === true ) {
-					
+
 					this.player.pause();
+
 				}
+
 			}.bind(this));
 			
 			// Progress events
@@ -137,17 +138,25 @@
 			
 			// Volume events
 			this._volumeButton.on('click', function ( e ){
-				if(this.player.options.volume == 0){
+				
+				if ( this.player.config.volume == 0 ){
+
 					this.player.volume(this.volume);
-				}else{
-					this.volume = this.player.options.volume;
+
+				} else {
+
+					this.volume = this.player.config.volume;
 					this.player.volume(0);
 				}
+
 			}.bind(this));
+
+
 			this._volumeButton.on('mouseenter', function ( e ){
 				
 				this._volumeContainer.show();
 			}.bind(this));
+
 			this._volumeContainer.on('mouseleave', function (){
 				
 				this.volumeTimer = window.setTimeout(function (){
@@ -155,6 +164,7 @@
 					this._volumeContainer.hide();
 				}.bind(this), 500);
 			}.bind(this));
+
 			this._volumeContainer.on('mouseenter', function (){
 				
 				window.clearTimeout(this.volumeTimer);
@@ -217,7 +227,7 @@
 			
 			var type = e.type,
 				args = e;
-			
+		
 			switch( type ) {
 				
 				case 'play':
@@ -229,22 +239,27 @@
 					this._playPause.removeClass('pbplayer-pause').addClass('pbplayer-play');
 					break;
 				
+
 				case 'volumechange':
-					this._volumeSliderHandler.setStyle('bottom', args[0]+'%');
-					this._volumeSlider.setStyle('height', args[0]+'%');
+
+					this._volumeSliderHandler.setStyle( 'bottom', args.volume + '%' );
+					this._volumeSlider.setStyle('height', args.volume + '%');
 					
 					this._volumeIndicator.removeClass('pbplayer-volumn3').removeClass('pbplayer-volumn2')
 						.removeClass('pbplayer-volumn1').removeClass('pbplayer-volumn0');
 					
-					if( args[0] == 0 ) {
+					if( args.volume == 0 ) {
 						
 						this._volumeIndicator.addClass('pbplayer-volumn0');
-					} else if ( args[0] < 40 ) {
+
+					} else if ( args.volume < 40 ) {
 						
 						this._volumeIndicator.addClass('pbplayer-volumn1');
-					} else if ( args[0] < 80 ) {
+
+					} else if ( args.volume < 80 ) {
 						
 						this._volumeIndicator.addClass('pbplayer-volumn2');
+
 					} else {
 						
 						this._volumeIndicator.addClass('pbplayer-volumn3');
@@ -253,9 +268,10 @@
 					break;
 					
 				case 'timeupdate':
-					this._playtime.html( local.formatTime( parseFloat(args[0]) ) );
+
+					this._playtime.html( local.formatTime( args.position ) );
 					
-					var percent = parseFloat(args[0]) / (this.duration/100);
+					var percent = args.progress;
 					
 					if( isNaN(percent) == true	) percent = 0;
 					
@@ -264,22 +280,23 @@
 					break;
 				
 				case 'duration':
+
 					var time = new Date();
-					time.setTime( parseFloat(args[0])*1000 );
+					time.setTime( args.length );
 					
 					if( isNaN(time) === false ) {
-						this._duration.html( local.formatTime( parseFloat(args[0]) ) );
+						this._duration.html( local.formatTime( args.length ) );
 					}
 					
-					this.duration = parseFloat(args[0]);
+					this.duration = args.length;
 					break;
 			
-				case 'loadProgress':
-					this._bufferbar.width( args[0]+'%' );
+				case 'progress':
+					
+					this._bufferbar.width( args.loaded +'%' );
 					break;
 				
-				case 'ended':
-					// Stop or next in playlist :)
+				case 'ended':					
 					this.player.pause();
 					break;
 			}
