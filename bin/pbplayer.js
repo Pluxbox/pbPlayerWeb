@@ -1,8 +1,8 @@
 /*!
- * pbPlayer v3.4.0Beta
+ * pbPlayer v3.4.0
  * https://github.com/Pluxbox/pbPlayer
  *
- * Requires pbjs javascript framework (>= 0.5.4)
+ * Requires pbjs javascript framework (>= 0.5.7)
  * https://github.com/Saartje87/pbjs
  *
  * copyright 2011-1012, Pluxbox
@@ -27,7 +27,7 @@ var PB = context.PB,
 
 var PBPlayer = PB.Class(PB.Observer, {
 
-	VERSION: '3.4.0Beta',
+	VERSION: '3.4.0',
 
 	/**
 	 *
