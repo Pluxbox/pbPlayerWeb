@@ -35,7 +35,7 @@ The global config can be used for all default values, the recommend global confi
 	});
 
 
-### Listen to the player
+### Events
 
 	// Listen to pbplayer error(s)
 	player.on('error', function ( e ) {

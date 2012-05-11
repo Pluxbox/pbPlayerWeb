@@ -42,7 +42,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.config = PB.overwrite(PB.overwrite({}, PB.Player.defaults), config);
 
 		this.setMedia( files );
-	
 
 		if( this.config.renderTo ) {
 
@@ -58,7 +57,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 		if( config.skin ) {
 
-			this.skin( config );			
+			this.skin( config );
 		}
 
 		if( this.config.autostart ) {
@@ -66,11 +65,8 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.play();
 		}
 
-		
 		PB.Player.instances[this.id] = this;
 	},
-
-
 
 	destroy: function () {
 
@@ -115,10 +111,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			return;
 		}
-		
-		this.files = files.map(this.formatMediaObject);		
+
+		this.files = files.map(this.formatMediaObject);
 	},
-	
+
 	skin: function ( config ) {
 
 		if( !PB.Player.skins[ config.skin ] ) {
@@ -132,9 +128,8 @@ var PBPlayer = PB.Class(PB.Observer, {
 				js = this.skin.js,
 				cache = this.skin.cache || {};
 
-			// additional stylesheets
 			if ( css ) {
-				
+
 				css = ( PB.is('Array', css) ) ? css : [ css ];
 
 				css.forEach( function ( link ) {
@@ -143,18 +138,17 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						return;
 					}
-					
+
 					var reference = !PB(document).find('link').every( function ( current ) {
-						
+
 						if( current.attr('href').indexOf(link) > -1 ) {
 
-							// Add to cache
 							return false;
 						}
 
 						return true;
 					});
-					
+
 					if ( !reference ){
 
 						reference = PB('<link rel="stylesheet" href="' + link + '">');
@@ -165,7 +159,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 				});
 			}
 
-			// additional scrips
 			if ( js ) {
 
 				js = ( PB.is('Array', js) ) ? js : [ js ];
@@ -176,42 +169,33 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						return;
 					}
-					
+
 					var reference = !PB(document).find('script').every(function ( current ) {
-						
+
 						if( current.attr('src') && current.attr('src').indexOf(link) > -1 ) {
 
-							// Add to cache
 							return false;
 						}
 
 						return true;
 					});
-									
+
+
 					if ( !reference ){
 
 						reference = PB('<script src="' + link + '">');
-						PB(document.body).append( reference );					
+						PB(document.body).append( reference );
 					}
 
 					cache[link] = true;
 				});
-			}			
-			
+			}
+
 		}
-		
+
 	},
 
 	formatMediaObject: function ( file ) {
-
-		if ( PB.is('String', file) ){
-
-			file = {
-
-				url: file,
-				name: file
-			}
-		}
 
 		if( !file.codec ) {
 
@@ -271,7 +255,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			files = [files];
 		}
-		
 
 		files.forEach(function ( file ){
 
@@ -291,9 +274,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			}, this);
 		}, this);
 
-
 		this.emit( 'change' );
-
 	},
 
 	current: function () {
@@ -301,48 +282,45 @@ var PBPlayer = PB.Class(PB.Observer, {
 		return this.files[this.position];
 	},
 
+	/**
+	 * @todo: auto play is current is playing
+	 */
 	next: function () {
 
 		if ( this.position >= this.files.length - 1 ){
 
-			return;	
-		} 
+			return;
+		}
 
 		if ( this.plugin ) {
 
 			this.plugin.destroy();
-			delete this.plugin;			
+			delete this.plugin;
 		}
 
 		this.position++;
-
-		// this.play();
 	},
 
 	prev: function () {
 
 		if ( this.position <= 0 ) {
 
-			return;	
-		} 
+			return;
+		}
 
 		if ( this.plugin ) {
 
 			this.plugin.destroy();
-			delete this.plugin;			
+			delete this.plugin;
 		}
 
 		this.position--;
-
-		// this.play();
 	},
-
-
 
 	play: function () {
 
 		this.getPlugin();
-		
+
 		this.plugin.play();
 	},
 
@@ -395,7 +373,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 });
 
 PB.Player = function ( files, config ) {
-		
+
 	if( arguments.length == 1 ) {
 
 		config = files;
@@ -488,7 +466,7 @@ var html5 = PB.Class({
 					return false;
 				}
 			}
-		} catch (e){ console.log(e) }
+		} catch (e){}
 
 		var canPlay = audio.canPlayType( codecs[metadata.codec] );
 
@@ -517,7 +495,7 @@ var html5 = PB.Class({
 		this.element.pause();
 		this.element.src = '';
 
-		this.element.remove();
+		PB(this.element).remove();
 
 		this.element = null;
 		this.context = null;
@@ -532,7 +510,7 @@ var html5 = PB.Class({
 
 		this.element
 			.on('loadedmetadata', this.metadataLoaded.bind(this))
-			.on('error pause play volumechange ended timeupdate change', this.eventDelegation.bind(this));
+			.on('error pause play volumechange ended timeupdate', this.eventDelegation.bind(this));
 	},
 
 	metadataLoaded: function ( e ) {

@@ -68,7 +68,7 @@ var html5 = PB.Class({
 		this.element.pause();
 		this.element.src = '';
 		
-		this.element.remove();
+		PB(this.element).remove();
 
 		this.element = null;
 		this.context = null;

@@ -261,12 +261,49 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
+		
+		this.emit( 'change' );
 	},
 	
 	// Playlist helpers
 	current: function () {
 
 		return this.files[this.position];
+	},
+	
+	/**
+	 * @todo: auto play is current is playing
+	 */
+	next: function () {
+
+		if ( this.position >= this.files.length - 1 ){
+
+			return;	
+		} 
+
+		if ( this.plugin ) {
+
+			this.plugin.destroy();
+			delete this.plugin;			
+		}
+
+		this.position++;
+	},
+
+	prev: function () {
+
+		if ( this.position <= 0 ) {
+
+			return;	
+		} 
+
+		if ( this.plugin ) {
+
+			this.plugin.destroy();
+			delete this.plugin;			
+		}
+
+		this.position--;
 	},
 	
 	// Trigger events, delegation to plugins

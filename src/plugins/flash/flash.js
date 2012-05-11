@@ -99,7 +99,7 @@ var flash = PB.Class({
 	 */
 	destroy: function () {
 		
-		this.element.remove();
+		PB(this.element).remove();
 
 		this.element = null;
 		this.context = null;
