@@ -34,16 +34,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 		}
 		
 		if( config.skin ) {
-			
-			if( !PB.Player.skins[ config.skin ] ) {
-				
-				throw new Error('Skin '+config.skin+' not found');
-			} else {
-				
-				this.skin = new PB.Player.skins[ config.skin ]( this );
-			}
+
+			this.skin( config );			
 		}
-		
+
 		if( this.config.autostart ) {
 			
 			this.play();
@@ -100,6 +94,90 @@ var PBPlayer = PB.Class(PB.Observer, {
 		}
 		
 		this.files = files.map(this.formatMediaObject);
+	},
+	
+	skin: function ( config ) {
+
+		if( !PB.Player.skins[ config.skin ] ) {
+
+			throw new Error('Skin '+config.skin+' not found');
+		} else {
+
+			this.skin = new PB.Player.skins[ config.skin ]( this );
+
+			var css = this.skin.css,
+				js = this.skin.js,
+				cache = this.skin.cache || {};
+
+			// additional stylesheets
+			if ( css ) {
+				
+				css = ( PB.is('Array', css) ) ? css : [ css ];
+
+				css.forEach( function ( link ) {
+
+					if ( cache[link] ) {
+
+						return;
+					}
+					
+					var reference = !PB(document).find('link').every( function ( current ) {
+						
+						if( current.attr('href').indexOf(link) > -1 ) {
+
+							// Add to cache
+							return false;
+						}
+
+						return true;
+					});
+					
+					if ( !reference ){
+
+						reference = PB('<link rel="stylesheet" href="' + link + '">');
+						PB(document.head).append( reference );
+					}
+
+					cache[link] = true;
+				});
+			}
+
+			// additional scrips
+			if ( js ) {
+
+				js = ( PB.is('Array', js) ) ? js : [ js ];
+
+				js.forEach( function ( link ){
+
+					if ( cache[link] ) {
+
+						return;
+					}
+					
+					var reference = !PB(document).find('script').every(function ( current ) {
+						
+						if( current.attr('src') && current.attr('src').indexOf(link) > -1 ) {
+
+							// Add to cache
+							return false;
+						}
+
+						return true;
+					});
+					
+									
+					if ( !reference ){
+
+						reference = PB('<script src="' + link + '">');
+						PB(document.body).append( reference );					
+					}
+
+					cache[link] = true;
+				});
+			}			
+			
+		}
+		
 	},
 	
 	formatMediaObject: function ( file ) {
