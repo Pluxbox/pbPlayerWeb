@@ -17,9 +17,6 @@
 		
 		css: 'omroep.css',
 		
-
-
-		
 		construct: function ( player ) {
 			
 			this.player = player;
@@ -32,12 +29,8 @@
 		 */
 		init: function () {
 			
-			var player = this.player;
-			
-
-
-
-			var renderTo = this.element = $(local.html).appendTo( this.player.config.renderTo );
+			var player = this.player,
+				renderTo = this.element = $(local.html).appendTo( this.player.config.renderTo );
 			
 			this._playtime = renderTo.find('.pbplayer-elapsed')[0];
 			this._playprogress = renderTo.find('.pbplayer-bar-progress')[0];
@@ -242,6 +235,10 @@
 					break;
 				
 				case 'stop':
+					// Reset
+					this._playtime.html( local.formatTime( 0 ) );
+					this._duration.html( local.formatTime( 0 ) );
+					this._bufferbar.width( 0 );
 				case 'pause':	
 					this._playPause.removeClass('pbplayer-pause').addClass('pbplayer-play');
 					break;
@@ -307,7 +304,7 @@
 					this.player.pause();
 					break;
 
-				case 'change':					
+				case 'change':
 					this.setTitle( this.player.current().name );
 					break;
 			}

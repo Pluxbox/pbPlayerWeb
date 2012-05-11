@@ -261,14 +261,20 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
-		
-		this.emit( 'change' );
 	},
 	
 	// Playlist helpers
 	current: function () {
 
 		return this.files[this.position];
+	},
+	
+	set: function ( position ) {
+		
+		// Add range checking
+		this.position = position;
+		
+		this.emit( 'change' );
 	},
 	
 	/**
@@ -279,15 +285,16 @@ var PBPlayer = PB.Class(PB.Observer, {
 		if ( this.position >= this.files.length - 1 ){
 
 			return;	
-		} 
+		}
 
 		if ( this.plugin ) {
-
+			
+			this.stop();
 			this.plugin.destroy();
 			delete this.plugin;			
 		}
-
-		this.position++;
+		
+		this.set( this.position + 1 );
 	},
 
 	prev: function () {
@@ -298,12 +305,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 		} 
 
 		if ( this.plugin ) {
-
+			
+			this.stop();
 			this.plugin.destroy();
 			delete this.plugin;			
 		}
-
-		this.position--;
+		
+		this.set( this.position - 1 );
 	},
 	
 	// Trigger events, delegation to plugins
