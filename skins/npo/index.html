@@ -22,21 +22,34 @@
 	
 	<script type="text/javascript" charset="utf-8">
 	
-	var player = PB.Player({
-		
-		url: '/bla.mp3',
-		name: 'Ricky Louw!'
-	}, {
-		
-		skin: 'npo',
-		volume: 0
+	var player = PB.Player([
+				{
+					url: 'digital.mp3'
+					
+				},
+				{
+					url: 'fallin.mp3'
+				}
+			],{		
+			skin: 'npo',
+			volume: 40
 	});
 	
-	player.on('error', function ( e ) {
+
+	// player.on('error', function ( e ) {
 		
-		console.log( e );
-	})
-	
+	// 	console.log( e );
+	// })
+
+
+	// var player = PB.Player(['digital.mp3', 'fallin.mp3'], {
+
+	// 		skin: 'npo',
+	//  		volume: 40
+	// });
+
+
+
 	</script>
 
 </body>

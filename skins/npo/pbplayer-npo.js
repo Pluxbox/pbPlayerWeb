@@ -17,6 +17,9 @@
 		
 		css: 'omroep.css',
 		
+
+
+		
 		construct: function ( player ) {
 			
 			this.player = player;
@@ -31,6 +34,9 @@
 			
 			var player = this.player;
 			
+
+
+
 			var renderTo = this.element = $(local.html).appendTo( this.player.config.renderTo );
 			
 			this._playtime = renderTo.find('.pbplayer-elapsed')[0];
@@ -96,7 +102,8 @@
 				.on('volumechange', this._playerEvent)
 				.on('loaded', this._playerEvent)
 				.on('ended', this._playerEvent)
-				.on('duration', this._playerEvent);
+				.on('duration', this._playerEvent)
+				.on('change', this._playerEvent);
 		
 			// iPad cant adjust volume, guess iPhone either
 			if( /Mobile/.test(navigator.userAgent) ) {
@@ -298,6 +305,10 @@
 				
 				case 'ended':					
 					this.player.pause();
+					break;
+
+				case 'change':					
+					this.setTitle( this.player.current().name );
 					break;
 			}
 		},

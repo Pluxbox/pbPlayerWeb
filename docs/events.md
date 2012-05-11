@@ -17,7 +17,7 @@ loadProgress(<3.4) -> progress
 
 {
 	type: 'progress',
-	percent: int	`in percents`
+	loaded: int	`in percents`
 }
 
 load(<3.4) -> loaded
@@ -57,4 +57,11 @@ timeupdate
 	type: 'timeupdate',
 	position: float,
 	progress: float `percentage played`
+}
+
+
+change 
+
+{
+	type: 'change'
 }

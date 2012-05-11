@@ -42,6 +42,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.config = PB.overwrite(PB.overwrite({}, PB.Player.defaults), config);
 
 		this.setMedia( files );
+	
 
 		if( this.config.renderTo ) {
 
@@ -65,8 +66,11 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.play();
 		}
 
+		
 		PB.Player.instances[this.id] = this;
 	},
+
+
 
 	destroy: function () {
 
@@ -111,8 +115,8 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			return;
 		}
-
-		this.files = files.map(this.formatMediaObject);
+		
+		this.files = files.map(this.formatMediaObject);		
 	},
 	
 	skin: function ( config ) {
@@ -200,6 +204,15 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 	formatMediaObject: function ( file ) {
 
+		if ( PB.is('String', file) ){
+
+			file = {
+
+				url: file,
+				name: file
+			}
+		}
+
 		if( !file.codec ) {
 
 			var url = file.url,
@@ -258,6 +271,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			files = [files];
 		}
+		
 
 		files.forEach(function ( file ){
 
@@ -276,6 +290,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
+
+
+		this.emit( 'change' );
+
 	},
 
 	current: function () {
@@ -283,10 +301,48 @@ var PBPlayer = PB.Class(PB.Observer, {
 		return this.files[this.position];
 	},
 
+	next: function () {
+
+		if ( this.position >= this.files.length - 1 ){
+
+			return;	
+		} 
+
+		if ( this.plugin ) {
+
+			this.plugin.destroy();
+			delete this.plugin;			
+		}
+
+		this.position++;
+
+		// this.play();
+	},
+
+	prev: function () {
+
+		if ( this.position <= 0 ) {
+
+			return;	
+		} 
+
+		if ( this.plugin ) {
+
+			this.plugin.destroy();
+			delete this.plugin;			
+		}
+
+		this.position--;
+
+		// this.play();
+	},
+
+
+
 	play: function () {
 
 		this.getPlugin();
-
+		
 		this.plugin.play();
 	},
 
@@ -339,7 +395,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 });
 
 PB.Player = function ( files, config ) {
-
+		
 	if( arguments.length == 1 ) {
 
 		config = files;
@@ -432,7 +488,7 @@ var html5 = PB.Class({
 					return false;
 				}
 			}
-		} catch (e){}
+		} catch (e){ console.log(e) }
 
 		var canPlay = audio.canPlayType( codecs[metadata.codec] );
 
@@ -476,7 +532,7 @@ var html5 = PB.Class({
 
 		this.element
 			.on('loadedmetadata', this.metadataLoaded.bind(this))
-			.on('error pause play volumechange ended timeupdate', this.eventDelegation.bind(this));
+			.on('error pause play volumechange ended timeupdate change', this.eventDelegation.bind(this));
 	},
 
 	metadataLoaded: function ( e ) {
@@ -730,7 +786,7 @@ var flash = PB.Class({
 	 */
 	destroy: function () {
 
-		this.element.remove();
+		PB(this.element).remove();
 
 		this.element = null;
 		this.context = null;
