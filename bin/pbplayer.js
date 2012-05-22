@@ -5,7 +5,7 @@
  * Requires pbjs javascript framework (>= 0.5.7)
  * https://github.com/Saartje87/pbjs
  *
- * copyright 2011-1012, Pluxbox
+ * copyright 2011-2012, Pluxbox
  * MIT License
  */
 (function ( context, undefined ){
@@ -42,7 +42,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.config = PB.overwrite(PB.overwrite({}, PB.Player.defaults), config);
 
 		this.setMedia( files );
-	
+
 
 		if( this.config.renderTo ) {
 
@@ -56,9 +56,9 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.config.renderTo = script.prev() || script.next() || script.parent();
 		}
 
-		if( config.skin ) {
+		if( this.config.skin ) {
 
-			this.skin( config );			
+			this.skin( this.config );
 		}
 
 		if( this.config.autostart ) {
@@ -66,7 +66,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.play();
 		}
 
-		
+
 		PB.Player.instances[this.id] = this;
 	},
 
@@ -96,6 +96,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 				url: files
 			})];
+
 		} else if ( PB.is('Object', files) ) {
 
 			files = [this.formatMediaObject(files)];
@@ -115,15 +116,16 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			return;
 		}
-		
-		this.files = files.map(this.formatMediaObject);		
+
+		this.files = files.map(this.formatMediaObject);
 	},
-	
+
 	skin: function ( config ) {
 
 		if( !PB.Player.skins[ config.skin ] ) {
 
 			throw new Error('Skin '+config.skin+' not found');
+
 		} else {
 
 			this.skin = new PB.Player.skins[ config.skin ]( this );
@@ -134,7 +136,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			// additional stylesheets
 			if ( css ) {
-				
+
 				css = ( PB.is('Array', css) ) ? css : [ css ];
 
 				css.forEach( function ( link ) {
@@ -143,9 +145,9 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						return;
 					}
-					
+
 					var reference = !PB(document).find('link').every( function ( current ) {
-						
+
 						if( current.attr('href').indexOf(link) > -1 ) {
 
 							// Add to cache
@@ -154,10 +156,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						return true;
 					});
-					
+
 					if ( !reference ){
 
-						reference = PB('<link rel="stylesheet" href="' + link + '">');
+						reference = PB('<link rel="stylesheet" href="' + this.config.skinPath + link + '">');
 						PB(document.head).append( reference );
 					}
 
@@ -176,9 +178,9 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						return;
 					}
-					
+
 					var reference = !PB(document).find('script').every(function ( current ) {
-						
+
 						if( current.attr('src') && current.attr('src').indexOf(link) > -1 ) {
 
 							// Add to cache
@@ -187,19 +189,19 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						return true;
 					});
-									
+
 					if ( !reference ){
 
 						reference = PB('<script src="' + link + '">');
-						PB(document.body).append( reference );					
+						PB(document.body).append( reference );
 					}
 
 					cache[link] = true;
 				});
-			}			
-			
+			}
+
 		}
-		
+
 	},
 
 	formatMediaObject: function ( file ) {
@@ -271,7 +273,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 			files = [files];
 		}
-		
+
 
 		files.forEach(function ( file ){
 
@@ -305,13 +307,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 		if ( this.position >= this.files.length - 1 ){
 
-			return;	
-		} 
+			return;
+		}
 
 		if ( this.plugin ) {
 
 			this.plugin.destroy();
-			delete this.plugin;			
+			delete this.plugin;
 		}
 
 		this.position++;
@@ -323,13 +325,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 		if ( this.position <= 0 ) {
 
-			return;	
-		} 
+			return;
+		}
 
 		if ( this.plugin ) {
 
 			this.plugin.destroy();
-			delete this.plugin;			
+			delete this.plugin;
 		}
 
 		this.position--;
@@ -342,7 +344,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 	play: function () {
 
 		this.getPlugin();
-		
+
 		this.plugin.play();
 	},
 
@@ -395,7 +397,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 });
 
 PB.Player = function ( files, config ) {
-		
+
 	if( arguments.length == 1 ) {
 
 		config = files;
