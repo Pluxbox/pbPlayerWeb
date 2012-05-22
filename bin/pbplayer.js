@@ -160,7 +160,8 @@ var PBPlayer = PB.Class(PB.Observer, {
 					}
 
 					cache[link] = true;
-				});
+
+				}.bind(this));
 			}
 
 			if ( js ) {
