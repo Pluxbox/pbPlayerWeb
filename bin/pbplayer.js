@@ -47,6 +47,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 		if( this.config.renderTo ) {
 
 			this.config.renderTo = PB(this.config.renderTo);
+
 		} else {
 
 			var script = document.getElementsByTagName('script');
@@ -66,11 +67,8 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.play();
 		}
 
-
 		PB.Player.instances[this.id] = this;
 	},
-
-
 
 	destroy: function () {
 
@@ -134,7 +132,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 				js = this.skin.js,
 				cache = this.skin.cache || {};
 
-			// additional stylesheets
 			if ( css ) {
 
 				css = ( PB.is('Array', css) ) ? css : [ css ];
@@ -150,7 +147,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						if( current.attr('href').indexOf(link) > -1 ) {
 
-							// Add to cache
 							return false;
 						}
 
@@ -167,7 +163,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 				});
 			}
 
-			// additional scrips
 			if ( js ) {
 
 				js = ( PB.is('Array', js) ) ? js : [ js ];
@@ -183,7 +178,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						if( current.attr('src') && current.attr('src').indexOf(link) > -1 ) {
 
-							// Add to cache
 							return false;
 						}
 
@@ -205,15 +199,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 	},
 
 	formatMediaObject: function ( file ) {
-
-		if ( PB.is('String', file) ){
-
-			file = {
-
-				url: file,
-				name: file
-			}
-		}
 
 		if( !file.codec ) {
 
@@ -274,7 +259,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 			files = [files];
 		}
 
-
 		files.forEach(function ( file ){
 
 			PB.each(PB.Player.plugins, function ( key, plugin ) {
@@ -292,10 +276,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
-
-
-		this.emit( 'change' );
-
 	},
 
 	current: function () {
@@ -303,6 +283,16 @@ var PBPlayer = PB.Class(PB.Observer, {
 		return this.files[this.position];
 	},
 
+	set: function ( position ) {
+
+		this.position = position;
+
+		this.emit( 'change' );
+	},
+
+	/**
+	 * @todo: auto play is current is playing
+	 */
 	next: function () {
 
 		if ( this.position >= this.files.length - 1 ){
@@ -312,13 +302,12 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 		if ( this.plugin ) {
 
+			this.stop();
 			this.plugin.destroy();
 			delete this.plugin;
 		}
 
-		this.position++;
-
-		// this.play();
+		this.set( this.position + 1 );
 	},
 
 	prev: function () {
@@ -330,16 +319,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 		if ( this.plugin ) {
 
+			this.stop();
 			this.plugin.destroy();
 			delete this.plugin;
 		}
 
-		this.position--;
-
-		// this.play();
+		this.set( this.position - 1 );
 	},
-
-
 
 	play: function () {
 
@@ -490,7 +476,7 @@ var html5 = PB.Class({
 					return false;
 				}
 			}
-		} catch (e){ console.log(e) }
+		} catch (e){}
 
 		var canPlay = audio.canPlayType( codecs[metadata.codec] );
 
@@ -519,7 +505,7 @@ var html5 = PB.Class({
 		this.element.pause();
 		this.element.src = '';
 
-		this.element.remove();
+		PB(this.element).remove();
 
 		this.element = null;
 		this.context = null;
@@ -534,7 +520,7 @@ var html5 = PB.Class({
 
 		this.element
 			.on('loadedmetadata', this.metadataLoaded.bind(this))
-			.on('error pause play volumechange ended timeupdate change', this.eventDelegation.bind(this));
+			.on('error pause play volumechange ended timeupdate', this.eventDelegation.bind(this));
 	},
 
 	metadataLoaded: function ( e ) {

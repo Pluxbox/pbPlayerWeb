@@ -274,6 +274,51 @@ var PBPlayer = PB.Class(PB.Observer, {
 		return this.files[this.position];
 	},
 
+	set: function ( position ) {
+
+		// Add range checking
+		this.position = position;
+
+		this.emit( 'change' );
+	},
+
+	/**
+	 * @todo: auto play is current is playing
+	 */
+	next: function () {
+
+		if ( this.position >= this.files.length - 1 ){
+
+			return;
+		}
+
+		if ( this.plugin ) {
+
+			this.stop();
+			this.plugin.destroy();
+			delete this.plugin;
+		}
+
+		this.set( this.position + 1 );
+	},
+
+	prev: function () {
+
+		if ( this.position <= 0 ) {
+
+			return;
+		}
+
+		if ( this.plugin ) {
+
+			this.stop();
+			this.plugin.destroy();
+			delete this.plugin;
+		}
+
+		this.set( this.position - 1 );
+	},
+
 	// Trigger events, delegation to plugins
 	play: function () {
 
