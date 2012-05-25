@@ -195,6 +195,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 				});
 			}
 
+			// remove skin
+			this.skin.destroy = function() {
+
+				PB(config.renderTo).empty();
+				this.skin = null;
+			}
+
 		}
 
 	},
