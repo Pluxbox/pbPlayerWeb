@@ -31,7 +31,7 @@ Usage
 #### Embedding
 
 The simple embedding of a track can be done in one line, using the pre-defined configurations.
-Since by default no skin is defined, it will just play the audio.
+Since by default no skin is defined, the audio will be played in the background.
 
     PB.Player('http://example.com/test.mp3');
 
@@ -44,15 +44,16 @@ Even using a playlist with multiple files is simple.
 #### Player Configuration
 
 The Configuration of the player can be done in two ways: either global for all instances of the player or local for a specific one.
+Its recommended to specify the general settings for the paths global.
 
 Global (default settings)
 
     PB.Player.config({
 
     	swfPath: '/pbPlayer/bin/flex/',
-    	skin: 'skin_name'
+    	skin: 'template'
+    	skinPath: '/pbPlayer/skin/template.js'
     });
-
 
 Lokal (disregarding the defaults)
 
@@ -66,50 +67,55 @@ Lokal (disregarding the defaults)
 
 > All path values must end with a slash.
 
-- **renderTo:** <string/node>
+- **renderTo:**
 	- description: choose a target element to place the player
 	- options: - (element ID)
 	- default: none (uses the last script tag at the page)
 
-- **swfPath:** < string >
+- **swfPath:**
 	- description: specify the path of the flash files (for fallbacks)
 	- options: - (local path)
 	- default: '/pbPlayer/bin/flex/'
 
-- **skin:** <string>
+- **skin:**
 	- description: select the name of the skin (specified in the skin.js)
 	- options: - (skin name)
 	- default: none
 
-- **skinPath:** <string>
+- **skinPath:**
 	- description: specify the location of the skinName.js
 	- options:  - (local path)
 	- default: /pbPlayer/skin/yourSkinName OR none
 
-- **volume:** <number>
+- **volume:**
 	- description: the volume in percent
 	- options: 0 - 100
 	- default: 80
 
-- **autostart:** <boolean>
+- **autostart:**
 	- description: starts automaticly and play the next track in a playlist
 	- options: true or false
-	- default: true
+	- default: false
 
 
 #### Upcoming
 
-- **limit:** <boolean>
+- **limit:**
 	- description: limit to single concurrent player (stops other instances)
 	- options: true or false
 	- default: false
 
-- **repeat:** <string>
+- **position:**
+	- description: set the entrypoint of the playlist
+	- options: 0 - list.length
+	- default: 0
+
+- **repeat:**
 	- description: unlimited loops through the selection
 	- options: 'list', 'track', none
 	- default: none
 
-- **shuffle:** <boolean>
+- **shuffle:**
 	- description: randomize the order of the played tracks
 	- options: true or false
 	- default: false
@@ -141,17 +147,17 @@ Its also possible to use additional information to configure the sources.
         }
     ]);
 
-- **url:** <string>
+- **url:**
 	- description: the path of the track
 	- options: - (local path)
 	- default: none
 
-- **codec:** <string>
+- **codec:**
 	- description: the file format of the track (required if not provided by the file extension)
-	- options: MP3, OGG, ACC
+	- options: mp3, aac, ogg
 	- default: path/file.extension
 
-- **stream:** <boolean>
+- **stream:**
 	- description: recognise the resource as an audio web-stream
 	- options: true or false
 	- default: false
@@ -160,7 +166,7 @@ Its also possible to use additional information to configure the sources.
 Custom Skin
 -----------
 
-Creating your own skin for the player is straight forward. You just need to declare some HTML markup, specify the CSS and attach the events accordingly. Further details can be found in the [skins/template.js](http://github.com/pluxbox/pbPlayer/skins/test.js).
+Creating your own skin for the player is straight forward. You just need to declare some HTML markup, specify the CSS and attach the events accordingly. Further details can be found in the [skins/template.js](http://github.com/pluxbox/pbPlayer/skins/template.js).
 
 
 Compatibility
