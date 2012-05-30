@@ -67,52 +67,52 @@ Lokal (disregarding the defaults)
 > All path values must end with a slash.
 
 - **renderTo:** <string/node>
-> description: choose a target element to place the player
-> options: - (element ID)
-> default: none (uses the last script tag at the page)
+	- description: choose a target element to place the player
+	- options: - (element ID)
+	- default: none (uses the last script tag at the page)
 
-- **swfPath:** <string>
-> description: specify the path of the flash files (for fallbacks)
-> options: - (local path)
-> default: '/pbPlayer/bin/flex/'
+- **swfPath:** < string >
+	- description: specify the path of the flash files (for fallbacks)
+	- options: - (local path)
+	- default: '/pbPlayer/bin/flex/'
 
 - **skin:** <string>
-> description: select the name of the skin (specified in the skin.js)
-> options: - (skin name)
-> default: none
+	- description: select the name of the skin (specified in the skin.js)
+	- options: - (skin name)
+	- default: none
 
 - **skinPath:** <string>
-> description: specify the location of the skinName.js
->  options:  - (local path)
->  default: /pbPlayer/skin/yourSkinName OR none
+	- description: specify the location of the skinName.js
+	- options:  - (local path)
+	- default: /pbPlayer/skin/yourSkinName OR none
 
 - **volume:** <number>
-> description: the volume in percent
->  options: 0 - 100
->  default: 80
+	- description: the volume in percent
+	- options: 0 - 100
+	- default: 80
 
 - **autostart:** <boolean>
-> description: starts automaticly and play the next track in a playlist
-> options: true or false
-> default: true
+	- description: starts automaticly and play the next track in a playlist
+	- options: true or false
+	- default: true
 
 
 #### Upcoming
 
 - **limit:** <boolean>
-> description: limit to single concurrent player (stops other instances)
->  options: true or false
->  default: false
+	- description: limit to single concurrent player (stops other instances)
+	- options: true or false
+	- default: false
 
 - **repeat:** <string>
-> description: unlimited loops through the selection
-> options: 'list', 'track', none
-> default: none
+	- description: unlimited loops through the selection
+	- options: 'list', 'track', none
+	- default: none
 
 - **shuffle:** <boolean>
-> description: randomize the order of the played tracks
-> options: true or false
-> default: false
+	- description: randomize the order of the played tracks
+	- options: true or false
+	- default: false
 
 
 #### Input Configuration
@@ -142,19 +142,19 @@ Its also possible to use additional information to configure the sources.
     ]);
 
 - **url:** <string>
-> description: the path of the track
->  options: - (local path)
->  default: none
+	- description: the path of the track
+	- options: - (local path)
+	- default: none
 
 - **codec:** <string>
-> description: the file format of the track (required if not provided by the file extension)
->  options: MP3, OGG, ACC
->  default: path/file.extension
+	- description: the file format of the track (required if not provided by the file extension)
+	- options: MP3, OGG, ACC
+	- default: path/file.extension
 
 - **stream:** <boolean>
-> description: recognise the resource as an audio web-stream
->  options: true or false
->  default: false
+	- description: recognise the resource as an audio web-stream
+	- options: true or false
+	- default: false
 
 
 Custom Skin
