@@ -20,7 +20,7 @@ Features:
 
 - customizable through skins (see skin/default.js)
 
-A list of examples can be found [here](http://pbPlayer.github.com).
+A list of examples can be found [here](http://github.com/pluxbox/pbPlayer/index.html).
 
 
 Usage
@@ -28,26 +28,24 @@ Usage
 
 ### Basic Structure: PB.Player( files , *config );
 
-
 #### Embedding
 
 The simple embedding of a track can be done in one line, using the pre-defined configurations.
+Since by default no skin is defined, it will just play the audio.
 
     PB.Player('http://example.com/test.mp3');
 
 Even using a playlist with multiple files is simple.
 
-	PB.Player(['http://example.com/nice.mp3',
+    PB.Player(['http://example.com/nice.mp3',
 			   'http://example.com/nice.mp3']);
-
-@Note: Since by default no 'skin' is defined, it will just play the audio (nothing visual).
 
 
 #### Player Configuration
 
 The Configuration of the player can be done in two ways: either global for all instances of the player or local for a specific one.
 
-1. Global (default settings)
+Global (default settings)
 
     PB.Player.config({
 
@@ -55,7 +53,8 @@ The Configuration of the player can be done in two ways: either global for all i
     	skin: 'skin_name'
     });
 
-2. Lokal (disgarding defaults)
+
+Lokal (disregarding the defaults)
 
     PB.Player('http://example.com/test.mp3', {
 
@@ -63,62 +62,62 @@ The Configuration of the player can be done in two ways: either global for all i
         volume: 80
     });
 
-#### The following properties exist:
+#### Properties
 
 > All path values must end with a slash.
 
 - **renderTo:** <string/node>
 > description: choose a target element to place the player
-  options: - (element ID)
-  default: none (uses the last script tag at the page)
+> options: - (element ID)
+> default: none (uses the last script tag at the page)
 
 - **swfPath:** <string>
 > description: specify the path of the flash files (for fallbacks)
-  options: - (local path)
-  default: '/pbPlayer/bin/flex/'
+> options: - (local path)
+> default: '/pbPlayer/bin/flex/'
 
 - **skin:** <string>
 > description: select the name of the skin (specified in the skin.js)
-  options: - (skin name)
-  default: none
+> options: - (skin name)
+> default: none
 
 - **skinPath:** <string>
 > description: specify the location of the skinName.js
-  options:  - (local path)
-  default: /pbPlayer/skin/yourSkinName OR none
+>  options:  - (local path)
+>  default: /pbPlayer/skin/yourSkinName OR none
 
 - **volume:** <number>
 > description: the volume in percent
-  options: 0 - 100
-  default: 80
+>  options: 0 - 100
+>  default: 80
 
 - **autostart:** <boolean>
 > description: starts automaticly and play the next track in a playlist
-  options: true or false
-  default: true
+> options: true or false
+> default: true
 
 
-#### Upcoming properties:
+#### Upcoming
 
 - **limit:** <boolean>
 > description: limit to single concurrent player (stops other instances)
-  options: true or false
-  default: false
+>  options: true or false
+>  default: false
 
 - **repeat:** <string>
 > description: unlimited loops through the selection
-  options: 'list', 'track', none
-  default: none
+> options: 'list', 'track', none
+> default: none
 
 - **shuffle:** <boolean>
 > description: randomize the order of the played tracks
-  options: true or false
-  default: false
+> options: true or false
+> default: false
 
 
-#### Source Configuration
+#### Input Configuration
 
-Beside the player, its also possbile to use additional information to configure the source input.
+Its also possible to use additional information to configure the sources.
 
     // Single Selection (ressource evaluation)
 
@@ -131,7 +130,6 @@ Beside the player, its also possbile to use additional information to configure 
     // Different entries
 
     PB.Player([
-
         {
             url: 'http://example.com/shoutcast;nsc',
             stream: true,
@@ -145,18 +143,18 @@ Beside the player, its also possbile to use additional information to configure 
 
 - **url:** <string>
 > description: the path of the track
-  options: - (local path)
-  default: none
+>  options: - (local path)
+>  default: none
 
 - **codec:** <string>
 > description: the file format of the track (required if not provided by the file extension)
-  options: MP3, OGG, ACC
-  default: path/file.extension
+>  options: MP3, OGG, ACC
+>  default: path/file.extension
 
 - **stream:** <boolean>
 > description: recognise the resource as an audio web-stream
-  options: true or false
-  default: false
+>  options: true or false
+>  default: false
 
 
 Custom Skin
