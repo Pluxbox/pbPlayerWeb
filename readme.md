@@ -26,7 +26,7 @@ A list of examples can be found [here](http://github.com/pluxbox/pbPlayer/index.
 Usage
 -----
 
-### Basic Structure: PB.Player( files , *config );
+### Basic Structure: PB.Player( files , [config] );
 
 #### Embedding
 
@@ -143,6 +143,7 @@ Its also possible to use additional information to configure the sources.
         },
         {
             url: 'http://example.com/test',
+            name: '1337',
             codec: 'acc'
         }
     ]);
@@ -151,6 +152,11 @@ Its also possible to use additional information to configure the sources.
 	- description: the path of the track
 	- options: - (local path)
 	- default: none
+
+- **name:**
+    - description: the displayed title at the player
+    - options: - (String: name)
+    - default: none
 
 - **codec:**
 	- description: the file format of the track (required if not provided by the file extension)
