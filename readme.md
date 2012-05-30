@@ -31,7 +31,7 @@ Usage
 #### Embedding
 
 The simple embedding of a track can be done in one line, using the pre-defined configurations.
-Since by default no skin is defined, the audio will be played in the background.
+Since there is no skin defined by default, the audio will be played in the background.
 
     PB.Player('http://example.com/test.mp3');
 
@@ -185,4 +185,4 @@ License
 -------
 This project is under the MIT License.
 
-*Copyright 2011-1012, Pluxbox*
+*Copyright 2011-2012, Pluxbox*
