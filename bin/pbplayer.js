@@ -157,7 +157,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 						reference = PB('<link rel="stylesheet" href="' + this.config.skinPath + link + '">');
 
-						PB( document.getElementByTagName('HEAD')[0] ).append( reference );
+						PB( document.getElementsByTagName('HEAD')[0] ).append( reference );
 					}
 
 					cache[link] = true;
