@@ -37,17 +37,17 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.parent();
 
 		this.plugin;
+
 		this.position = 0;
 		this.id = 'pb-player-'+PB.id();
+
 		this.config = PB.overwrite(PB.overwrite({}, PB.Player.defaults), config);
 
 		this.setMedia( files );
 
-
 		if( this.config.renderTo ) {
 
 			this.config.renderTo = PB(this.config.renderTo);
-
 		} else {
 
 			var script = document.getElementsByTagName('script');
@@ -155,9 +155,12 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 					if ( !reference ){
 
-						reference = PB('<link rel="stylesheet" href="' + this.config.skinPath + link + '">');
+						var linkTag = document.createElement('link');
+						linkTag.setAttribute('rel', 'stylesheet');
+						linkTag.setAttribute('type', 'text/css');
+						linkTag.setAttribute('href', this.config.skinPath + link);
 
-						PB( document.getElementsByTagName('HEAD')[0] ).append( reference );
+						document.getElementsByTagName('head')[0].appendChild( linkTag );
 					}
 
 					cache[link] = true;
@@ -186,6 +189,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 						return true;
 					});
 
+
 					if ( !reference ){
 
 						reference = PB('<script src="' + link + '">');
@@ -196,7 +200,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 				});
 			}
 
-			// remove skin
 			this.skin.destroy = function() {
 
 				PB(config.renderTo).empty();

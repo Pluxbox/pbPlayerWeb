@@ -138,8 +138,12 @@ var PBPlayer = PB.Class(PB.Observer, {
 
 					if ( !reference ){
 
-						reference = PB('<link rel="stylesheet" href="' + this.config.skinPath + link + '">');
-						PB( document.getElementsByTagName('HEAD')[0] ).append( reference );
+						var linkTag = document.createElement('link');
+						linkTag.setAttribute('rel', 'stylesheet');
+						linkTag.setAttribute('type', 'text/css');
+						linkTag.setAttribute('href', this.config.skinPath + link);
+						
+						document.getElementsByTagName('head')[0].appendChild( linkTag );
 					}
 
 					cache[link] = true;
