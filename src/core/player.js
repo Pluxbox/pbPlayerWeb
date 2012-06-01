@@ -142,7 +142,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 						linkTag.setAttribute('rel', 'stylesheet');
 						linkTag.setAttribute('type', 'text/css');
 						linkTag.setAttribute('href', this.config.skinPath + link);
-						
+
 						document.getElementsByTagName('head')[0].appendChild( linkTag );
 					}
 
@@ -279,7 +279,21 @@ var PBPlayer = PB.Class(PB.Observer, {
 		}, this);
 	},
 
-	// Playlist helpers
+	/*
+		Destroy the current plugin and plays the index.
+	*/
+	select: function( index ) {
+
+		this.stop();
+		this.plugin.destroy();
+		delete this.plugin;
+
+		this.play( index );
+	},
+
+	/*
+		Playlist Helper
+	*/
 	current: function () {
 
 		return this.files[this.position];

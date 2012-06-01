@@ -290,6 +290,21 @@ var PBPlayer = PB.Class(PB.Observer, {
 		}, this);
 	},
 
+	/*
+		Destroy the current plugin and plays the index.
+	*/
+	select: function( index ) {
+
+		this.stop();
+		this.plugin.destroy();
+		delete this.plugin;
+
+		this.play( index );
+	},
+
+	/*
+		Playlist Helper/
+	*/
 	current: function () {
 
 		return this.files[this.position];
@@ -759,10 +774,12 @@ var flash = PB.Class({
 				if( item.args === null ) {
 
 					this[item.method].call(this);
+
 				} else {
 
 					this[item.method].call(this, Array.prototype.slice.call(item.args));
 				}
+
 			}, this);
 
 			clearTimeout( this.isLoadedTimer );
@@ -785,6 +802,8 @@ var flash = PB.Class({
 	 *
 	 */
 	destroy: function () {
+
+		clearTimeout( this.isLoadedTimer );
 
 		PB(this.element).remove();
 
