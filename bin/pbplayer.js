@@ -515,6 +515,9 @@ var html5 = PB.Class({
 	 */
 	construct: function ( context ) {
 
+		// Wrapper for Safari
+        this._play = this.play.bind(this);
+
 		this.context = context;
 
 		this.element = PB('<audio preload="metadata" />');
@@ -640,7 +643,17 @@ var html5 = PB.Class({
 	 */
 	play: function () {
 
-		this.element.play();
+        try {
+
+            this.element.currentTime = this.element.currentTime;
+
+            this.element.play();
+
+        } catch ( e ) {
+
+            setTimeout(this._play, 16.7);
+        }
+
 	},
 
 	/**
