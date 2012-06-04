@@ -6,11 +6,18 @@
 
 	local.formatTime = function ( seconds ) {
 
-
 		var date = new Date( seconds * 1000 ),
+			hours = date.getHours() - 1,
 			minutes = date.getMinutes(),
-			seconds = date.getSeconds();
-		return ( minutes < 10 ? '0': '') + minutes + ':' + ( seconds < 10 ? '0': '' ) + seconds;
+			seconds = date.getSeconds(),
+			result = '';
+
+			if ( !!hours ) {
+
+				result += hours + ':';
+			}
+
+		return result += ( minutes < 10 ? '0': '') + minutes + ':' + ( seconds < 10 ? '0': '' ) + seconds;
 	};
 
 	var npo = PB.Class({
