@@ -354,8 +354,12 @@
 
 			// Min / max
 			percent = ( percent < 0 ) ? 0 : ( percent > 100 ) ? 100 : percent;
+			
+			
+			if ( x <= this._bufferbar.width() ) {
 
-			this.player.playAt( this.duration * (percent/100) );
+				this.player.playAt( this.duration * (percent/100) );
+			}			
 		},
 
 		/**
