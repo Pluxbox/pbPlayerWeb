@@ -301,7 +301,8 @@
 					break;
 
 				case 'progress':
-
+					
+					this._bufferbar.number = args.loaded;
 					this._bufferbar.width( args.loaded +'%' );
 					break;
 
@@ -354,8 +355,14 @@
 	
 			// Min / max
 			percent = ( percent < 0 ) ? 0 : ( percent > 100 ) ? 100 : percent;
-						
-			this.player.playAt( this.duration * (percent/100) );						
+									
+			percent = percent/100;
+
+			// Temp check
+			if ( this._bufferbar.number === 100 ) {
+
+				this.player.playAt( this.duration * percent );
+			}			
 		},
 
 		/**
