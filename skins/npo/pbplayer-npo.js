@@ -346,20 +346,16 @@
 		},
 
 		progressPoint: function ( e ) {
-
+	
 			var position = this._playerbar.getXY(true),
 				width = this._playerbar.width(),
 				x = e.pageX - position.left,
 				percent = x / (width / 100);
-
+	
 			// Min / max
 			percent = ( percent < 0 ) ? 0 : ( percent > 100 ) ? 100 : percent;
-			
-			
-			if ( x <= this._bufferbar.width() ) {
-
-				this.player.playAt( this.duration * (percent/100) );
-			}			
+						
+			this.player.playAt( this.duration * (percent/100) );						
 		},
 
 		/**
