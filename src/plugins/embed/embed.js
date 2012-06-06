@@ -35,7 +35,7 @@ var flash = PB.Class({
 
 		if( PB.browser.isIE ) {
 
-			this.element = $('<object id="'+this.scope.id+'" type="audio/x-mpeg" data="'+url+'" autoplay="true" height="0" style="width: 0; height: 0;" volume="80">\
+			this.element = PB('<object id="'+this.scope.id+'" type="audio/x-mpeg" data="'+url+'" autoplay="true" height="0" style="width: 0; height: 0;" volume="80">\
 				<param name="src" value="'+url+'" />\
 				<param name="controller" value="true" />\
 				<param name="autoplay" value="true" />\
@@ -44,7 +44,7 @@ var flash = PB.Class({
 			</object>');
 		} else {
 
-			this.element = $('<embed id="'+this.scope.id+'" type="application/x-mplayer2" src="'+url+'" autostart="1" enablejavascript="true" uiMode="invisible" volume="80" style="width: 0; height: 0;"></embed>');
+			this.element = PB('<embed id="'+this.scope.id+'" type="application/x-mplayer2" src="'+url+'" autostart="1" enablejavascript="true" uiMode="invisible" volume="80" style="width: 0; height: 0;"></embed>');
 		}
 
 		this.element = this.element.appendTo(document.body).node;
