@@ -303,7 +303,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 	},
 
 	/*
-		Playlist Helper/
+		Playlist Helper
 	*/
 	current: function () {
 
@@ -503,6 +503,7 @@ var html5 = PB.Class({
 					return false;
 				}
 			}
+
 		} catch (e){}
 
 		var canPlay = audio.canPlayType( codecs[metadata.codec] );
@@ -515,7 +516,6 @@ var html5 = PB.Class({
 	 */
 	construct: function ( context ) {
 
-		// Wrapper for Safari
         this._play = this.play.bind(this);
 
 		this.context = context;
@@ -582,7 +582,7 @@ var html5 = PB.Class({
 
 			this.context.emit('progress', {
 
-				percent: Math.floor((buffered.end(0) / element.duration) * 100)
+				loaded: Math.floor((buffered.end(0) / element.duration) * 100)
 			});
 		}
 
@@ -591,7 +591,7 @@ var html5 = PB.Class({
 
 			this.context.emit('progress', {
 
-				percent: 100
+				loaded: 100
 			});
 
 			this.context.emit('loaded');

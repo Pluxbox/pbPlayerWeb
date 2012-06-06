@@ -120,7 +120,7 @@ var html5 = PB.Class({
 
 			this.context.emit('progress', {
 
-				percent: Math.floor((buffered.end(0) / element.duration) * 100)
+				loaded: Math.floor((buffered.end(0) / element.duration) * 100)
 			});
 		}
 
@@ -129,7 +129,7 @@ var html5 = PB.Class({
 
 			this.context.emit('progress', {
 
-				percent: 100
+				loaded: 100
 			});
 
 			this.context.emit('loaded');
