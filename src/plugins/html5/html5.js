@@ -102,9 +102,14 @@ var html5 = PB.Class({
 	progress: function ( e ) {
 
 		var element = this.element,
-			error = element.error,
-			buffered = element.buffered;
-
+			error = element ? element.error : null,
+			buffered = element ? element.buffered : null;
+		
+		if( !element ) {
+		
+			return;
+		}
+		
 		if( error !== null ) {
 
 			this.context.emit('error', {

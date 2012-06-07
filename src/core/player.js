@@ -287,8 +287,13 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.stop();
 		this.plugin.destroy();
 		delete this.plugin;
-
-		this.play( index );
+		
+		// Change position
+		this.position = index;
+		
+		this.emit( 'change' );
+		
+		this.play();
 	},
 
 	/*
@@ -297,14 +302,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 	current: function () {
 
 		return this.files[this.position];
-	},
-
-	set: function ( position ) {
-
-		// Add range checking
-		this.position = position;
-
-		this.emit( 'change' );
 	},
 
 	/**

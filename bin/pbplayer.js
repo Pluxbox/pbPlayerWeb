@@ -1,5 +1,5 @@
 /*!
- * pbPlayer v3.4.0
+ * pbPlayer v3.4.1
  * https://github.com/Pluxbox/pbPlayer
  *
  * Requires pbjs javascript framework (>= 0.5.7)
@@ -27,7 +27,7 @@ var PB = context.PB,
 
 var PBPlayer = PB.Class(PB.Observer, {
 
-	VERSION: '3.4.0',
+	VERSION: '3.4.1',
 
 	/**
 	 *
@@ -299,7 +299,11 @@ var PBPlayer = PB.Class(PB.Observer, {
 		this.plugin.destroy();
 		delete this.plugin;
 
-		this.play( index );
+		this.position = index;
+
+		this.emit( 'change' );
+
+		this.play();
 	},
 
 	/*
@@ -308,13 +312,6 @@ var PBPlayer = PB.Class(PB.Observer, {
 	current: function () {
 
 		return this.files[this.position];
-	},
-
-	set: function ( position ) {
-
-		this.position = position;
-
-		this.emit( 'change' );
 	},
 
 	/**
@@ -564,8 +561,13 @@ var html5 = PB.Class({
 	progress: function ( e ) {
 
 		var element = this.element,
-			error = element.error,
-			buffered = element.buffered;
+			error = element ? element.error : null,
+			buffered = element ? element.buffered : null;
+
+		if( !element ) {
+
+			return;
+		}
 
 		if( error !== null ) {
 
