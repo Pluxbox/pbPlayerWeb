@@ -645,6 +645,11 @@ var html5 = PB.Class({
 	 */
 	play: function () {
 
+		if ( navigator.userAgent.match(/(iPhone)|(iPad)/) ){
+
+			this.element.play();
+		}
+
         try {
 
             this.element.currentTime = this.element.currentTime;

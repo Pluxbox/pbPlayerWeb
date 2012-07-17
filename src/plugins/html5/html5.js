@@ -104,12 +104,12 @@ var html5 = PB.Class({
 		var element = this.element,
 			error = element ? element.error : null,
 			buffered = element ? element.buffered : null;
-		
+
 		if( !element ) {
-		
+
 			return;
 		}
-		
+
 		if( error !== null ) {
 
 			this.context.emit('error', {
@@ -187,6 +187,11 @@ var html5 = PB.Class({
 	 *
 	 */
 	play: function () {
+
+		if ( navigator.userAgent.match(/(iPhone)|(iPad)/) ){
+
+			this.element.play();
+		}
 
         try {
 
