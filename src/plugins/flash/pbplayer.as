@@ -33,6 +33,8 @@ package {
 		
 		private var position:Number = 0;
 		private var volumeLvl:Number = 0;
+		// For calculated duration in load pregress event
+		private var duration:Number = 0;
 		
 		private var timeupdateTimer:Timer = new Timer( 333, 0 );
 		
@@ -47,7 +49,7 @@ package {
 			
 			flash.system.Security.allowDomain('*');
 			
-			debug("PB.Player Flex, V3.3.0");
+			debug("PB.Player Flex, V3.4.0");
 			
 			addGlobalEvents();
 		}
@@ -111,7 +113,7 @@ package {
 			callPBArg('timeupdate', {
 				
 				position: audio.position / 1000,
-				progress: (audio.position*(100 / sound.length)) || 0
+				progress: (audio.position*(100 / duration)) || 0
 			});
 		}
 		
@@ -212,7 +214,7 @@ package {
 			callPBArg('timeupdate', {
 				
 				position: position / 1000,
-				progress: audio.position*(100 / sound.length)
+				progress: audio.position*(100 / duration)
 			});
 		}
 		
@@ -274,9 +276,12 @@ package {
 				
 				loaded: 100
 			});
+			
+			duration = sound.bytesTotal / (sound.bytesLoaded/sound.length);
+			
 			callPBArg('duration', {
 				
-				length: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+				length: duration / 1000
 			});
         }
 
@@ -311,9 +316,11 @@ package {
 				return;
 			}
 			
+			duration = sound.bytesTotal / (sound.bytesLoaded/sound.length);
+			
 			callPBArg('duration', {
 				
-				length: (sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000
+				length: duration / 1000
 			});
         }
 
