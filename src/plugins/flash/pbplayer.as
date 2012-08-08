@@ -67,6 +67,7 @@ package {
 			ExternalInterface.addCallback('_stop', stop);
 			ExternalInterface.addCallback('_playAt', playAt);
 			ExternalInterface.addCallback('_volume', setVolume);
+			ExternalInterface.addCallback('_close', close);
 			
 			// Add timer callback
 			timeupdateTimer.addEventListener(TimerEvent.TIMER, timeupdate);
@@ -105,6 +106,17 @@ package {
 		//	sound.addEventListener(Event.ID3, id3Handler);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			sound.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+		}
+		
+		/**
+		 * 
+		 */
+		public function close ():void {
+			
+			if( sound ) {
+				
+				sound.close();
+			}
 		}
 		
 		public function timeupdate (event:Event):void {
@@ -277,7 +289,7 @@ package {
 				loaded: 100
 			});
 			
-			duration = sound.bytesTotal / (sound.bytesLoaded/sound.length);
+			duration = sound.length;
 			
 			callPBArg('duration', {
 				
