@@ -20,7 +20,7 @@ Features:
 
 - customizable through skins (see skin/default.js)
 
-A list of examples can be found [here](http://github.com/pluxbox/pbPlayer/index.html).
+A list of examples can be found [here](http://github.com/pluxbox/pbPlayer/example.html).
 
 
 Usage
