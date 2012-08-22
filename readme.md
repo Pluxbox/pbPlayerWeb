@@ -20,7 +20,7 @@ Features:
 
 - customizable through skins (see skin/default.js)
 
-A list of examples can be found [here](http://github.com/pluxbox/pbPlayer/example.html).
+A list of examples can be found [here](https://github.com/Pluxbox/pbPlayer/blob/master/example.html).
 
 
 Usage
@@ -172,7 +172,7 @@ Its also possible to use additional information to configure the sources.
 Custom Skin
 -----------
 
-Creating your own skin for the player is straight forward. You just need to declare some HTML markup, specify the CSS and attach the events accordingly. Further details can be found in the [skins/template.js](http://github.com/pluxbox/pbPlayer/skins/template.js).
+Creating your own skin for the player is straight forward. You just need to declare some HTML markup, specify the CSS and attach the events accordingly. Further details can be found in the [skins/template.js](https://github.com/Pluxbox/pbPlayer/blob/master/skins/template.js).
 
 
 Compatibility
