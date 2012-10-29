@@ -49,7 +49,7 @@ package {
 			
 			flash.system.Security.allowDomain('*');
 			
-			debug("PB.Player Flex Stream, V3.3.0");
+			debug("PB.Player Flex Stream, V3.4.0");
 			
 			addGlobalEvents();
 		}
@@ -63,7 +63,7 @@ package {
 			
 			ExternalInterface.addCallback('_src', setFile);
 			ExternalInterface.addCallback('_play', play);
-			ExternalInterface.addCallback('_pause', pause);
+			ExternalInterface.addCallback('_pause', stop);
 			ExternalInterface.addCallback('_stop', stop);
 			ExternalInterface.addCallback('_playAt', playAt);
 			ExternalInterface.addCallback('_volume', setVolume);
@@ -261,11 +261,16 @@ package {
 			
 			position = 0;
 			audio.stop();
+			sound.close();
 			setFile( audioURL, false );
 			
 			streamTimer.stop();
 			
-			callPBArg('timeupdate', '0');
+			callPBArg('timeupdate', {
+				
+				position: 0,
+				progress: 0
+			});
 			callPB('stop');
 		}
 		
@@ -278,7 +283,11 @@ package {
 			position = seconds * 1000;
 			play();
 			
-			callPBArg('timeupdate', (position / 1000).toString());
+			callPBArg('timeupdate', {
+				
+				position: position / 1000,
+				progress: 0
+			});
 		}
 		
 		/**
@@ -299,7 +308,10 @@ package {
 			transform.volume = volume;
 			audio.soundTransform = transform;
 			
-			callPBArg('volumechange', (volume*100).toString());
+			callPBArg('volumechange', {
+				
+				volume: volume*100
+			});
 		}
 		
 		/**
@@ -307,12 +319,12 @@ package {
 		 */
 		public function callPB ( type:String ):void {
 			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.emit', type);
+			ExternalInterface.call('PB.Player.instances["'+pbPlayerId+'"].emit', type);
 		}
 		
-		public function callPBArg ( type:String, arg:String ):void {
+		public function callPBArg ( type:String, arg:Object ):void {
 			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.emit', type, [arg]);
+			ExternalInterface.call('PB.Player.instances["'+pbPlayerId+'"].emit', type, arg);
 		}
 		
 		/**
@@ -330,13 +342,19 @@ package {
 		
 		private function completeHandler(event:Event):void {
 			
-			callPBArg('loadProgress', '100');
+			callPBArg('progress', {
+				
+				loaded: 100
+			});
         }
 
         private function ioErrorHandler(event:Event):void {
 
 			debug("File not found: "+audioURL);
-			callPBArg('error', 'Failed to load fle');
+			callPBArg('error', {
+				
+				message: 'Failed to load file'
+			});
         }
 
         private function progressHandler(event:ProgressEvent):void {
