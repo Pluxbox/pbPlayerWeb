@@ -4,6 +4,7 @@ var html5 = PB.Class({
 
 		mp3: 'audio/mpeg; codecs="mp3"',
 		ogg: 'audio/ogg; codecs="vorbis"',
+		opus: 'audio/ogg; codecs="opus"',
 	//	wav: 'audio/wav; codecs="1"',		// deprecated
 		aac: 'audio/aac; codecs="aac"'
 	},
