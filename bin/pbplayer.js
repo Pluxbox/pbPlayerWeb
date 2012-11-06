@@ -250,9 +250,9 @@ var PBPlayer = PB.Class(PB.Observer, {
 		var me = this,
 			e = PB.overwrite({
 
-			type: type,
-			target: me
-		}, data);
+				type: type,
+				target: me
+			}, data);
 
 		this.parent( type, e );
 	},
@@ -575,7 +575,7 @@ var html5 = PB.Class({
 			this.context.emit('error', {
 
 				code: this.element.error,
-				message: this.NETWORK_ERROR[this.element.error]
+				message: this.NETWORK_ERROR[error]
 			});
 
 			return;

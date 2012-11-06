@@ -238,10 +238,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 		var me = this,
 			e = PB.overwrite({
 
-			type: type,
-			target: me
-		}, data);
-
+				type: type,
+				target: me
+			}, data);
+		
 		this.parent( type, e );
 	},
 

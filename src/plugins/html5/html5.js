@@ -116,7 +116,7 @@ var html5 = PB.Class({
 			this.context.emit('error', {
 
 				code: this.element.error,
-				message: this.NETWORK_ERROR[this.element.error]
+				message: this.NETWORK_ERROR[error]
 			});
 
 			return;
