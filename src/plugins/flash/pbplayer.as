@@ -368,7 +368,7 @@ package {
 			
 			callPBArg('progress', {
 				
-				loaded: (event.bytesLoaded / event.bytesTotal) * 100
+				loaded: Math.max( Math.min(100, (((event.bytesLoaded / event.bytesTotal)*100) * pseudestreamStartPercent)+(pseudestreamStartPercent*100)), (event.bytesLoaded / event.bytesTotal)*100 )
 			});
 			
 			if( isNaN((sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000) ) {

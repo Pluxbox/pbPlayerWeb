@@ -69,8 +69,8 @@
 							 -->\
 							<div class="bar-holder">\
 								<div class="bar-holder processing" style="width: 0%;">\
-									<div class="bar"><a href="#" class="dragger"></a></div>\
 								</div>\
+								<div class="bar"><a href="#" class="dragger"></a></div>\
 							</div>\
 						</div>\
 						<!-- progress bar stop  -->\
@@ -129,8 +129,8 @@
 			this.elTime = element.find('div.time-holder')[0].first();
 			this.elDuration = element.find('div.time-holder')[0].last();
 			this.elProgressContainer = element.find('div.bar-holder')[0];
-			this.elLoaded = element.find('.bar-holder.processing')[0];
-			this.elProgress = element.find('div.progress > .bar-holder > .bar-holder > .bar')[0];
+			this.elLoaded = element.find('div.bar-holder.processing')[0];
+			this.elProgress = element.find('div.progress > .bar-holder > .bar')[0];
 			this.elProgressHandler = this.elProgress.first();
 			this.elLoudness = element.find('div.loudness')[0];
 			this.elLoudnessHandler = this.elLoudness.first();
@@ -188,7 +188,6 @@
 				case 'ended':
 					this.context.stop();
 					break;
-				
 				case 'pause':
 				case 'stop':
 					this.elAction.removeClass('control-pause control-stop').addClass('control-play');
@@ -236,7 +235,8 @@
 					break;
 				
 				case 'progress':
-					this.elLoaded.width( e.percent+'%' );
+			//	e.loaded = 100;
+					this.elLoaded.width( e.loaded+'%' );
 					break;
 				
 				case 'loaded':
