@@ -18,9 +18,9 @@ package {
 	
 	
 	public class pbplayer extends Sprite {
+		
+//	private var log:Boolean = true;
 
-	//	private var audioURL:String = "http://shoutcast.omroep.nl:8248/;stream.nsv";
-	//	private var audioURL:String = "http://ics2css.omroep.nl/3fm-bb.mp3?q=/npo/mp3/3fm-bb.pls";
 		private var audioURL:String;
 		private var pbPlayerId:String;
 		
@@ -33,14 +33,22 @@ package {
 		
 		private var position:Number = 0;
 		private var volumeLvl:Number = 0;
-		// For calculated duration in load pregress event
+		// For calculated duration in load progress event
 		private var duration:Number = 0;
 		
 		private var timeupdateTimer:Timer = new Timer( 333, 0 );
 		
-		private var bufferTime:Number = 5;	// In seconds
-		
 		private var progressTrottle:Number = 0;
+		
+		// Pseudo-streaming
+		
+		// Keep track of milliseconds that are in buffer
+		private var streamBuffer:Object = {start: 0, end: 0};
+		private var filesize:Number = 0;
+		// Bytes from request is started
+		private var pseudestreamStart:Number = 0;
+		private var pseudestreamStartPercent:Number = 0;
+		private var skipTime:Number = 0;
 		
 		/**
 		 * Constructor
@@ -96,14 +104,23 @@ package {
 			
 			audioURL = src;
 			
-			request = new URLRequest( audioURL );
+			audioLoaded = false;
+			
+			resetPseudostream();
+			
+			connect();
+		}
+		
+		private function connect ():void {
 			
 			audioLoaded = false;
+			
+			// Change offset to start
+			request = new URLRequest( audioURL+(pseudestreamStart ? (audioURL.indexOf('?') ? '?' : ':')+'offset='+pseudestreamStart : '') );
 			
 			sound = new Sound;
 			
 			sound.addEventListener(Event.COMPLETE, completeHandler);
-		//	sound.addEventListener(Event.ID3, id3Handler);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			sound.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 		}
@@ -113,10 +130,17 @@ package {
 		 */
 		public function close ():void {
 			
-			if( sound ) {
-				
+			isPlaying = false;
+			position = 0;
+			
+			audio.stop();
+			
+			timeupdateTimer.stop();
+			
+			try {
+
 				sound.close();
-			}
+			} catch(e:Error) {}
 		}
 		
 		public function timeupdate (event:Event):void {
@@ -124,8 +148,8 @@ package {
 			position = audio.position;
 			callPBArg('timeupdate', {
 				
-				position: audio.position / 1000,
-				progress: (audio.position*(100 / duration)) || 0
+				position: (skipTime + audio.position) / 1000,
+				progress: ((skipTime + audio.position)*(100 / duration)) || 0
 			});
 		}
 		
@@ -140,10 +164,7 @@ package {
 				
 				audioLoaded = true;
 				
-				debug('bufferTime: '+bufferTime.toString()+'s');
-				var slc:SoundLoaderContext = new SoundLoaderContext( bufferTime*1000, false );
-				
-				sound.load( request, slc );
+				sound.load( request );
 			}
 			
 			if( isPlaying === true ) {
@@ -199,12 +220,7 @@ package {
 				return;
 			}
 			
-			isPlaying = false;
-			
-			position = 0;
-			audio.stop();
-			
-			timeupdateTimer.stop();
+			close();
 			
 			callPBArg('timeupdate', {
 				
@@ -220,13 +236,38 @@ package {
 		public function playAt ( seconds:Number ):void {
 			
 			pause();
+			
+			// New position
 			position = seconds * 1000;
+			
+			// Handle unbuffered content
+			if( !(position > streamBuffer.start && position < streamBuffer.end) ) {
+				
+				debug("Not in buffer!");
+				
+				pseudestreamStart = Math.floor(((position*(100 / duration)) / 100) * filesize);
+				pseudestreamStartPercent = ((pseudestreamStart / filesize) || 0);
+				skipTime = duration * pseudestreamStartPercent;
+
+				streamBuffer.start = position;
+				streamBuffer.end = position;
+				
+				// Start playing form zero seconds
+				position = 0;
+
+				close();
+				connect();
+			} else {
+				
+				position = (seconds * 1000) - skipTime;
+			}
+			
 			play();
 			
 			callPBArg('timeupdate', {
 				
-				position: position / 1000,
-				progress: audio.position*(100 / duration)
+				position: (skipTime + position) / 1000,
+				progress: ((skipTime + audio.position)*(100 / duration)) || 0
 			});
 		}
 		
@@ -289,12 +330,18 @@ package {
 				loaded: 100
 			});
 			
-			duration = sound.length;
+			// Setting end of streamBuffer
+			streamBuffer.end = streamBuffer.start + sound.length;
 			
-			callPBArg('duration', {
+			if( !pseudestreamStart ) {
 				
-				length: duration / 1000
-			});
+				duration = sound.length;
+
+				callPBArg('duration', {
+
+					length: duration / 1000
+				});
+			}
         }
 
         private function ioErrorHandler(event:Event):void {
@@ -310,7 +357,8 @@ package {
 
         private function progressHandler(event:ProgressEvent):void {
 		
-			// Flash fires like a trilion progress events each second
+			// Flash fires like a trilion progress events each second so throttle
+			// the progress event to ~3 event per second
 			if( (progressTrottle + 300) > (new Date()).getTime() ) {
 				
 				return;
@@ -328,7 +376,16 @@ package {
 				return;
 			}
 			
-			duration = sound.bytesTotal / (sound.bytesLoaded/sound.length);
+			if( !pseudestreamStart ) {
+			
+				filesize = sound.bytesTotal;
+				duration = filesize / (sound.bytesLoaded/sound.length);
+			}
+			
+			// Setting end of streamBuffer
+			streamBuffer.end = streamBuffer.start + sound.length;
+			
+//			debug( streamBuffer.start+' '+streamBuffer.end );
 			
 			callPBArg('duration', {
 				
@@ -339,10 +396,25 @@ package {
 		private function soundCompleteHandler(event:Event):void {
 			
 			position = 0;
+			// Reset pseudo stream vars
+			pseudestreamStart = 0;
+			pseudestreamStartPercent = 0;
+			skipTime = 0;
+			
 			audio.stop();
 			timeupdateTimer.stop();
 			
 			callPB('ended');
+		}
+		
+		private function resetPseudostream ():void {
+			
+			// Reset pseudo stream vars
+			pseudestreamStart = 0;
+			pseudestreamStartPercent = 0;
+			skipTime = 0;
+			streamBuffer.start = 0;
+			streamBuffer.end = 0;
 		}
 	}
 }
