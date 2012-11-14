@@ -307,7 +307,7 @@
 					break;
 
 				case 'ended':
-					this.player.pause();
+					this.player.stop();
 					break;
 
 				case 'change':
