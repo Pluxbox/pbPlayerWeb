@@ -288,6 +288,12 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
+		
+		if( !this.plugin ) {
+			
+			this.next();
+			this.getPlugin();
+		}
 	},
 
 	/*
@@ -330,8 +336,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.plugin.destroy();
 			delete this.plugin;
 		}
+		
+		this.position += 1;
 
-		this.set( this.position + 1 );
+	//	this.set( this.position + 1 );
 	},
 
 	prev: function () {
@@ -347,8 +355,10 @@ var PBPlayer = PB.Class(PB.Observer, {
 			this.plugin.destroy();
 			delete this.plugin;
 		}
+		
+		this.position -= 1;
 
-		this.set( this.position - 1 );
+	//	this.set( this.position - 1 );
 	},
 
 	play: function () {
