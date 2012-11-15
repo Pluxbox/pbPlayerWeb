@@ -61,7 +61,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			try {
 				
 				this.skin.destroy();
-			} catch () {}
+			} catch () {};
 			this.skin = null;
 		}
 
@@ -324,7 +324,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			delete this.plugin;
 		}
 
-		this.set( this.position + 1 );
+		this.position += 1;
 	},
 
 	prev: function () {
@@ -341,7 +341,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			delete this.plugin;
 		}
 
-		this.set( this.position - 1 );
+		this.position -= 1;
 	},
 
 	// Trigger events, delegation to plugins
