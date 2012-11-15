@@ -61,7 +61,7 @@ var PBPlayer = PB.Class(PB.Observer, {
 			try {
 				
 				this.skin.destroy();
-			} catch () {};
+			} catch (e) {};
 			this.skin = null;
 		}
 
