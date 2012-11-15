@@ -536,7 +536,10 @@ var html5 = PB.Class({
 		this.element.pause();
 		this.element.src = '';
 
-		PB(this.element).remove();
+		if( PB(this.element) ) {
+
+			PB(this.element).remove();
+		}
 
 		this.element = null;
 		this.context = null;
@@ -829,7 +832,10 @@ var flash = PB.Class({
 
 		clearTimeout( this.isLoadedTimer );
 
-		PB(this.element).remove();
+		if( PB(this.element) ) {
+
+			PB(this.element).remove();
+		}
 
 		this.element = null;
 		this.context = null;
