@@ -533,10 +533,10 @@ var html5 = PB.Class({
 	 */
 	destroy: function () {
 
-		this.element.pause();
-		this.element.src = '';
+		if( this.element && PB(this.element) ) {
 
-		if( PB(this.element) ) {
+			this.element.pause();
+			this.element.src = '';
 
 			PB(this.element).remove();
 		}
