@@ -70,10 +70,10 @@ var html5 = PB.Class({
 	 */
 	destroy: function () {
 
-		this.element.pause();
-		this.element.src = '';
-		
-		if( PB(this.element) ) {
+		if( this.element && PB(this.element) ) {
+			
+			this.element.pause();
+			this.element.src = '';
 			
 			PB(this.element).remove();
 		}
