@@ -27,20 +27,29 @@
 	
 	var player = PB.Player({
 		
-		url: '/bla.mp3',
-		name: 'Slipknot - Psycho!'
+		url: 'http://radiobox2.omroep.nl/broadcaststream/file/150851.mp3',
+		codec: 'mp3',
+		name: 'Radiobox fragment',
+		//pseusostream: true			// (Not needed) Flash only! Add start=[bytes] to skip in file
+		//stream: true
 	}, {
 		
-		autostart: false,
+		autostart: true,
 	//	renderTo: 'pbplayer',
 		skin: 'Pluxbox',
 		volume: 0
+	//	stream: true
 	});
 	
 	player.on('error', function ( e ) {
 		
 		console.log( e );
 	})
+	
+	player.on('timeupdate', function ( e ) {
+		
+	//	console.log( e );
+	});
 	
 	</script>
 
