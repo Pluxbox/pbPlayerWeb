@@ -1,5 +1,5 @@
 /*!
- * pbPlayer v3.4.1
+ * pbPlayer v3.4.2
  * https://github.com/Pluxbox/pbPlayer
  *
  * Requires pbjs javascript framework (>= 0.5.7)
@@ -490,14 +490,13 @@ var html5 = PB.Class({
 			return false;
 		}
 
-		var audio = new window.Audio,
-			ogg = ('no' != audio.canPlayType(codecs.ogg)) && ('' != audio.canPlayType(codecs.ogg)),
-			mp3 = ('no' != audio.canPlayType(codecs.mp3)) && ('' != audio.canPlayType(codecs.mp3)),
-			aac = ('no' != audio.canPlayType(codecs.aac)) && ('' != audio.canPlayType(codecs.aac));
+		var audio = new window.Audio;
 
+		// Safari 4 issues
 		try {
 
-			if( PB.browser.isSafari && !PB.browser.isNokiaBrowser ) {
+			// Desktop safari fails playing audio before version 5
+			if( PB.browser.isSafari && navigator.userAgent.indexOf('Mobile') === -1 ) {
 
 				if( PB.browser.version <= 5.0 ) {
 
