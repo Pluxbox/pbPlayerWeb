@@ -226,14 +226,15 @@ var html5 = PB.Class({
 	 */
 	stop: function () {
 
-		var src = this.element.src;
+		// Do not reset src, on iPad3 this will trigger an autoplay..
+		//var src = this.element.src;
 
 		this.element.pause();
-		this.element.src = '';
+		//this.element.src = '';
 
 		try { this.element.currentTime = 0; } catch (e){};
 
-		this.element.src = src;
+		//this.element.src = src;
 
 		this.context.emit('stop');
 	},

@@ -682,14 +682,9 @@ var html5 = PB.Class({
 	 */
 	stop: function () {
 
-		var src = this.element.src;
-
 		this.element.pause();
-		this.element.src = '';
 
 		try { this.element.currentTime = 0; } catch (e){};
-
-		this.element.src = src;
 
 		this.context.emit('stop');
 	},
