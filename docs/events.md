@@ -71,7 +71,8 @@ timeupdate
 
 
 change 
-
+```js
 {
 	type: 'change'
 }
+```
