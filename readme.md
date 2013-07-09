@@ -55,7 +55,7 @@ Global (default settings)
 ```js
 PB.Player.config({
 
-    swfPath: '/pbPlayer/dist/containers/',
+    containerPath: '/pbPlayer/dist/containers/',
     skin: 'default',
     volume: 100
 });
@@ -73,33 +73,23 @@ PB.Player({
 
 > All path values must end with a slash.
 
-- **renderTo:**
-	- description: choose a target element to place the player
-	- options: - (element ID)
-	- default: none (uses the last script tag at the page)
-
-- **swfPath:**
-	- description: specify the path of the flash files (for fallbacks)
+- **containerPath:**
+	- description: specify the path of the container files (for example swf files)
 	- options: - (local path)
-	- default: '/pbPlayer/bin/flex/'
+	- default: '/pbPlayer/dist/.../'
 
 - **skin:**
-	- description: select the name of the skin (specified in the skin.js)
+	- description: select the name of the skin
 	- options: - (skin name)
 	- default: none
 
-- **skinPath:**
-	- description: specify the location of the skinName.js
-	- options:  - (local path)
-	- default: /pbPlayer/skin/yourSkinName OR none
-
 - **volume:**
-	- description: the volume in percent
+	- description: the volume in percentage
 	- options: 0 - 100
 	- default: 80
 
 - **autostart:**
-	- description: starts automaticly and play the next track in a playlist
+	- description: start playing when audiofile starts automaticly and play the next track in a playlist
 	- options: true or false
 	- default: false
 
