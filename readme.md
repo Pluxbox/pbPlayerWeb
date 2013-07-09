@@ -46,6 +46,18 @@ pbplayer.addMedia({
 });
 ```
 
+Using pbPlayer with a skin
+
+```js
+var pbplayer = new PB.Player(document.getElementById('element'), /* options */);
+```
+
+Using pbPlayer as pbjs / jQuery plugin
+
+```js
+PB.$('#element').pbplayer(/* options */);
+```
+
 #### Player Configuration
 
 The Configuration of the player can be done in two ways: either global for all instances of the player or local for a specific one.
@@ -93,82 +105,25 @@ PB.Player({
 	- options: true or false
 	- default: false
 
+#### Media configuration
 
-#### Upcoming
+When adding media object a few more options can be specified to make sure pbPlayer makes a correct choose to specify which container should play the given media. In the example below the given file is a live stream, so we specifed `stream: true` so the file will now be handled by a container which handles streams. Also all information set here is avaible for the skin, so the title can now be used as display name.
 
-- **limit:**
-	- description: limit to single concurrent player (stops other instances)
-	- options: true or false
-	- default: false
+It's possible to specify multiple sources which helpes you to play audio across platform / device. This is done by key value, where key is the audio type (mp3/ogg/...) and the value is the path to the audio file.
 
-- **position:**
-	- description: set the entrypoint of the playlist
-	- options: 0 - list.length
-	- default: 0
-
-- **repeat:**
-	- description: unlimited loops through the selection
-	- options: 'list', 'track', none
-	- default: none
-
-- **shuffle:**
-	- description: randomize the order of the played tracks
-	- options: true or false
-	- default: false
-
-
-#### Input Configuration
-
-Its also possible to use additional information to configure the sources.
-
-    // Single Selection (ressource evaluation)
-
-     PB.Player({
-
-        url: 'files/example, files/example.acc, example.mp3',
-        codec: 'ogg'
-    });
-
-    // Different entries
-
-    PB.Player([
-        {
-            url: 'http://example.com/shoutcast;nsc',
-            stream: true,
-    	    codec: 'mp3'
-        },
-        {
-            url: 'http://example.com/test',
-            name: '1337',
-            codec: 'acc'
-        }
-    ]);
-
-- **url:**
-	- description: the path of the track
-	- options: - (local path)
-	- default: none
-
-- **name:**
-    - description: the displayed title at the player
-    - options: - (String: name)
-    - default: none
-
-- **codec:**
-	- description: the file format of the track (required if not provided by the file extension)
-	- options: mp3, aac, ogg
-	- default: path/file.extension
-
-- **stream:**
-	- description: recognise the resource as an audio web-stream
-	- options: true or false
-	- default: false
-
+```js
+pbplayer.addMedia({
+	
+	title: "foo bar",
+	mp3: "/foo.mp3",
+	stream: true
+});
+```
 
 Custom Skin
 -----------
 
-Creating your own skin for the player is straight forward. You just need to declare some HTML markup, specify the CSS and attach the events accordingly. Further details can be found in the [skins/template.js](https://github.com/Pluxbox/pbPlayer/blob/master/skins/template.js).
+Creating your own skin for the player is straight forward. You just need to declare some HTML markup and specify some CSS. Further details can be found in the [skins/template.js](...).
 
 
 Compatibility
@@ -185,6 +140,25 @@ Compatibility
 
 License
 -------
-This project is under the MIT License.
+ Copyright (c) 2013 Pluxbox
 
-*Copyright 2011-2012, Pluxbox*
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation
+ files (the "Software"), to deal in the Software without
+ restriction, including without limitation the rights to use,
+ copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following
+ conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ OTHER DEALINGS IN THE SOFTWARE.
