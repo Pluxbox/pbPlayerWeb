@@ -15,17 +15,16 @@ error
 }
 ```
 
-loadProgress(<3.4) -> progress
+loadProgress(\<3.4) -> progress
 ```js
 {
 	type: 'progress',
-	loaded: int	`in percents`
+	loaded: int		// In percentage
 }
 ```
 
+load(\<3.4) -> loaded
 ```js
-load(<3.4) -> loaded
-
 {
 	type: 'loaded'
 }
@@ -65,7 +64,7 @@ timeupdate
 {
 	type: 'timeupdate',
 	position: float,
-	progress: float `percentage played`
+	progress: float		// Percentage played
 }
 ```
 
