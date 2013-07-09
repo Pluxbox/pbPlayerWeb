@@ -4,42 +4,47 @@ pbPlayer
 About
 -----
 
-*pbPlayer* is a cross-browser/cross-plattform audio player build upon [pbjs]([https://github.com/Saartje87/pbjs]).
+*pbPlayer* is a cross-browser/cross-plattform audio player.
 
-He supports common formats and gracefully fallsback if its not possible to play them natively. Providing different resource formats, allows to choose the best solution. Through the decoupling of the player logic, its easy to create own configurations and skins.
+He supports common formats and gracefully fallsback if its not possible to play them natively. Providing different resource formats, allows to choose the best solution. Through the decoupling of the player logic, its easy to create own configurations and skins and even implement own media containers.
 
 Features:
 
 - simple syntax & configurable
 
-- supported file formats: MP3, AAC, OGG
+- supported common file formats: MP3, AAC, OGG
 
 - possibility to embed audio streams
 
-- support multiple sources in a playlist
+- supports playlist
 
-- customizable through skins (see skin/default.js)
+- customizable skins
 
-A list of examples can be found [here](https://github.com/Pluxbox/pbPlayer/blob/master/example.html).
+A list of examples can be found [here](...).
 
 
 Usage
 -----
 
-### Basic Structure: PB.Player( files , [config] );
+### Basic Structure: PB.Player([HTMLElementNode], options);
 
 #### Embedding
 
-The simple embedding of a track can be done in one line, using the pre-defined configurations.
+The simple embedding of a track can be done in a few lines lines, using the pre-defined configurations.
 Since there is no skin defined by default, the audio will be played in the background.
 
-    PB.Player('http://example.com/test.mp3');
+```js
+var pbplayer = new PB.Player({
+	
+	autostart: true
+});
 
-Even using a playlist with multiple files is simple.
-
-    PB.Player(['http://example.com/nice.mp3',
-			   'http://example.com/nice.mp3']);
-
+pbplayer.addMedia({
+	
+	mp3: "http://path.to/file.mp3",
+	ogg: "http://path.to/file.ogg"
+});
+```
 
 #### Player Configuration
 
@@ -47,22 +52,23 @@ The Configuration of the player can be done in two ways: either global for all i
 Its recommended to specify the general settings for the paths global.
 
 Global (default settings)
+```js
+PB.Player.config({
 
-    PB.Player.config({
-
-    	swfPath: '/pbPlayer/bin/flex/',
-    	skin: 'template'
-    	skinPath: '/pbPlayer/skin/template.js'
-    });
+    swfPath: '/pbPlayer/dist/containers/',
+    skin: 'default',
+    volume: 100
+});
+```
 
 Lokal (disregarding the defaults)
-
-    PB.Player('http://example.com/test.mp3', {
-
-    	autostart: false,
-        volume: 80
-    });
-
+```js
+PB.Player({
+	
+	autostart: false,
+	volume: 80
+});
+```
 #### Properties
 
 > All path values must end with a slash.
