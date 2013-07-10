@@ -64,7 +64,7 @@ Checks if the player is currently paused.
 Checks if the player is currently stopped.
 
 
-### getPlayState() {String}
+#### getPlayState() {String}
 Gets the play state of the player.
 
 ##### Returns
