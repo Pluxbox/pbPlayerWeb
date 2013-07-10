@@ -10,9 +10,11 @@ var Playlist = PB.Class(PB.Observer, {
 
 	/**
 	 * Adds a media object to the playlist.
-	 * @param {Object} The media object to add to the playlist.
+	 * @param {Object / Array} The media object to add to the playlist.
 	 */
 	add: function( media ) {
+
+		// TODO: Handle arrays
 
 		if( typeof media !== 'object' ) {
 			return;
@@ -24,9 +26,11 @@ var Playlist = PB.Class(PB.Observer, {
 
 	/**
 	 * Removes a media object to the playlist.
-	 * @param {Object} The media object to remove from the playlist.
+	 * @param {Object / Array} The media object to remove from the playlist.
 	 */
 	remove: function( media ) {
+
+		// TODO: Handle arrays
 
 		var index = this._entries.indexOf(media);
 
