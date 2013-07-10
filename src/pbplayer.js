@@ -24,12 +24,16 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.options = PB.overwrite({}, pbPlayer.defaults);
 		PB.overwrite(this.options, options);
 
-		//
 		this.playlist = new Playlist(this);
 		this.plugin = null;
 		this.skin = null;	// Set when element is true
 
 		registerPlayerInstance(this);
+
+		this._playerData = {
+
+			volume: this.options.volume
+		};
 	},
 
 	/**
@@ -145,9 +149,21 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	},
 
+	/**
+	 * Sets the volume of the player, values between 0 and 100 are valid.
+	 */
+	setVolume: function( value ) {
+
+		// Validate range
+		if( value < 0 || value > 100 ) {
+			return;
+		}
+
+		this.plugin.setVolume(value);
+	},
+
 	getVolume: function () {
-
-
+		return this._playerData.volume;
 	},
 
 	getDuration: function () {
@@ -161,7 +177,6 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	isBuffering: function () {
-
 
 	},
 
