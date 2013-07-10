@@ -56,9 +56,23 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	},
 
-	play: function () {
+	/**
+	 * Event normalisation
+	 *
+	 * Add type and target to event object
+	 */
+	emit: function ( type, data ) {
 
+		// Event object
+		var eventObject = {
 
+			type: type,
+			target: this
+		};
+		
+		PB.overwrite(eventObject, data);
+
+		this.parent(type, eventObject);
 	}
 });
 
