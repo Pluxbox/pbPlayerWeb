@@ -73,7 +73,53 @@ pbPlayer = PB.Class(PB.Observer, {
 		PB.overwrite(eventObject, data);
 
 		this.parent(type, eventObject);
+	},
+
+	getVolume: function () {
+
+
+	},
+
+	getDuration: function () {
+
+
+	},
+
+	getPosition: function () {
+
+
+	},
+
+	isBuffering: function () {
+
+
+	},
+
+	isPlaying: function () {
+
+
+	},
+
+	isPaused: function () {
+
+
+	},
+
+	isStopped: function () {
+
+
 	}
+});
+
+var proxyPlayerControlls = 'play pause stop playAt setVolume mute unmute'.split(' '),
+	i = proxyPlayerControlls.length;
+
+PB.each(proxyPlayerControlls, function ( key, value ) {
+
+	pbPlayer.prototype[value] = function () {
+
+
+	};
 });
 
 // Statics
