@@ -9,6 +9,9 @@ var Html5 = PB.Class({
 
 		var preload = pbPlayer.options.preload === 'metadata' ? 'metadata' : 'auto';
 
+		// Needed when stopping playback / download
+		this._src = src;
+
         // Wrapper for Safari
         this._play = this.play.bind(this);
 
@@ -162,6 +165,11 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
+		if( this.element.src !== this._src ) {
+
+			this.element.src = this._src;
+		}
+
         try {
 
         	this.element.currentTime = this.element.currentTime;
@@ -194,14 +202,17 @@ var Html5 = PB.Class({
 	 */
 	stop: function () {
 
-		var src = this.element.src;
-
 		this.element.pause();
 
 		try {
 
 			this.element.currentTime = 0;
 		} catch (e){};
+
+		this.element.src = '';
+		this.loading = false;
+
+		// Need this.element.load() ?
 
 		this.pbPlayer.emit('stop');
 	},

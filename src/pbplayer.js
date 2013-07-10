@@ -202,9 +202,6 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 			return;
 		}
 
-		//this.plugin = plugin;
-		//this.plugin.play();
-
         plugin[value].apply(plugin, PB.toArray(arguments));
 	};
 });
@@ -218,7 +215,7 @@ pbPlayer.defaults = {
 	autostart: false,
 	volume: 100,
 	path: '/pbPlayer/dist/',
-	preload: 'metadata'
+	preload: 'auto'
 };
 
 pbPlayer.skins = {};

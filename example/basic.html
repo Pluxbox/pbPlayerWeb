@@ -20,7 +20,7 @@ var player = pbPlayer({
 
 	solution: 'html5',
 	path: '/pbPlayer/dist/',
-	preload: 'none',
+	preload: 'auto',
 	volume: 80,
 	autostart: true
 });
@@ -30,7 +30,8 @@ var player = pbPlayer({
 // Set single file
 player.addMedia({
 
-	mp3: 'http://192.168.1.112/bla.mp3',
+	//mp3: 'http://192.168.1.112/bla.mp3',
+	mp3: 'http://icecast.omroep.nl/radio1-bb-mp3',
 	ogg: 'http://192.168.1.112/bla.ogg',
 	title: "Blep",
 	livestream: true
@@ -46,6 +47,11 @@ player.on('duration', function ( e ) {
 	PB.$('#duration').setText(''+e.length);
 });
 
+player.on('progress', function ( e ) {
+
+	PB.$('#progress').morph({width: e.loaded+'%'});
+})
+
 </script>
 
 <button onclick="player.play()">Play</button>
@@ -59,6 +65,10 @@ player.on('duration', function ( e ) {
 <button onclick="player.playAt(10)">playAt 10s</button>
 <button onclick="player.playAt(30)">playAt 30s</button>
 <button onclick="player.playAt(60)">playAt 60s</button>
+<br />
+<div style="width: 200px; height: 8px;">
+	<div id="progress" style="background-color: red; width: 0%; height: 8px;"></div>
+</div>
 <br />
 <span id="time">0</span> / <span id="duration">0</span>
 
