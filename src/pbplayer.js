@@ -117,7 +117,22 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	getPluginForMedia: function ( media ) {
 
-		return null;
+		var plugin;
+
+		this.defaults.solution.split(' ').forEach(function( key ) {
+
+			plugin = pbPlayer.plugins[key];
+
+			PB.each(media, function( key ) {
+
+				if( plugin.canPlayType( key ) ) {
+
+					return this.plugin = new plugin(this, media);
+				}
+
+			}, this)
+
+		}, this);
 	},
 
 	/**
@@ -207,9 +222,14 @@ pbPlayer.defaults = {
 	preload: 'auto'
 };
 
-pbPlayer.skins = [];
-pbPlayer.plugins = [];
-pbPlayer.registerPlugin = function () {};
+pbPlayer.skins = {};
+pbPlayer.plugins = {};
+
+pbPlayer.registerPlugin = function ( key, plugin ) {
+
+	pbPlayer.plugins[key] = plugin;
+};
+
 pbPlayer.registerSkin = function () {};
 
 pbPlayer.config = function ( config ) {
