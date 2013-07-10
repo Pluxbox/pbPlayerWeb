@@ -37,13 +37,13 @@ Installation
 * Initialize pbPlayer:
 
 ```js
-var player = new pbPlayer(/* options here */);
+var pbplayer = new pbPlayer(/* options here */);
 ```
 
 * Add media and start playing (Api is chainable)
 
 ```js
-player.addMedia({
+pbplayer.addMedia({
 
 	mp3: "http://example.com/songy.mp3"
 });
@@ -93,14 +93,40 @@ Using pbPlayer as pbjs / jQuery plugin
 PB.$('#element').pbplayer(/* options */);
 ```
 
-#### Player Configuration
+#### Events
+
+Basic example of event attaching see [event doc](...) for more information about pbPlayer events.
+
+> Events are not the same as HTML events, there is no preventDefault, stopPropagation etc..
+
+```js
+player.on('play pause stop', function ( event ) {
+	
+	switch( e.type ) {
+		
+		case 'play':
+			// Handle play event
+			break;
+			
+		case 'pause':
+			// Handle pause event
+			break;
+			
+		case 'stop':
+			// Handle stop event
+			break;
+	}
+} /*, context could be added */)
+```
+
+#### Configuration
 
 The Configuration of the player can be done in two ways: either global for all instances of the player or local for a specific one.
 Its recommended to specify the general settings for the paths global.
 
 Global (default settings)
 ```js
-PB.Player.config({
+pbPlayer.config({
 
     containerPath: '/pbPlayer/dist/containers/',
     skin: 'default',
@@ -108,9 +134,9 @@ PB.Player.config({
 });
 ```
 
-Lokal (disregarding the defaults)
+Local (disregarding the defaults)
 ```js
-PB.Player({
+pbPlayer({
 	
 	autostart: false,
 	volume: 80
