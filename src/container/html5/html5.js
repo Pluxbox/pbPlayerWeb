@@ -12,6 +12,7 @@ var Html5 = PB.Class({
 
 		this.pbPlayer = pbPlayer;
 
+		this.loading = false;
 		this.element = PB.$('<audio controls preload="'+pbPlayer.options.preload+'" />');
 
 		this.addEvents();
@@ -28,7 +29,8 @@ var Html5 = PB.Class({
 		this.element.pause();
 		this.element.src = '';
 
-		PB(this.element).remove();
+		// Remove element from dom and detach event
+		PB.$(this.element).remove();
 
 		this.element = null;
 		this.pbPlayer = null;
@@ -159,7 +161,11 @@ var Html5 = PB.Class({
 
         } catch ( e ) {
 
-        	this.element.load();
+        	if( !this.loading ) {
+
+        		this.element.load();
+        		this.loading = true;
+        	}
 
         	// Safari doesn't load duration
             setTimeout(this._play, 17);
@@ -178,8 +184,6 @@ var Html5 = PB.Class({
 	 *
 	 */
 	stop: function () {
-
-		console.log(this.element);
 
 		var src = this.element.src;
 
