@@ -22,6 +22,41 @@ Features:
 
 A list of examples can be found [here](...).
 
+Installation
+------------
+
+* Put pbplayer.js and the container folder + all contents in the same folder.
+
+* Include pbplayer.js:
+
+
+```xml
+<script src="/pbPlayer/dist/pbplayer.min.js"></script>
+```
+
+* Initialize pbPlayer:
+
+```js
+var player = new pbPlayer(/* options here */);
+```
+
+* Add media and start playing (Api is chainable)
+
+```js
+player.addMedia({
+
+	mp3: "http://example.com/songy.mp3"
+});
+
+player.play();
+```
+
+Examples
+--------
+
+Example 1: [Listening to events](...)    
+Example 2: [Simple skin](...)    
+Example 3: [Custom skin](...)
 
 Usage
 -----
@@ -116,7 +151,17 @@ pbplayer.addMedia({
 	
 	title: "foo bar",
 	mp3: "/foo.mp3",
-	stream: true
+	stream: true		// Optional, defaults to false
+});
+```
+
+When the filetype is unknown or could be dynamicly and has an extension the 'reserved' `url` property should be set wich tries to guess the filetype. But for the best results it is advised to specify a filetype.  
+
+```js
+pbplayer.addMedia({
+	
+	title: "foo bar",
+	url: "/foo.ogg"
 });
 ```
 
@@ -126,7 +171,7 @@ Custom Skin
 Creating your own skin for the player is straight forward. You just need to declare some HTML markup and specify some CSS. Further details can be found in the [skins/template.js](...).
 
 
-Compatibility
+Browser support
 -------------
 
 - IE7+
