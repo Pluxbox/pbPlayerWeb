@@ -5,7 +5,7 @@ var Html5 = PB.Class({
 	/**
 	 *
 	 */
-	construct: function ( pbPlayer ) {
+	construct: function ( pbPlayer, src ) {
 
         // Wrapper for Safari
         this._play = this.play.bind(this);
@@ -19,6 +19,8 @@ var Html5 = PB.Class({
 
 		// Set node instead of PB wrapper
 		this.element = this.element.appendTo(document.body)[0];
+
+		this.set(src);
 	},
 
 	/**
