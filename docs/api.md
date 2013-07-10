@@ -1,68 +1,66 @@
-# pbPlayer api documentation
+# pbPlayer API Documentation
 
-### 
+### Constructor
+```js
+var player = new PBPlayer('#player', {
 
-
-
-
-## Tools
-
-### PB.Request.builQueryString
-### PB.Request.parseQueryString
-
-
-## PB.Request
-
-PB.Request our OOP style of doing a request.
-
-The constructor will only initialize our `Request` object, the sending of the request will happen when the `send` method is called.
-
-###### Signature
-~~~js
-var request = new PB.Request({
+	'ogg': 'track.ogg',
+	'mp3': 'track.mp3'
 	
-	url: '/file.json',
-	method: 'GET',
-	ayns: true,
-	// Force datatypes, only one could be true..
-	json: true,
-	xml: true,
-	data: {
-		
-		foo: 'bar'
-	},
-	auth: {
-		
-		user: 'foo',
-		pass: 'bar'
-	},
-	headers: {},
-	encoding: 'UTF-8',
-	timeout: 0
 });
-~~~
+```
 
-###### Arguments
-{Object} - Request options
+##### Paramaters
+element : String / DOMElement / PbDom - The element to use as a container for the player, can be a selector DOM element or PBDom element.
+params : Object - The paramaters for the player.
 
-###### Returns
-{Object} - PB.Request
+### Methods
 
----
+#### addMedia( media : Object / Array )
+Adds a media object to the playlist. Also accepts a collection.
 
-### send
+##### Parameters
+media : Object - The media object to add.
 
-Send out request.
 
-> When sending the same request object multiple times, the previous requests will be aborted.
+#### removeMedia( media : Object / Array )
+Removes a media object from the playlist.
 
-###### Signature
-~~~js
-request.send();
-~~~
+##### Parameters
+media : Object - The media object to remove. Also accepts a collection.
 
-###### Returns
-{Object} - PB.Request
 
----
+#### emptyPlaylist()
+Removes all media objects from the playlist.
+
+
+#### next()
+Switches to the next media object in the playlist, if any.
+
+
+#### previous()
+Switches to the previous media object in the playlist, if any.
+
+
+### Events
+
+`mediaadded` Dispatched when a media object is added to the playlist.
+
+##### Parameters
+type : String - The type of event dispatched, in this case `mediaadded`.
+media : Object - The media object that was added to the playlist.
+
+`mediaremoved` Dispatched when a media object is removed from the playlist.
+
+
+##### Parameters
+type : String - The type of event dispatched, in this case `mediaremoved`.
+media : Object - The media object that was added to the playlist.
+
+
+`mediachanged` Dispatched when the current media has changed, i.e. by calling the `next()` or `previous()` function.
+
+##### Parameters
+type : String - The type of event dispatched, in this case `mediachanged`.
+media : Object - The media object that was added to the playlist.
 
