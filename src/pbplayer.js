@@ -16,6 +16,31 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.skin = null;	// Set when element is true
 
 		this.parent();
+
+		registerPlayerInstance(this);
+	},
+
+	/**
+	 *
+	 */
+	destroy: function () {
+
+		// Destroy plugin
+		if( this.plugin ) {
+
+			this.plugin.destroy();
+			this.plugin = null;
+		}
+
+		// Destroy skin
+		if( this.skin ) {
+
+			this.skin.destroy();
+			this.skin = null;
+		}
+
+		// Remove from group
+		unregisterPlayerInstance(this);
 	},
 
 	/**
@@ -47,9 +72,69 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.playlist.empty();
 	},
 
-	play: function () {
+	/**
+	 * Event normalisation
+	 *
+	 * Add type and target to event object
+	 */
+	emit: function ( type, data ) {
+
+		// Event object
+		var eventObject = {
+
+			type: type,
+			target: this
+		};
+		
+		PB.overwrite(eventObject, data);
+
+		this.parent(type, eventObject);
+	},
+
+	getVolume: function () {
+
+
+	},
+
+	getDuration: function () {
+
+
+	},
+
+	getPosition: function () {
+
+
+	},
+
+	isBuffering: function () {
+
+
+	},
+
+	isPlaying: function () {
+
+
+	},
+
+	isPaused: function () {
+
+
+	},
+
+	isStopped: function () {
 
 	}
+});
+
+var proxyPlayerControlls = 'play pause stop playAt setVolume mute unmute'.split(' '),
+	i = proxyPlayerControlls.length;
+
+PB.each(proxyPlayerControlls, function ( key, value ) {
+
+	pbPlayer.prototype[value] = function () {
+
+
+	};
 });
 
 // Statics
