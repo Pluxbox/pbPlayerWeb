@@ -1,7 +1,9 @@
 pbPlayer = PB.Class(PB.Observer, {
 
 	/**
-	 *
+	 * Constructs the pbPlayer.
+	 * @param {String|DOMElement|PB.$} The DOM node reference for the player to attach to, can be a selector, DOM Node or PB.$.
+	 * @param {Object} Options for the pbPlayer, various stuff can be set here.
 	 */
 	construct: function ( element, options ) {
 
@@ -22,16 +24,20 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.options = PB.overwrite({}, pbPlayer.defaults);
 		PB.overwrite(this.options, options);
 
-		//
 		this.playlist = new Playlist(this);
 		this.plugin = null;
 		this.skin = null;	// Set when element is true
 
 		registerPlayerInstance(this);
+
+		this._playerData = {
+
+			volume: this.options.volume
+		};
 	},
 
 	/**
-	 *
+	 * Destroys the pbPlayer instance.
 	 */
 	destroy: function () {
 
@@ -54,7 +60,7 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 * Add media to playlist
+	 * Adds media to playlist.
 	 */
 	addMedia: function ( media ) {
 
@@ -62,7 +68,7 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 * Remove media from playlist.
+	 * Removes media from playlist.
 	 */
 	removeMedia: function ( media ) {
 
@@ -77,6 +83,9 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.playlist.empty();
 	},
 
+	/**
+	 * Gets the right plugin for a media object.
+	 */
 	getPluginForMedia: function ( media ) {
 
 		var plugin;
@@ -140,9 +149,21 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	},
 
+	/**
+	 * Sets the volume of the player, values between 0 and 100 are valid.
+	 */
+	setVolume: function( value ) {
+
+		// Validate range
+		if( value < 0 || value > 100 ) {
+			return;
+		}
+
+		this.plugin.setVolume(value);
+	},
+
 	getVolume: function () {
-
-
+		return this._playerData.volume;
 	},
 
 	getDuration: function () {
@@ -156,7 +177,6 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	isBuffering: function () {
-
 
 	},
 
