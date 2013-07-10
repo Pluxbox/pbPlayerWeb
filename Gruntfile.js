@@ -36,6 +36,9 @@ module.exports = function(grunt) {
 					// Playlist
 					'src/playlist/playlist.js',
 
+					// Media containers
+					'src/container/html5/html5.js',
+
 					// Outro
 					'src/outro.js'
 				],
