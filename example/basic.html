@@ -29,11 +29,11 @@ PBPlayer.setOptions({
 
 var player = pbPlayer({
 
-	solution: 'html5, flash',
+	solution: 'html5',
 	path: '/pbPlayer/dist/',
 	preload: 'none',
 	volume: 80,
-	muted: false
+	autostart: true
 });
 
 console.log(player);
@@ -52,7 +52,7 @@ player.on('timeupdate', function ( e ) {
 	console.log( e.type, e.currentTime );
 });
 
-player.play();
+//player.play();
 
 /*
 // Set single file

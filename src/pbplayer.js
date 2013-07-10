@@ -10,12 +10,22 @@ pbPlayer = PB.Class(PB.Observer, {
 			return new pbPlayer(element, options)
 		}
 
+		// Initialize Observer
+		this.parent();
+
+		if( !options ) {
+
+			options = element;
+			element = null;
+		}
+
+		this.options = PB.overwrite({}, pbPlayer.defaults);
+		PB.overwrite(this.options, options);
+
 		//
 		this.playlist = this.registerPlaylist();
 		this.plugin = null;
 		this.skin = null;	// Set when element is true
-
-		this.parent();
 
 		registerPlayerInstance(this);
 	},
@@ -190,7 +200,11 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 // pbPlayer default settings
 pbPlayer.defaults = {
 
-	solution: 'html5, flash'
+	solution: 'html5',	// Flash
+	autostart: false,
+	volume: 100,
+	path: '/pbPlayer/dist/',
+	preload: 'auto'
 };
 
 pbPlayer.skins = [];
