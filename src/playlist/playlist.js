@@ -1,8 +1,10 @@
-var Playlist = PB.Class(PB.Observer, {
+var Playlist = PB.Class({
 
+	/**
+	 * Constructs the Playlist class
+	 * @param {pbPlayer} reference of the pbPlayer to trigger events
+	 */
 	construct: function ( player ) {
-
-		this.parent();
 
 		this._player = player;
 		this._entries = [];
@@ -15,9 +17,18 @@ var Playlist = PB.Class(PB.Observer, {
 	 */
 	add: function ( media ) {
 
-		// TODO: Handle arrays
+		var i = 0;
 
-		if( typeof media !== 'object' || this.has(media) ) {
+		if( media instanceof Array ) {
+
+			for( ; i < media.length; i++ ) {
+				this.add(media[i]);
+			}
+
+			return;
+		}
+
+		if( !media instanceof Object || this.has(media) ) {
 			return;
 		}
 
@@ -40,7 +51,16 @@ var Playlist = PB.Class(PB.Observer, {
 	 */
 	remove: function ( media ) {
 
-		// TODO: Handle arrays
+		var i = 0;
+
+		if( media instanceof Array ) {
+
+			for( ; i < media.length; i++ ) {
+				this.remove(media[i]);
+			}
+
+			return;
+		}
 
 		var index = this._entries.indexOf(media);
 
