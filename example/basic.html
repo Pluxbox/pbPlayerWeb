@@ -27,14 +27,16 @@ PBPlayer.setOptions({
 });
 */
 
-var player = new PBPlayer({
+var player = pbPlayer({
 
-	plugins: ['html5', 'flash'],
-	//pluginPath: './',
+	solution: 'html5, flash',
+	path: '/pbPlayer/dist/',
 	preload: 'none',
 	volume: 80,
-	muted: false,
+	muted: false
 });
+
+console.log(player);
 
 // Set single file
 player.setMedia({

@@ -2,9 +2,24 @@
 	
 	this[name] = definition( context );
 
-})('PB', this, function ( context ) {
+})('pbPlayer', this, function ( context ) {
 
 'use strict';
 
-var PB = context.PB || {},
-	OLD_PBPlayer = PB.Player;
+	// Main class
+var PBPlayer,
+
+	// Export
+	pbPlayer,
+
+	// Reference to PB
+	PB = context.PB,
+
+	// 
+	OLD_PBPlayer = context.pbPlayer;
+
+// pbjs required..
+if( !PB ) {
+
+	throw new Error("Missing dependency pbjs");
+}
