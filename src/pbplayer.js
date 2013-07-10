@@ -129,6 +129,14 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.parent(type, eventObject);
 	},
 
+	/**
+	 * Get correct plugin
+	 */
+	getPlugin: function () {
+
+
+	},
+
 	getVolume: function () {
 
 
@@ -171,7 +179,9 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 
 	pbPlayer.prototype[value] = function () {
 
+		this.getPlugin();
 
+        this.plugin[value].apply(this, PB.toArray(arguments));
 	};
 });
 
