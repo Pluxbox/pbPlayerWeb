@@ -218,7 +218,7 @@ pbPlayer.defaults = {
 	autostart: false,
 	volume: 100,
 	path: '/pbPlayer/dist/',
-	preload: 'auto'
+	preload: 'metadata'
 };
 
 pbPlayer.skins = {};
