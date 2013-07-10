@@ -2,10 +2,10 @@
 
 ### Constructor
 ```js
-var player = new PBPlayer('#player', {
+var player = new pbPlayer('#player', {
 
-	'ogg': 'track.ogg',
-	'mp3': 'track.mp3'
+	'ogg': 'http://example.com/track.ogg',
+	'mp3': 'http://example.com/track.mp3'
 });
 ```
 
@@ -15,8 +15,68 @@ params : Object - The paramaters for the player.
 
 ### Methods
 
+#### play()
+Starts/resumes the playback of the current media object.
+
+
+#### pause()
+Pauses the playback of the current media object.
+
+
+#### stop()
+Stops the playback of the current media object.
+
+
+#### registerMediaContainer( key : String, container : MediaContainer )
+Registers a media container for playback.
+
+##### Parameters
+key : String - String to use as a key for the container.
+container : MediaContainer - The container to register.
+
+
+#### useMediaContainers( containers : String )
+Specifies what media containers to use in a specific order.
+
+##### Parameters
+containers : String - The names of the container keys to use.
+
+##### Example with multiple containers
+```js
+player.registerMediaContainer('html5', ...);
+player.registerMediaContainer('flash', ...);
+
+player.useContainers('html5 flash'); // Will use HTML5 first and then Flash
+player.useContainers('flash html5'); // Will use Flash first and then HTML5
+player.useContainers('html5'); // Will use only HTML5
+```
+
+
 #### addMedia( media : Object / Array )
 Adds a media object to the playlist. Also accepts a collection.
+
+##### Example with single media
+```js
+player.addMedia({
+
+	'ogg': 'http://example.com/track.ogg',
+	'mp3': 'http://example.com/track.mp3'
+});
+```
+
+##### Example with multiple media
+```js
+player.addMedia([
+	{
+		'ogg': 'http://example.com/track1.ogg',
+		'mp3': 'http://example.com/track1.mp3'
+	},
+	{
+		'ogg': 'http://example.com/track2.ogg',
+		'mp3': 'http://example.com/track2.mp3'
+	}
+]);
+```
 
 ##### Parameters
 media : Object - The media object to add.
