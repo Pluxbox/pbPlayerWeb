@@ -21,5 +21,5 @@ var PBPlayer,
 // pbjs required..
 if( !PB ) {
 
-	throw new Error("Missing dependency pbjs");
+	throw new Error('Missing dependency pbjs');
 }

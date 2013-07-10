@@ -23,16 +23,31 @@ pbPlayer = PB.Class(PB.Observer, {
 	 */
 	registerPlaylist: function () {
 
-		return new Playlist();
+		var playlist = new Playlist();
+
+		playlist.on('mediaadded', this.emit.bind(this, 'mediaadded'));
+		playlist.on('mediaremoved', this.emit.bind(this, 'mediaremoved'));
+		playlist.on('mediachanged', this.emit.bind(this, 'mediachanged'));
+
+		return playlist;
 	},
 
-	setMedia: function () {
+	addMedia: function ( media ) {
 
+		this.playlist.add(media);
+	},
 
+	removeMedia: function ( media ) {
+
+		this.playlist.remove(media);
+	},
+
+	emptyMedia: function() {
+
+		this.playlist.empty();
 	},
 
 	play: function () {
-
 
 	}
 });

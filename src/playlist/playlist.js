@@ -1,6 +1,6 @@
 var Playlist = PB.Class(PB.Observer, {
 
-	construct: function() {
+	construct: function () {
 
 		this.parent();
 
@@ -12,11 +12,11 @@ var Playlist = PB.Class(PB.Observer, {
 	 * Adds a media object to the playlist.
 	 * @param {Object / Array} The media object to add to the playlist.
 	 */
-	add: function( media ) {
+	add: function ( media ) {
 
 		// TODO: Handle arrays
 
-		if( typeof media !== 'object' ) {
+		if( typeof media !== 'object' || this.has(media) ) {
 			return;
 		}
 
@@ -25,10 +25,19 @@ var Playlist = PB.Class(PB.Observer, {
 	},
 
 	/**
+	 * Checks if a media object already exists in the playlist.
+	 * @param {Object} The media object check.
+	 */
+	has: function ( media ) {
+
+		return this._entries.indexOf(media) !== -1;
+	},
+
+	/**
 	 * Removes a media object to the playlist.
 	 * @param {Object / Array} The media object to remove from the playlist.
 	 */
-	remove: function( media ) {
+	remove: function ( media ) {
 
 		// TODO: Handle arrays
 
@@ -42,7 +51,7 @@ var Playlist = PB.Class(PB.Observer, {
 	/**
 	 * Removes all media objects from the playlist.
 	 */
-	empty: function() {
+	empty: function () {
 		
 		while( this._entries.length ) {
 
@@ -51,9 +60,20 @@ var Playlist = PB.Class(PB.Observer, {
 	},
 
 	/**
+	 * Gets the current media object.
+	 * @returns {Object} the current media or null if not found.
+	 */
+	getCurrent: function() {
+
+		var entry = this._entries[this._currentEntryIndex + 1];
+
+		return entry ? entry : null;
+	},
+
+	/**
 	 * Switches to the next media object in the playlist, if any.
 	 */
-	next: function() {
+	next: function () {
 
 		var entry = this._entries[this._currentEntryIndex + 1];
 
@@ -68,7 +88,7 @@ var Playlist = PB.Class(PB.Observer, {
 	/**
 	 * Switches to the previous media object in the playlist, if any.
 	 */
-	previous: function() {
+	previous: function () {
 
 		var entry = this._entries[this._currentEntryIndex - 1];
 
