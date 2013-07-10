@@ -7,6 +7,8 @@ var Html5 = PB.Class({
 	 */
 	construct: function ( pbPlayer, src ) {
 
+		var preload = pbPlayer.options.preload === 'metadata' ? 'metadata' : 'auto';
+
         // Wrapper for Safari
         this._play = this.play.bind(this);
 
@@ -55,6 +57,9 @@ var Html5 = PB.Class({
 			.on('error pause play volumechange ended timeupdate', this.eventDelegation.bind(this));
 	},
 
+	/**
+	 *
+	 */
 	metadataLoaded: function ( e ) {
 
 		this.pbPlayer.emit('duration', {
@@ -63,6 +68,9 @@ var Html5 = PB.Class({
 		});
 	},
 
+	/**
+	 *
+	 */
 	progress: function ( e ) {
 
 		var element = this.element,
@@ -154,11 +162,6 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		/*if ( navigator.userAgent.match(/(iPhone)|(iPad)/) ){
-
-			this.element.play();
-		}*/
-
         try {
 
         	this.element.currentTime = this.element.currentTime;
@@ -194,11 +197,11 @@ var Html5 = PB.Class({
 		var src = this.element.src;
 
 		this.element.pause();
-		this.element.src = '';
 
-		try { this.element.currentTime = 0; } catch (e){};
+		try {
 
-		this.element.src = src;
+			this.element.currentTime = 0;
+		} catch (e){};
 
 		this.pbPlayer.emit('stop');
 	},
@@ -279,6 +282,4 @@ Html5.canPlayType = function ( codec ) {
 };
 
 pbPlayer.registerPlugin('html5', Html5);
-
-window.Html5 = Html5;
 
