@@ -6,11 +6,11 @@
 
 'use strict';
 
-	// Main class
-var PBPlayer,
-
 	// Export
-	pbPlayer,
+var pbPlayer,
+	
+	// Keep track of all created pbPlayers
+	pbPlayerInstances = [],
 
 	// Reference to PB
 	PB = context.PB,

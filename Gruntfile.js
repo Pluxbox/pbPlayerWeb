@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 					'src/intro.js',
 
 					// Core
+					'src/utils.js',
 					'src/pbplayer.js',
 
 					// Playlist

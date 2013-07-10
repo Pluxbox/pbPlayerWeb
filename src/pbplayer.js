@@ -16,6 +16,31 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.skin = null;	// Set when element is true
 
 		this.parent();
+
+		registerPlayerInstance(this);
+	},
+
+	/**
+	 *
+	 */
+	destroy: function () {
+
+		// Destroy plugin
+		if( this.plugin ) {
+
+			this.plugin.destroy();
+			this.plugin = null;
+		}
+
+		// Destroy skin
+		if( this.skin ) {
+
+			this.skin.destroy();
+			this.skin = null;
+		}
+
+		// Remove from group
+		unregisterPlayerInstance(this);
 	},
 
 	/**
