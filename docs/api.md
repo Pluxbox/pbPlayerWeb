@@ -6,11 +6,10 @@ var player = new PBPlayer('#player', {
 
 	'ogg': 'track.ogg',
 	'mp3': 'track.mp3'
-	
 });
 ```
 
-##### Paramaters
+##### Parameters
 element : String / DOMElement / PbDom - The element to use as a container for the player, can be a selector DOM element or PBDom element.
 params : Object - The paramaters for the player.
 
