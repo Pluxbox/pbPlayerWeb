@@ -77,39 +77,27 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.playlist.empty();
 	},
 
-	play: function () {
-
-		var currentMedia = this.playlist.getCurrent(),
-			plugin;
-
-		if( !currentMedia ) {
-			return;
-		}
-
-		plugin = this.getPluginForMedia(currentMedia);
-
-		if( !plugin ) {
-			console.info('Couldn\'t find plugin for media');
-			return;
-		}
-
-		if( this.plugin ) {
-			this.plugin.destroy();
-		}
-
-		this.plugin = plugin;
-		this.plugin.play();
-	},
-
 	getPluginForMedia: function ( media ) {
 
 		var plugin;
 
-		this.defaults.solution.split(' ').forEach(function( key ) {
+		//this.plugin = null;
+
+		this.options.solution.split(' ').forEach(function( key ) {
+
+			if( this.plugin ) {
+
+				return;
+			}
 
 			plugin = pbPlayer.plugins[key];
 
 			PB.each(media, function( key, value ) {
+
+				if( this.plugin ) {
+
+					return;
+				}
 
 				if( plugin.canPlayType( key ) ) {
 
@@ -119,6 +107,8 @@ pbPlayer = PB.Class(PB.Observer, {
 			}, this)
 
 		}, this);
+
+		return this.plugin;
 	},
 
 	/**
@@ -185,16 +175,37 @@ pbPlayer = PB.Class(PB.Observer, {
 	}
 });
 
-var proxyPlayerControlls = 'play2 pause stop playAt setVolume mute unmute'.split(' '),
+var proxyPlayerControlls = 'play pause stop playAt setVolume mute unmute'.split(' '),
 	i = proxyPlayerControlls.length;
 
 PB.each(proxyPlayerControlls, function ( key, value ) {
 
 	pbPlayer.prototype[value] = function () {
 
-		this.getPlugin();
+		var currentMedia = this.playlist.getCurrent(),
+			plugin;
 
-        this.plugin[value].apply(this, PB.toArray(arguments));
+		if( !currentMedia ) {
+
+			this.emit('error', {
+
+				//code: this.element.error,
+				message: 'No media given'
+			});
+			return;
+		}
+
+		plugin = this.getPluginForMedia(currentMedia);
+
+		if( !plugin ) {
+			console.info('Couldn\'t find plugin for media');
+			return;
+		}
+
+		//this.plugin = plugin;
+		//this.plugin.play();
+
+        plugin[value].apply(plugin, PB.toArray(arguments));
 	};
 });
 
