@@ -1,0 +1,30 @@
+{
+	"name": "pbPlayer",
+	"version": "4.0.0",
+	"homepage": "http://github.com/Pluxbox/pbPlayer",
+	"author": {
+		
+		"name": "Pluxbox"
+	},
+	"repository": {
+	
+		"type": "git",
+		"url": "https://github.com/Pluxbox/pbPlayer.git"
+	},
+	"issues": {
+
+		"url": "http://github.com/Pluxbox/pbPlayer/issues"
+	},
+	"description": "",
+	"contributors": [],
+	"keywords": ["audio", "player", "html5", "flash"],
+	"license": "MIT",
+	"devDependencies": {
+		"grunt": "~0.4.1",
+		"grunt-cli": "~0.1.0",
+		"grunt-contrib-concat": "~0.3.0",
+		"grunt-contrib-jshint": "~0.4.3",
+		"grunt-contrib-uglify": "~0.2.0",
+		"grunt-contrib-watch": "~0.4.4"
+	}
+}

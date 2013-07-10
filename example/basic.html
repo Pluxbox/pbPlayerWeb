@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<script type="text/javascript" src="/pbjs-0.6/dist/pbjs.js"></script>
+<script type="text/javascript" src="../dist/pbplayer.js"></script>
+
+<script type="text/javascript">
+
+// PB.$('#id').pbPlayer({
+
+
+// });
+
+// There should be a way for global config
+/**
+PBPlayer.setOptions({
+	
+	plugins: ['html5', 'flash'],
+	pluginPath: './',
+	preload: 'none',
+	volume: 80,
+	muted: false,
+});
+*/
+
+var player = new PBPlayer({
+
+	plugins: ['html5', 'flash'],
+	//pluginPath: './',
+	preload: 'none',
+	volume: 80,
+	muted: false,
+});
+
+// Set single file
+player.setMedia({
+
+	mp3: '/bla.mp3',
+	ogg: '/bla.ogg',
+	title: "Blep",
+	livestream: true
+});
+
+player.on('timeupdate', function ( e ) {
+
+	console.log( e.type, e.currentTime );
+});
+
+player.play();
+
+/*
+// Set single file
+player.setMedia('blep.mp3');
+
+// Set playlist
+player.setMedia([
+	{
+		mp3: 'blep.mp3',
+		ogg: 'blep.ogg',
+		title: "Blep",
+		livestream: true
+	},
+	{
+		mp3: 'blep2.mp3',
+		ogg: 'blep2.ogg',
+		title: "Blep 2",
+		livestream: true
+	}
+]);*/
+
+// addMedia() / removeMedia() / clearMedia()
+
+</script>
+
+</body>
+</html>
