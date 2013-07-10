@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-07-10 14:12
+ * Build date 2013-07-10 14:27
  */
 (function ( name, context, definition ) {
 	
@@ -38,6 +38,9 @@ if( !PB ) {
 
 pbPlayer = PB.Class(PB.Observer, {
 
+	/**
+	 *
+	 */
 	construct: function ( element, options ) {
 
 		if( !(this instanceof pbPlayer) ) {
@@ -45,7 +48,20 @@ pbPlayer = PB.Class(PB.Observer, {
 			return new pbPlayer(element, options)
 		}
 
+		//
+		this.playlist = this.registerPlaylist();
+		this.plugin = null;
+		this.skin = null;	// Set when element is true
+
 		this.parent();
+	},
+
+	/**
+	 * Create new playlist and register events
+	 */
+	registerPlaylist: function () {
+
+		return new Playlist();
 	},
 
 	setMedia: function () {
@@ -55,11 +71,106 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	play: function () {
 
-		
+
 	}
 });
 
-pbPlayer.config = function () {}; // Set defaults for all pbplayer instances
+// Statics
 
+// pbPlayer default settings
+pbPlayer.defaults = {
+
+	solution: 'html5, flash'
+};
+
+pbPlayer.skins = [];
+pbPlayer.plugins = [];
+pbPlayer.registerPlugin = function () {};
+pbPlayer.registerSkin = function () {};
+
+pbPlayer.config = function ( config ) {
+
+	PB.overwrite(pbPlayer.defaults, config);
+}; // Set defaults for all pbplayer instances
+
+var Playlist = PB.Class(PB.Observer, {
+
+	construct: function() {
+
+		this.parent();
+
+		this._entries = [];
+		this._currentEntryIndex = 0;
+	},
+
+	/**
+	 * Adds a media object to the playlist.
+	 * @param {Object} The media object to add to the playlist.
+	 */
+	add: function( media ) {
+
+		if( typeof media !== 'object' ) {
+			return;
+		}
+
+		this._entries.push(media);
+		this.emit('mediaadded', { media: media });
+	},
+
+	/**
+	 * Removes a media object to the playlist.
+	 * @param {Object} The media object to remove from the playlist.
+	 */
+	remove: function( media ) {
+
+		var index = this._entries.indexOf(media);
+
+		if( index !== -1 ) {
+			this.emit('mediaremoved', { media: this._entries.splice(index, 1)[0] });
+		}
+	},
+
+	/**
+	 * Removes all media objects from the playlist.
+	 */
+	empty: function() {
+		
+		while( this._entries.length ) {
+
+			this.remove(this._entries[0]);
+		}
+	},
+
+	/**
+	 * Switches to the next media object in the playlist, if any.
+	 */
+	next: function() {
+
+		var entry = this._entries[this._currentEntryIndex + 1];
+
+		if( entry === undefined ) {
+			return;
+		}
+
+		this._currentEntryIndex++;
+		this.emit('mediachanged', { media: entry });
+	},
+
+	/**
+	 * Switches to the previous media object in the playlist, if any.
+	 */
+	previous: function() {
+
+		var entry = this._entries[this._currentEntryIndex - 1];
+
+		if( entry === undefined ) {
+			return;
+		}
+
+		this._currentEntryIndex--;
+		this.emit('mediachanged', { media: entry });
+	}
+
+});
 return pbPlayer;
 });
