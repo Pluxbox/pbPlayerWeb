@@ -1,7 +1,9 @@
 pbPlayer = PB.Class(PB.Observer, {
 
 	/**
-	 *
+	 * Constructs the pbPlayer.
+	 * @param {String|DOMElement|PB.$} The DOM node reference for the player to attach to, can be a selector, DOM Node or PB.$.
+	 * @param {Object} Options for the pbPlayer, various stuff can be set here.
 	 */
 	construct: function ( element, options ) {
 
@@ -31,7 +33,7 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 *
+	 * Destroys the pbPlayer instance.
 	 */
 	destroy: function () {
 
@@ -54,7 +56,7 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 * Add media to playlist
+	 * Adds media to playlist.
 	 */
 	addMedia: function ( media ) {
 
@@ -62,7 +64,7 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 * Remove media from playlist.
+	 * Removes media from playlist.
 	 */
 	removeMedia: function ( media ) {
 
@@ -77,6 +79,9 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.playlist.empty();
 	},
 
+	/**
+	 * Gets the right plugin for a media object.
+	 */
 	getPluginForMedia: function ( media ) {
 
 		var plugin;
