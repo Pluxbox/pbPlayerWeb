@@ -6,13 +6,13 @@ About
 
 *pbPlayer* is a cross-browser/cross-plattform audio player.
 
-He supports common formats and gracefully fallsback if its not possible to play them natively. Providing different resource formats, allows to choose the best solution. Through the decoupling of the player logic, its easy to create own configurations and skins and even implement own media containers.
+It supports common formats and gracefully fallsback if its not possible to play them natively. Providing different resource formats, allows to choose the best solution. Through the decoupling of the player logic, its easy to create own configurations and skins and even implement own media containers.
 
 Features:
 
 - simple syntax & configurable
 
-- supported common file formats: MP3, AAC, OGG
+- supported common file formats & codecs: MP3, AAC, OGG
 
 - possibility to embed audio streams
 
@@ -30,7 +30,7 @@ Installation
 * Include pbplayer.js:
 
 
-```xml
+```html
 <script src="/pbPlayer/dist/pbplayer.min.js"></script>
 ```
 
@@ -40,7 +40,7 @@ Installation
 var pbplayer = new pbPlayer(/* options here */);
 ```
 
-* Add media and start playing (Api is chainable)
+* Add media and start playing (API is chainable)
 
 ```js
 pbplayer.addMedia({
@@ -61,7 +61,7 @@ Example 3: [Custom skin](...)
 Usage
 -----
 
-### Basic Structure: PB.Player([HTMLElementNode], options);
+### Basic Structure: PB.Player([HTMLElement], options);
 
 #### Embedding
 
@@ -205,7 +205,7 @@ Browser support
 - Safari 4+
 - Opera
 - Chrome
-- IOS 4+
+- iOS 4+
 - Android 2.1+
 
 
