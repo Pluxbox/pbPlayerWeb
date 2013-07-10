@@ -57,19 +57,32 @@ pbPlayer = PB.Class(PB.Observer, {
 		return playlist;
 	},
 
+	/**
+	 * Add media to playlist
+	 */
 	addMedia: function ( media ) {
 
 		this.playlist.add(media);
 	},
 
+	/**
+	 * Remove media from playlist.
+	 */
 	removeMedia: function ( media ) {
 
 		this.playlist.remove(media);
 	},
 
+	/**
+	 * Removes all media from the playlist.
+	 */
 	emptyMedia: function() {
 
 		this.playlist.empty();
+	},
+
+	play: function() {
+
 	},
 
 	/**
