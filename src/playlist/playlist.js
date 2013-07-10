@@ -66,7 +66,7 @@ var Playlist = PB.Class(PB.Observer, {
 	 */
 	getCurrent: function() {
 
-		var entry = this._entries[this._currentEntryIndex + 1];
+		var entry = this._entries[this._currentEntryIndex];
 
 		return entry ? entry : null;
 	},
