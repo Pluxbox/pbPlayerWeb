@@ -13,14 +13,18 @@ var Html5 = PB.Class({
 		this.pbPlayer = pbPlayer;
 
 		this.loading = false;
-		this.element = PB.$('<audio controls preload="'+pbPlayer.options.preload+'" />');
+		this.element = PB.$('<audio preload="'+pbPlayer.options.preload+'" />');
 
 		this.addEvents();
 
 		// Set node instead of PB wrapper
 		this.element = this.element.appendTo(document.body)[0];
 
-		this.set(src);
+		// Set src
+		this.element.src = src;
+
+		// Trigger progress when progress event fails
+		this.progress();
 	},
 
 	/**
@@ -202,7 +206,7 @@ var Html5 = PB.Class({
 	/**
 	 *
 	 */
-	volume: function ( volume ) {
+	setVolume: function ( volume ) {
 
 		this.element.volume = volume / 100;
 	},
