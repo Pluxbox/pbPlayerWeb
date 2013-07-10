@@ -10,22 +10,11 @@
 
 <script type="text/javascript">
 
-// PB.$('#id').pbPlayer({
-
-
-// });
-
-// There should be a way for global config
-/**
-PBPlayer.setOptions({
+pbPlayer.config({
 	
-	plugins: ['html5', 'flash'],
-	pluginPath: './',
-	preload: 'none',
-	volume: 80,
-	muted: false,
+	solution: 'html5',
+	volume: 50
 });
-*/
 
 var player = pbPlayer({
 
@@ -36,7 +25,7 @@ var player = pbPlayer({
 	autostart: true
 });
 
-console.log(player);
+//console.log(player);
 
 // Set single file
 player.addMedia({
@@ -49,34 +38,29 @@ player.addMedia({
 
 player.on('timeupdate', function ( e ) {
 
-	console.log( e.type, e.currentTime );
+	PB.$('#time').setText(''+e.position);
 });
 
-//player.play();
+player.on('duration', function ( e ) {
 
-/*
-// Set single file
-player.setMedia('blep.mp3');
-
-// Set playlist
-player.setMedia([
-	{
-		mp3: 'blep.mp3',
-		ogg: 'blep.ogg',
-		title: "Blep",
-		livestream: true
-	},
-	{
-		mp3: 'blep2.mp3',
-		ogg: 'blep2.ogg',
-		title: "Blep 2",
-		livestream: true
-	}
-]);*/
-
-// addMedia() / removeMedia() / clearMedia()
+	PB.$('#duration').setText(''+e.length);
+});
 
 </script>
+
+<button onclick="player.play()">Play</button>
+<button onclick="player.pause()">Pause</button>
+<button onclick="player.stop()">Stop</button>
+<br />
+<button onclick="player.setVolume(100)">Volume 100%</button>
+<button onclick="player.setVolume(50)">Volume 50%</button>
+<button onclick="player.setVolume(0)">Volume 0%</button>
+<br />
+<button onclick="player.playAt(10)">playAt 10s</button>
+<button onclick="player.playAt(30)">playAt 30s</button>
+<button onclick="player.playAt(60)">playAt 60s</button>
+<br />
+<span id="time">0</span> / <span id="duration">0</span>
 
 </body>
 </html>
