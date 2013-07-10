@@ -23,7 +23,7 @@ pbPlayer = PB.Class(PB.Observer, {
 		PB.overwrite(this.options, options);
 
 		//
-		this.playlist = this.registerPlaylist();
+		this.playlist = new Playlist(this);
 		this.plugin = null;
 		this.skin = null;	// Set when element is true
 
@@ -51,20 +51,6 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		// Remove from group
 		unregisterPlayerInstance(this);
-	},
-
-	/**
-	 * Create new playlist and register events
-	 */
-	registerPlaylist: function () {
-
-		var playlist = new Playlist();
-
-		playlist.on('mediaadded', this.emit.bind(this, 'mediaadded'));
-		playlist.on('mediaremoved', this.emit.bind(this, 'mediaremoved'));
-		playlist.on('mediachanged', this.emit.bind(this, 'mediachanged'));
-
-		return playlist;
 	},
 
 	/**
@@ -123,11 +109,11 @@ pbPlayer = PB.Class(PB.Observer, {
 
 			plugin = pbPlayer.plugins[key];
 
-			PB.each(media, function( key ) {
+			PB.each(media, function( key, value ) {
 
 				if( plugin.canPlayType( key ) ) {
 
-					return this.plugin = new plugin(this, media);
+					return this.plugin = new plugin(this, value);
 				}
 
 			}, this)
@@ -199,7 +185,7 @@ pbPlayer = PB.Class(PB.Observer, {
 	}
 });
 
-var proxyPlayerControlls = 'play pause stop playAt setVolume mute unmute'.split(' '),
+var proxyPlayerControlls = 'play2 pause stop playAt setVolume mute unmute'.split(' '),
 	i = proxyPlayerControlls.length;
 
 PB.each(proxyPlayerControlls, function ( key, value ) {

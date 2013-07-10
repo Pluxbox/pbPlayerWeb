@@ -1,9 +1,10 @@
 var Playlist = PB.Class(PB.Observer, {
 
-	construct: function () {
+	construct: function ( player ) {
 
 		this.parent();
 
+		this._player = player;
 		this._entries = [];
 		this._currentEntryIndex = 0;
 	},
@@ -21,7 +22,7 @@ var Playlist = PB.Class(PB.Observer, {
 		}
 
 		this._entries.push(media);
-		this.emit('mediaadded', { media: media });
+		this._player.emit('mediaadded', { media: media });
 	},
 
 	/**
@@ -44,7 +45,7 @@ var Playlist = PB.Class(PB.Observer, {
 		var index = this._entries.indexOf(media);
 
 		if( index !== -1 ) {
-			this.emit('mediaremoved', { media: this._entries.splice(index, 1)[0] });
+			this._player.emit('mediaremoved', { media: this._entries.splice(index, 1)[0] });
 		}
 	},
 
@@ -82,7 +83,7 @@ var Playlist = PB.Class(PB.Observer, {
 		}
 
 		this._currentEntryIndex++;
-		this.emit('mediachanged', { media: entry });
+		this._player.emit('mediachanged', { media: entry });
 	},
 
 	/**
@@ -97,7 +98,7 @@ var Playlist = PB.Class(PB.Observer, {
 		}
 
 		this._currentEntryIndex--;
-		this.emit('mediachanged', { media: entry });
+		this._player.emit('mediachanged', { media: entry });
 	}
 
 });
