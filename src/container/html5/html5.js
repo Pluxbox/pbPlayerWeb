@@ -146,23 +146,24 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if ( navigator.userAgent.match(/(iPhone)|(iPad)/) ){
+		/*if ( navigator.userAgent.match(/(iPhone)|(iPad)/) ){
 
 			this.element.play();
-		}
+		}*/
 
         try {
 
-            this.element.currentTime = this.element.currentTime;
+        	this.element.currentTime = this.element.currentTime;
 
             this.element.play();
 
         } catch ( e ) {
 
-        	// Safari doesn't load duration
-            setTimeout(this._play, 16.7);
-        }
+        	this.element.load();
 
+        	// Safari doesn't load duration
+            setTimeout(this._play, 17);
+        }
 	},
 
 	/**
