@@ -1,5 +1,9 @@
 var Playlist = PB.Class({
 
+	/**
+	 * Constructs the Playlist class
+	 * @param {pbPlayer} reference of the pbPlayer to trigger events
+	 */
 	construct: function ( player ) {
 
 		this._player = player;
