@@ -67,19 +67,57 @@ pbPlayer = PB.Class(PB.Observer, {
 		return playlist;
 	},
 
+	/**
+	 * Add media to playlist
+	 */
 	addMedia: function ( media ) {
 
 		this.playlist.add(media);
 	},
 
+	/**
+	 * Remove media from playlist.
+	 */
 	removeMedia: function ( media ) {
 
 		this.playlist.remove(media);
 	},
 
+	/**
+	 * Removes all media from the playlist.
+	 */
 	emptyMedia: function() {
 
 		this.playlist.empty();
+	},
+
+	play: function () {
+
+		var currentMedia = this.playlist.getCurrent(),
+			plugin;
+
+		if( !currentMedia ) {
+			return;
+		}
+
+		plugin = this.getPluginForMedia(currentMedia);
+
+		if( !plugin ) {
+			console.info('Couldn\'t find plugin for media');
+			return;
+		}
+
+		if( this.plugin ) {
+			this.plugin.destroy();
+		}
+
+		this.plugin = plugin;
+		this.plugin.play();
+	},
+
+	getPluginForMedia: function ( media ) {
+
+		return null;
 	},
 
 	/**
