@@ -136,6 +136,8 @@ pbPlayer = PB.Class(PB.Observer, {
 		
 		PB.overwrite(eventObject, data);
 
+		PB.log('Event triggered: ', type, eventObject);
+
 		this.parent(type, eventObject);
 	},
 
