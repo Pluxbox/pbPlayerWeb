@@ -93,9 +93,10 @@ pbPlayer = PB.Class(PB.Observer, {
 	/**
 	 * Gets the right media container for a media object.
 	 */
-	getMediaContainer: function ( media ) {
+	getMediaContainer: function () {
 
-		var solutions = this.options.solution.replace(',', '').split(' '),
+		var media,
+			solutions = this.options.solution.replace(',', '').split(' '),
 			solution,
 			mediaContainer,
 			i = 0;
@@ -103,7 +104,20 @@ pbPlayer = PB.Class(PB.Observer, {
 		// Already matched a container
 		if( this.mediaContainer ) {
 
-			return;
+			return true;
+		}
+
+		media = this.playlist.getCurrent();
+
+		if( !media ) {
+
+			this.emit('error', {
+
+				//code: this.element.error,
+				message: 'No media given'
+			});
+
+			return false;
 		}
 
 		for( ; i < solutions.length; i++ ) {
@@ -142,6 +156,8 @@ pbPlayer = PB.Class(PB.Observer, {
 				media: media
 			});
 		}
+
+		return !!this.mediaContainer;
 	},
 
 	/**
@@ -160,23 +176,32 @@ pbPlayer = PB.Class(PB.Observer, {
 		
 		PB.overwrite(eventObject, data);
 
-		PB.log('Event triggered: ', type, eventObject);
+		// Debug
+		if( this.options.debug ) {
+
+			PB.log('Event triggered: ', type, eventObject);
+		}
 
 		this.parent(type, eventObject);
 	},
 
 	/**
 	 * Sets the volume of the player, values between 0 and 100 are valid.
+	 *
+	 * @param {Number} between 0 and 100
 	 */
-	/*setVolume: function( value ) {
+	setVolume: function( volume ) {
 
-		// Validate range
-		if( value < 0 || value > 100 ) {
-			return;
+		if( !this.getMediaContainer() ) {
+
+			return this;
 		}
 
+		volume = parseInt(volume, 10);
+		volume = ( volume < 0 ) ? 0 : ( volume > 100 ) ? 100 : volume;
+
 		this.mediaContainer.setVolume(value);
-	},*/
+	},
 
 	getVolume: function () {
 		return this._playerData.volume;
@@ -187,7 +212,7 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	},
 
-	getPosition: function () {
+	getTime: function () {
 
 
 	},
@@ -218,20 +243,7 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 
 	pbPlayer.prototype[value] = function () {
 
-		var currentMedia = this.playlist.getCurrent();
-
-		if( !currentMedia ) {
-
-			return this.emit('error', {
-
-				//code: this.element.error,
-				message: 'No media given'
-			});
-		}
-
-		this.getMediaContainer(currentMedia);
-
-		if( !this.mediaContainer ) {
+		if( !this.getMediaContainer() ) {
 
 			return this;
 		}

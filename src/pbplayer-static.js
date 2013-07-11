@@ -1,6 +1,7 @@
 // pbPlayer default options
 pbPlayer.defaults = {
 
+	debug: true,
 	solution: 'html5 flash',	// Flash
 	autostart: false,
 	volume: 100,
