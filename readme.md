@@ -69,7 +69,7 @@ The simple embedding of a track can be done in a few lines lines, using the pre-
 Since there is no skin defined by default, the audio will be played in the background.
 
 ```js
-var pbplayer = new PB.Player({
+var pbplayer = new pbPlayer({
 	
 	autostart: true
 });
@@ -84,7 +84,7 @@ pbplayer.addMedia({
 Using pbPlayer with a skin
 
 ```js
-var pbplayer = new PB.Player(document.getElementById('element'), /* options */);
+var pbplayer = new pbPlayer(document.getElementById('element'), /* options */);
 ```
 
 Using pbPlayer as pbjs / jQuery plugin
@@ -119,7 +119,7 @@ player.on('play pause stop', function ( event ) {
 } /*, context could be added */)
 ```
 
-#### Configuration
+#### Basic configuration
 
 The Configuration of the player can be done in two ways: either global for all instances of the player or local for a specific one.
 Its recommended to specify the general settings for the paths global.
@@ -127,9 +127,12 @@ Its recommended to specify the general settings for the paths global.
 Global (default settings)
 ```js
 pbPlayer.config({
-
+	
+	// Resources path, swf, etc..
     containerPath: '/pbPlayer/dist/containers/',
+    // Defaults to false
     skin: 'default',
+    // Set default volume for all pbPlayers on page
     volume: 100
 });
 ```
@@ -142,29 +145,6 @@ pbPlayer({
 	volume: 80
 });
 ```
-#### Properties
-
-> All path values must end with a slash.
-
-- **containerPath:**
-	- description: specify the path of the container files (for example swf files)
-	- options: - (local path)
-	- default: '/pbPlayer/dist/.../'
-
-- **skin:**
-	- description: select the name of the skin
-	- options: - (skin name)
-	- default: none
-
-- **volume:**
-	- description: the volume in percentage
-	- options: 0 - 100
-	- default: 80
-
-- **autostart:**
-	- description: start playing when audiofile starts automaticly and play the next track in a playlist
-	- options: true or false
-	- default: false
 
 #### Media configuration
 
