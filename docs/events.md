@@ -208,3 +208,18 @@ Dispatched when the current media has changed, i.e. by calling the `next()` or `
 ```
 
 ---
+
+### error
+
+Dispatched when an error occurs.
+
+###### Event data
+```
+{
+  type: {String} "error",
+  target: {Object} pbPlayer,
+  message: {Object} Error message
+}
+```
+
+---
