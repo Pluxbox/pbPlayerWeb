@@ -2,6 +2,7 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	/**
 	 * Constructs the pbPlayer.
+	 * 
 	 * @param {String|DOMElement|PB.$} The DOM node reference for the player to attach to, can be a selector, DOM Node or PB.$.
 	 * @param {Object} Options for the pbPlayer, various stuff can be set here.
 	 */
@@ -25,7 +26,7 @@ pbPlayer = PB.Class(PB.Observer, {
 		PB.overwrite(this.options, options);
 
 		this.playlist = new Playlist(this);
-		this.plugin = null;
+		this.mediaContainer = null;
 		this.skin = null;	// Set when element is true
 
 		registerPlayerInstance(this);
@@ -41,11 +42,11 @@ pbPlayer = PB.Class(PB.Observer, {
 	 */
 	destroy: function () {
 
-		// Destroy plugin
-		if( this.plugin ) {
+		// Destroy media container
+		if( this.mediaContainer ) {
 
-			this.plugin.destroy();
-			this.plugin = null;
+			this.mediaContainer.destroy();
+			this.mediaContainer = null;
 		}
 
 		// Destroy skin
@@ -84,40 +85,50 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 * Gets the right plugin for a media object.
+	 * Gets the right media container for a media object.
 	 */
-	getPluginForMedia: function ( media ) {
+	getMediaContainer: function ( media ) {
 
-		var plugin;
+		// Already matched a container
+		if( this.mediaContainer ) {
 
-		//this.plugin = null;
+			return;
+		}
 
 		this.options.solution.split(' ').forEach(function( key ) {
 
-			if( this.plugin ) {
+			if( this.mediaContainer ) {
 
 				return;
 			}
 
-			plugin = pbPlayer.plugins[key];
+			var mediaContainer = pbPlayer.mediaContainers[key];
 
 			PB.each(media, function( key, value ) {
 
-				if( this.plugin ) {
+				if( this.mediaContainer ) {
 
 					return;
 				}
 
-				if( plugin.canPlayType( key ) ) {
+				if( mediaContainer.canPlayType( key ) ) {
 
-					return this.plugin = new plugin(this, value);
+					return this.mediaContainer = new mediaContainer(this, value);
 				}
 
 			}, this)
 
 		}, this);
 
-		return this.plugin;
+		// No error found
+		if( !this.mediaContainer ) {
+
+			this.emit('error', {
+
+				//code: this.element.error,
+				message: 'No suitable media container found'
+			});
+		}
 	},
 
 	/**
@@ -142,25 +153,17 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
-	 * Get correct plugin
-	 */
-	getPlugin: function () {
-
-
-	},
-
-	/**
 	 * Sets the volume of the player, values between 0 and 100 are valid.
 	 */
-	setVolume: function( value ) {
+	/*setVolume: function( value ) {
 
 		// Validate range
 		if( value < 0 || value > 100 ) {
 			return;
 		}
 
-		this.plugin.setVolume(value);
-	},
+		this.mediaContainer.setVolume(value);
+	},*/
 
 	getVolume: function () {
 		return this._playerData.volume;
@@ -202,53 +205,24 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 
 	pbPlayer.prototype[value] = function () {
 
-		var currentMedia = this.playlist.getCurrent(),
-			plugin;
+		var currentMedia = this.playlist.getCurrent();
 
 		if( !currentMedia ) {
 
-			this.emit('error', {
+			return this.emit('error', {
 
 				//code: this.element.error,
 				message: 'No media given'
 			});
-			return;
 		}
 
-		plugin = this.getPluginForMedia(currentMedia);
+		this.getMediaContainer(currentMedia);
 
-		if( !plugin ) {
-			console.info('Couldn\'t find plugin for media');
-			return;
+		if( !this.mediaContainer ) {
+
+			return this;
 		}
 
-        plugin[value].apply(plugin, PB.toArray(arguments));
+        this.mediaContainer[value].apply(this.mediaContainer, PB.toArray(arguments));
 	};
 });
-
-// Statics
-
-// pbPlayer default settings
-pbPlayer.defaults = {
-
-	solution: 'html5',	// Flash
-	autostart: false,
-	volume: 100,
-	path: '/pbPlayer/dist/',
-	preload: 'auto'
-};
-
-pbPlayer.skins = {};
-pbPlayer.plugins = {};
-
-pbPlayer.registerPlugin = function ( key, plugin ) {
-
-	pbPlayer.plugins[key] = plugin;
-};
-
-pbPlayer.registerSkin = function () {};
-
-pbPlayer.config = function ( config ) {
-
-	PB.overwrite(pbPlayer.defaults, config);
-}; // Set defaults for all pbplayer instances

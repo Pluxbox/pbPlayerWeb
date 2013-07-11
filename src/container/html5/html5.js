@@ -292,5 +292,5 @@ Html5.canPlayType = function ( codec ) {
 	return canPlay === 'probably' || canPlay === 'maybe';
 };
 
-pbPlayer.registerPlugin('html5', Html5);
+pbPlayer.registerMediaContainer('html5', Html5);
 
