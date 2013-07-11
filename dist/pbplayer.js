@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-07-11 22:27
+ * Build date 2013-07-11 22:31
  */
 (function ( name, context, definition ) {
 	
@@ -787,7 +787,27 @@ Html5.canPlayType = function ( codec ) {
 pbPlayer.registerMediaContainer('html5', Html5);
 
 
+var flashVersion;
+
 window.__pbPlayer_flash__ = {};
+
+// Flash detection
+if( navigator.plugins && navigator.plugins['Shockwave Flash'] ) {
+	
+	flashVersion = navigator.plugins['Shockwave Flash'].description;
+} else if ( window.ActiveXObject ) {
+	
+	try {
+		
+		flashVersion = new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version');
+	} catch (e) {}
+}
+
+if( flashVersion ) {
+	
+	flashVersion = flashVersion.match(/\d+/g);
+	flashVersion = Number(flashVersion[0]+'.'+flashVersion[1]);
+}
 
 /**
  * Flash ondemand media communication layer
@@ -1061,7 +1081,7 @@ Flash.canPlayType = function ( codec, media ) {
 
 	var supportedCodecs = { mp3: true, mp4: true };
 
-	return /*PB.support.flash && PB.support.flash >= 9 &&*/ !!supportedCodecs[codec];
+	return (flashVersion >= 9 && supportedCodecs[codec]);
 };
 
 pbPlayer.registerMediaContainer('flash', Flash);
