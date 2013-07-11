@@ -71,7 +71,7 @@ module.exports = function(grunt) {
 				files: ['**/*.js'],
 				tasks: ['default'],
 				options: {
-					nospawn: true,
+					//nospawn: true,
 				},
 			},
 		},
