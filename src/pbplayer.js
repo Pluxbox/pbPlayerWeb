@@ -89,44 +89,51 @@ pbPlayer = PB.Class(PB.Observer, {
 	 */
 	getMediaContainer: function ( media ) {
 
+		var solutions = this.options.solution.replace(',', '').split(' '),
+			solution,
+			mediaContainer,
+			i = 0;
+
 		// Already matched a container
 		if( this.mediaContainer ) {
 
 			return;
 		}
 
-		this.options.solution.split(' ').forEach(function( key ) {
+		for( ; i < solutions.length; i++ ) {
 
-			if( this.mediaContainer ) {
+			solution = solutions[i];
+			mediaContainer = pbPlayer.mediaContainers[solution];
 
-				return;
+			if( !mediaContainer ) {
+
+				this.emit('error', {
+
+					message: 'Media container `'+solution+'` not found'
+				});
+				continue;
 			}
 
-			var mediaContainer = pbPlayer.mediaContainers[key];
+			// Find suitable media container
+			PB.each(media, function ( codec, url ) {
 
-			PB.each(media, function( key, value ) {
+				if( mediaContainer.canPlayType(codec) ) {
 
-				if( this.mediaContainer ) {
+					this.mediaContainer = new mediaContainer(this, url, media);
 
-					return;
+					// Stop loop
+					return true;
 				}
+			}, this);
+		}
 
-				if( mediaContainer.canPlayType( key ) ) {
-
-					return this.mediaContainer = new mediaContainer(this, value);
-				}
-
-			}, this)
-
-		}, this);
-
-		// No error found
+		// No media container found
 		if( !this.mediaContainer ) {
 
 			this.emit('error', {
 
-				//code: this.element.error,
-				message: 'No suitable media container found'
+				message: 'No suitable media container found',
+				media: media
 			});
 		}
 	},
