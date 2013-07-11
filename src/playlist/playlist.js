@@ -46,6 +46,16 @@ var Playlist = PB.Class({
 	},
 
 	/**
+	 * Get number of playlist items
+	 *
+	 * @return {Number}
+	 */
+	size: function () {
+
+		return this._entries.length;
+	},
+
+	/**
 	 * Removes a media object to the playlist.
 	 * @param {Object / Array} The media object to remove from the playlist.
 	 */

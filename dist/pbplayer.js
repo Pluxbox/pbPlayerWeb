@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-07-11 14:09
+ * Build date 2013-07-11 14:14
  */
 (function ( name, context, definition ) {
 	
@@ -120,6 +120,12 @@ pbPlayer = PB.Class(PB.Observer, {
 	addMedia: function ( media ) {
 
 		this.playlist.add(media);
+
+		// Autostart, does not work on some mobile/handheld devices
+		if( this.options.autostart && this.playlist.size() === 1 ) {
+
+			this.play();
+		}
 	},
 
 	/**
@@ -370,6 +376,16 @@ var Playlist = PB.Class({
 	has: function ( media ) {
 
 		return this._entries.indexOf(media) !== -1;
+	},
+
+	/**
+	 * Get number of playlist items
+	 *
+	 * @return {Number}
+	 */
+	size: function () {
+
+		return this._entries.length;
 	},
 
 	/**
