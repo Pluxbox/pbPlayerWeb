@@ -39,6 +39,7 @@ module.exports = function(grunt) {
 
 					// Media containers
 					'src/container/html5/html5.js',
+					'src/container/flash/flash.js',
 
 					// Outro
 					'src/outro.js'

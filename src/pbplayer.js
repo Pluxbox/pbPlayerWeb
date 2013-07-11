@@ -145,6 +145,11 @@ pbPlayer = PB.Class(PB.Observer, {
 					return true;
 				}
 			}, this);
+
+			if( this.mediaContainer ) {
+
+				break;
+			}
 		}
 
 		// No media container found

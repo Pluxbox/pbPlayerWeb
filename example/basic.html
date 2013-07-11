@@ -12,18 +12,18 @@
 
 pbPlayer.config({
 	
-	solution: 'html5',
-	volume: 50
+	path: '/pbPlayer/dist/',
+	solution: 'flash html5',
+	volume: 50,
+	debug: true
 });
 
 // without new does not work on ie9
 var player = new pbPlayer({
 
-	solution: 'html5',
-	path: '/pbPlayer/dist/',
 	preload: 'auto',
-	volume: 80,
-	autostart: true
+	volume: 0,
+	//autostart: true,
 });
 
 //console.log(player);
@@ -31,16 +31,17 @@ var player = new pbPlayer({
 // Set single file
 player.addMedia({
 
-	//mp3: 'http://192.168.1.112/bla.mp3',
-	mp3: 'http://icecast.omroep.nl/radio1-bb-mp3',
-	ogg: 'http://192.168.1.112/bla.ogg',
+	mp3: '/bla.mp3',
+	//mp3: 'http://icecast.omroep.nl/radio1-bb-mp32',
+	ogg: '/bla.ogg',
 	title: "Blep",
-	stream: true
+	stream: false,
 });
 
 player.on('timeupdate', function ( e ) {
 
 	PB.$('#time').setText(''+e.position);
+	PB.$('#timeprogress').morph({width: e.progress+'%'});
 });
 
 player.on('duration', function ( e ) {
@@ -51,6 +52,11 @@ player.on('duration', function ( e ) {
 player.on('progress', function ( e ) {
 
 	PB.$('#progress').morph({width: e.loaded+'%'});
+});
+
+player.on('error', function ( e ) {
+
+	PB.log('error', e.message);
 })
 
 </script>
@@ -66,9 +72,12 @@ player.on('progress', function ( e ) {
 <button onclick="player.playAt(10)">playAt 10s</button>
 <button onclick="player.playAt(30)">playAt 30s</button>
 <button onclick="player.playAt(60)">playAt 60s</button>
+<button onclick="player.playAt(200)">playAt 200s</button>
+<button onclick="player.playAt(260)">playAt 260s</button>
 <br />
-<div style="width: 200px; height: 8px;">
-	<div id="progress" style="background-color: red; width: 0%; height: 8px;"></div>
+<div style="width: 200px; height: 8px; position: relative;">
+	<div id="progress" style="background-color: #CCCC9A; width: 0%; height: 8px; position: absolute; left: 0; top: 0;"></div>
+	<div id="timeprogress" style="background-color: #999967; width: 0%; height: 8px; position: absolute; left: 0; top: 0;"></div>
 </div>
 <br />
 <span id="time">0</span> / <span id="duration">0</span>
