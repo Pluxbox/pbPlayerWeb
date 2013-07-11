@@ -48,10 +48,121 @@ Dispatched when duration of current media object is avaible.
 
 ---
 
+### timeupdate
 
+Dispatched when the play time of the current media container changes.
 
+###### Event data
+```
+{
+  type: {String} "duration",
+  target: {Object} pbPlayer,
+  position: {Float} Played time in seconds,
+  progress: {Float} Played progress in percentage
+}
+```
 
+---
 
+### progress
+
+Dispatched when download progress occurs.
+
+###### Event data
+```
+{
+  type: {String} "duration",
+  target: {Object} pbPlayer,
+  loaded: {Number} Download progress in percentage
+}
+```
+
+---
+
+### loaded
+
+Dispatched when download is completed.
+
+###### Event data
+```
+{
+  type: {String} "loaded",
+  target: {Object} pbPlayer
+}
+```
+
+---
+
+### play
+
+Dispatched when pbPlayer starts playing.
+
+###### Event data
+```
+{
+  type: {String} "play",
+  target: {Object} pbPlayer
+}
+```
+
+---
+
+### pause
+
+Dispatched when pbPlayer get paused.
+
+###### Event data
+```
+{
+  type: {String} "pause",
+  target: {Object} pbPlayer
+}
+```
+
+---
+
+### stop
+
+Dispatched when pbPlayer get stopped.
+
+###### Event data
+```
+{
+  type: {String} "stop",
+  target: {Object} pbPlayer
+}
+```
+
+---
+
+### ended
+
+Dispatched when audio playback has ended.
+
+###### Event data
+```
+{
+  type: {String} "ended",
+  target: {Object} pbPlayer
+}
+```
+
+---
+
+### volumechange
+
+Dispatched when volume has changed.
+
+###### Event data
+```
+{
+  type: {String} "volumechange",
+  target: {Object} pbPlayer,
+  volume: {Number} Volume range from 0 to 100
+}
+```
+
+---
 
 ### mediaadded
 
