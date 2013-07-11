@@ -28,6 +28,9 @@ var Html5 = PB.Class({
 		// Set src
 		this.element.src = src;
 
+		// 
+		this.setVolume(pbPlayer._playerData.volume);
+
 		// Trigger progress when progress event fails
 		this.progress();
 	},
@@ -55,9 +58,9 @@ var Html5 = PB.Class({
 		this._progress = this.progress.bind(this);
 
 		this.element
-			.on('loadedmetadata', this.metadataLoaded.bind(this))
-		//	.on('progress', this.progress.bind(this))
-			.on('error pause play volumechange ended timeupdate', this.eventDelegation.bind(this));
+			.on('loadedmetadata', this.metadataLoaded, this)
+		//	.on('progress', this.progress, this)
+			.on('error pause play volumechange ended timeupdate', this.eventDelegation, this);
 	},
 
 	/**
@@ -80,22 +83,19 @@ var Html5 = PB.Class({
 			error = element ? element.error : null,
 			buffered = element ? element.buffered : null;
 
+		// Element could be removed by calling destoy()
 		if( !element ) {
 
 			return;
 		}
 
-		if( error !== null ) {
-
-			this.pbPlayer.emit('error', {
-
-				code: this.element.error,
-				message: this.NETWORK_ERROR[this.element.error]
-			});
+		// Error occured
+		if( error && error.code ) {
 
 			return;
 		}
 
+		// Emit progress
 		if( buffered.length ) {
 
 			this.pbPlayer.emit('progress', {
@@ -104,7 +104,7 @@ var Html5 = PB.Class({
 			});
 		}
 
-
+		// Loading done
 		if( element.readyState >= 3 ) {
 
 			this.pbPlayer.emit('progress', {
@@ -118,10 +118,11 @@ var Html5 = PB.Class({
 		}
 
 		window.setTimeout(this._progress, 100);
-
-		element = null;
 	},
 
+	/**
+	 *
+	 */
 	eventDelegation: function ( e ) {
 
 		var args = {};
@@ -137,6 +138,11 @@ var Html5 = PB.Class({
 				args.volume = this.element.muted
 					? 0
 					: parseInt(this.element.volume * 100, 10);
+				break;
+
+			case 'error':
+				args.code = this.element.error.code;
+				args.message = this.NETWORK_ERROR[this.element.error.code]
 				break;
 		}
 
@@ -165,7 +171,7 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if( this.element.src !== this._src ) {
+		if( this.element.src.indexOf(this._src) < 0 ) {
 
 			this.element.src = this._src;
 		}
@@ -212,8 +218,6 @@ var Html5 = PB.Class({
 		this.element.src = '';
 		this.loading = false;
 
-		// Need this.element.load() ?
-
 		this.pbPlayer.emit('stop');
 	},
 
@@ -246,7 +250,10 @@ var Html5 = PB.Class({
 	 */
 	playAt: function ( position ) {
 
-		this.element.currentTime = position;
+		try {
+
+			this.element.currentTime = position;
+		} catch (e) { setTimeout(this.playAt.bind(this, position), 50) };
 	}
 });
 
