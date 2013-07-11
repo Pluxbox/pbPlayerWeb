@@ -16,7 +16,8 @@ pbPlayer.config({
 	volume: 50
 });
 
-var player = pbPlayer({
+// without new does not work on ie9
+var player = new pbPlayer({
 
 	solution: 'html5',
 	path: '/pbPlayer/dist/',
