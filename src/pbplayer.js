@@ -33,7 +33,9 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		this._playerData = {
 
-			volume: this.options.volume
+			volume: this.options.volume,
+			time: 0,
+			duration: 0
 		};
 	},
 
@@ -187,6 +189,33 @@ pbPlayer = PB.Class(PB.Observer, {
 			PB.log('Event triggered: ', type, eventObject);
 		}
 
+		switch ( type ) {
+
+			case 'volume':
+				this._playerData.volume = data.volume;
+				break;
+
+			case 'timeupdate':
+				this._playerData.time = data.position;
+				break;
+
+			case 'duration':
+				this._playerData.duration = data.length;
+				break;
+
+			case 'play':
+				this._playerData.playState = pbPlayer.PLAYSTATE_PLAYING;
+				break;
+
+			case 'pause':
+				this._playerData.playState = pbPlayer.PLAYSTATE_PAUSED;
+				break;
+
+			case 'stop':
+				this._playerData.playState = pbPlayer.PLAYSTATE_STOPPED;
+				break;
+		}
+
 		this.parent(type, eventObject);
 	},
 
@@ -209,35 +238,37 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	getVolume: function () {
+
 		return this._playerData.volume;
 	},
 
 	getDuration: function () {
 
-
+		return this._playerData.duration;
 	},
 
 	getTime: function () {
 
-
+		return this._playerData.time;
 	},
 
-	isBuffering: function () {
+	/*isBuffering: function () {
 
-	},
+	},*/
 
 	isPlaying: function () {
 
-
+		return this._playerData.playState === pbPlayer.PLAYSTATE_PLAYING;
 	},
 
 	isPaused: function () {
 
-
+		return this._playerData.playState === pbPlayer.PLAYSTATE_PAUSED;
 	},
 
 	isStopped: function () {
 
+		return this._playerData.playState === pbPlayer.PLAYSTATE_STOPPED;
 	}
 });
 

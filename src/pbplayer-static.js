@@ -11,6 +11,10 @@ pbPlayer.defaults = {
 
 //pbPlayer.skins = {};
 
+pbPlayer.PLAYSTATE_PLAYING = 1;
+pbPlayer.PLAYSTATE_PAUSED = 2;
+pbPlayer.PLAYSTATE_STOPPED = 3;
+
 // 
 pbPlayer.mediaContainers = {};
 
@@ -21,7 +25,7 @@ pbPlayer.mediaContainers = {};
  * @param {Object} MediaContainer
  */
 pbPlayer.registerMediaContainer = function ( name, container ) {
-
+	
 	pbPlayer.mediaContainers[name] = container;
 };
 
