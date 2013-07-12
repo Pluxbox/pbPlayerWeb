@@ -109,11 +109,13 @@ var Playlist = PB.Class({
 		var entry = this._entries[this._currentEntryIndex + 1];
 
 		if( entry === undefined ) {
-			return;
+			return false;
 		}
 
 		this._currentEntryIndex++;
 		this._player.emit('mediachanged', { media: entry });
+
+		return true;
 	},
 
 	/**
@@ -124,11 +126,12 @@ var Playlist = PB.Class({
 		var entry = this._entries[this._currentEntryIndex - 1];
 
 		if( entry === undefined ) {
-			return;
+			return false;
 		}
 
 		this._currentEntryIndex--;
 		this._player.emit('mediachanged', { media: entry });
-	}
 
+		return true;
+	}
 });

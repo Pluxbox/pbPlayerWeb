@@ -168,6 +168,32 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
+	 * Destoy current media container
+	 */
+	destroyCurrentMediaContainer: function () {
+
+		if( this.mediaContainer ) {
+
+			this.mediaContainer.destroy();
+			this.mediaContainer = null;
+		}
+
+		// Todo, reset duration/time/playstate/..
+		this._playerData.playstate = pbPlayer.PLAYSTATE_STOPPED;
+
+		this.emit('duration', {
+
+			length: 0
+		});
+
+		this.emit('timeupdate', {
+
+			position: 0,
+			progress: 0
+		});
+	},
+
+	/**
 	 * Event normalisation
 	 *
 	 * Add type and target to event object
@@ -191,7 +217,7 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		switch ( type ) {
 
-			case 'volume':
+			case 'volumechange':
 				this._playerData.volume = data.volume;
 				break;
 
@@ -217,6 +243,32 @@ pbPlayer = PB.Class(PB.Observer, {
 		}
 
 		this.parent(type, eventObject);
+	},
+
+	/**
+	 * Goto next entry in playlist
+	 */
+	next: function () {
+
+		this.destroyCurrentMediaContainer();
+
+		if( this.playlist.next() ) {
+
+			this.play();
+		}
+	},
+
+	/**
+	 * Goto previous entry in playlist
+	 */
+	previous: function () {
+
+		this.destroyCurrentMediaContainer();
+
+		if( this.playlist.previous() ) {
+
+			this.play();
+		}
 	},
 
 	/**
