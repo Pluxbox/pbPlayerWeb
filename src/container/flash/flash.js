@@ -30,7 +30,8 @@ var Flash = PB.Class({
 	 */
 	construct: function ( pbPlayer, src ) {
 
-		var flashContainer = pbPlayer.options.path;
+		var flashContainer = pbPlayer.options.path,
+			currentMedia = pbPlayer.playlist.getCurrent();
 
 		this.pbPlayer = pbPlayer;
 
@@ -39,10 +40,22 @@ var Flash = PB.Class({
 		this.queue = [];
 		this.flashReady = false;
 
-		if( pbPlayer.playlist.getCurrent().stream ) {
+		// Set correct container for streaming media
+		if( currentMedia.stream ) {
 
-			flashContainer += 'pbstreamplayer.swf';
-		} else {
+			// Icecast player
+			if( currentMedia.icecast ) {
+
+				flashContainer += 'pbicecastplayer.swf';
+			}
+			// Use swap mechanism
+			else {
+
+				flashContainer += 'pbstreamplayer.swf';
+			}
+		}
+		// Ondemand flash container
+		else {
 
 			flashContainer += 'pbplayer.swf';
 		}
