@@ -18,20 +18,17 @@ pbPlayer.config({
 	debug: false
 });
 
-// without new does not work on ie9
+// without new ie9 fails
 var player = new pbPlayer({
 
-	preload: 'auto',
-	volume: 0,
 	autostart: true
 });
 
 // Set single file
 player.addMedia({
 
-	mp3: '/bla.mp3',
-	ogg: '/bla.ogg',
-	//mp3: 'http://icecast.omroep.nl/radio1-bb-mp3',
+	//ogg: 'http://152.46.7.128:8000/wxyc.ogg',
+	mp3: 'http://icecast.omroep.nl/3fm-bb-mp3',
 });
 
 player.on('timeupdate', function ( e ) {
@@ -50,11 +47,6 @@ player.on('progress', function ( e ) {
 	PB.$('#progress').setStyle({width: e.loaded+'%'});
 });
 
-player.on('ended', function ( e ) {
-
-	PB.log('ended');
-});
-
 player.on('error', function ( e ) {
 
 	PB.log('error', e.message);
@@ -62,19 +54,13 @@ player.on('error', function ( e ) {
 
 </script>
 
+<br />
 <button onclick="player.play()">Play</button>
-<button onclick="player.pause()">Pause</button>
 <button onclick="player.stop()">Stop</button>
 <br />
 <button onclick="player.setVolume(100)">Volume 100%</button>
 <button onclick="player.setVolume(50)">Volume 50%</button>
 <button onclick="player.setVolume(0)">Volume 0%</button>
-<br />
-<button onclick="player.playAt(10)">playAt 10s</button>
-<button onclick="player.playAt(30)">playAt 30s</button>
-<button onclick="player.playAt(60)">playAt 60s</button>
-<button onclick="player.playAt(200)">playAt 200s</button>
-<button onclick="player.playAt(280)">playAt 280s</button>
 <br />
 <div style="width: 200px; height: 8px; position: relative;">
 	<div id="progress" style="background-color: #CCCC9A; width: 0%; height: 8px; position: absolute; left: 0; top: 0;"></div>

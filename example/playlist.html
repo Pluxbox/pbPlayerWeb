@@ -29,21 +29,15 @@ player.addMedia([
 	{
 
 		mp3: '/bla.mp3',
-		title: "Blep 1",
+		title: 'Bla.mp3',
 	},
 	{
 
 		ogg: '/bla.ogg',
-		title: "Blep 2",
+		title: 'Bla.ogg',
 	}
 ]);
 
-/*player.addMedia({
-
-	mp3: '/bla.mp3',
-	title: "Blep 3",
-});
-*/
 player.on('mediachanged', function ( e ) {
 
 	PB.$('#media').setText(e.media.title);
