@@ -44,6 +44,11 @@ player.addMedia([
 	title: "Blep 3",
 });
 */
+player.on('mediachanged', function ( e ) {
+
+	PB.$('#media').setText(e.media.title);
+});
+
 player.on('timeupdate', function ( e ) {
 
 	PB.$('#time').setText(''+e.position);
@@ -86,6 +91,8 @@ player.on('error', function ( e ) {
 <br />
 <button onclick="player.previous()">Previous song</button>
 <button onclick="player.next()">Next song</button>
+<br />
+<div id="media"></div>
 <br />
 <div style="width: 200px; height: 8px; position: relative;">
 	<div id="progress" style="background-color: #CCCC9A; width: 0%; height: 8px; position: absolute; left: 0; top: 0;"></div>
