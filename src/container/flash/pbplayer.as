@@ -47,7 +47,7 @@ package {
 
 			flash.system.Security.allowDomain('*');
 
-			debug("PB.Player Flex, V4.0.0");
+			debug("pbPlayer Flex, V4.0.0");
 
 			addGlobalEvents();
 		}

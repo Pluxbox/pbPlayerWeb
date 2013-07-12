@@ -34,6 +34,7 @@ package {
 		private var volumeLvl:Number = 0;
 		
 		private var streamTimer:Timer = new Timer( 1200 * 1000, 0 );	// 20 minutes stream switch
+		private var timeupdateTimer:Timer = new Timer( 333, 0 );
 		
 		private var bufferTime:Number = 10;	// In seconds
 		
@@ -48,8 +49,8 @@ package {
 		public function pbstreamplayer ():void {
 			
 			flash.system.Security.allowDomain('*');
-			
-			debug("PB.Player Flex Stream, V3.3.0");
+
+			debug("pbPlayer Flex stream, V4.0.0");
 			
 			addGlobalEvents();
 		}
@@ -70,11 +71,12 @@ package {
 			
 			// Add timer callback
 			streamTimer.addEventListener(TimerEvent.TIMER, switchstream);
+			timeupdateTimer.addEventListener(TimerEvent.TIMER, timeupdate);
 		}
 		
 		public function switchstream ( event:Event ):void {
 			
-			debug('PB.Player Flex Stream, switch');
+			debug('pbPlayer Flex Stream, swap');
 			
 			streamTimer.stop();
 			
@@ -141,8 +143,6 @@ package {
 				audio.soundTransform = transform;
 				
 				isPlaying = true;
-				
-			//	play();
 			}
 		}
 		
@@ -185,6 +185,16 @@ package {
 			sound.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			sound.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 		}
+
+		public function timeupdate (event:Event):void {
+
+			position = audio.position;
+			callPBArg('timeupdate', {
+
+				position: audio.position / 1000,
+				progress: 0
+			});
+		}
 		
 		/**
 		 *
@@ -223,6 +233,7 @@ package {
 			}
 			
 			streamTimer.start();
+			timeupdateTimer.start();
 			
 			callPB('play');
 		}
@@ -243,6 +254,7 @@ package {
 			audio.stop();
 			
 			streamTimer.stop();
+			timeupdateTimer.stop();
 			
 			callPB('pause');
 		}
@@ -264,22 +276,20 @@ package {
 			setFile( audioURL, false );
 			
 			streamTimer.stop();
-			
-			callPBArg('timeupdate', '0');
+
 			callPB('stop');
+			
+			callPBArg('timeupdate', {
+
+				position: 0,
+				progress: 0
+			});
 		}
 		
 		/**
-		 *
+		 * Dummy function, not able to skip in stream..
 		 */
-		public function playAt ( seconds:Number ):void {
-			
-			pause();
-			position = seconds * 1000;
-			play();
-			
-			callPBArg('timeupdate', (position / 1000).toString());
-		}
+		public function playAt ( seconds:Number ):void {}
 		
 		/**
 		 *
@@ -299,20 +309,25 @@ package {
 			transform.volume = volume;
 			audio.soundTransform = transform;
 			
-			callPBArg('volumechange', (volume*100).toString());
+			callPBArg('volumechange', {
+
+				volume: volume*100
+			});
 		}
 		
 		/**
 		 * Call pbplayer with
 		 */
 		public function callPB ( type:String ):void {
-			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.emit', type);
+
+			ExternalInterface.call('window.__pbPlayer_flash__["'+pbPlayerId+'"]', type);
 		}
-		
-		public function callPBArg ( type:String, arg:String ):void {
-			
-			ExternalInterface.call('PB.Player.instances.'+pbPlayerId+'.emit', type, [arg]);
+
+		public function callPBArg ( type:String, arg:Object ):void {
+
+			ExternalInterface.call("console.log", type, arg);
+
+			ExternalInterface.call('window.__pbPlayer_flash__["'+pbPlayerId+'"]', type, arg);
 		}
 		
 		/**
@@ -330,13 +345,24 @@ package {
 		
 		private function completeHandler(event:Event):void {
 			
-			callPBArg('loadProgress', '100');
+			callPBArg('progress', {
+
+				loaded: 100
+			});
+
+			callPBArg('duration', {
+
+				length: Infinity
+			});
         }
 
         private function ioErrorHandler(event:Event):void {
 
 			debug("File not found: "+audioURL);
-			callPBArg('error', 'Failed to load fle');
+			callPBArg('error', {
+
+				message: 'Failed to load fle'
+			});
         }
 
         private function progressHandler(event:ProgressEvent):void {
@@ -349,8 +375,12 @@ package {
 			
 			progressTrottle = (new Date()).getTime();
 			
-			callPBArg('loadProgress', Math.ceil( (event.bytesLoaded / event.bytesTotal) * 100 ).toString());
-			callPBArg('duration', ((sound.bytesTotal / (sound.bytesLoaded/sound.length)) / 1000).toString());
+			callPBArg('duration', {
+
+				length: Infinity	// Infinity hack
+			});
+
+			sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
         }
 
 		private function soundCompleteHandler(event:Event):void {
