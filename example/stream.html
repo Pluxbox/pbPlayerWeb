@@ -27,8 +27,10 @@ var player = new pbPlayer({
 // Set single file
 player.addMedia({
 
-	//ogg: 'http://152.46.7.128:8000/wxyc.ogg',
+	//ogg: 'http://152.46.7.128:8000/wxyc.ogg', // Coudn't find a ogg (vorbis or opus) stream
 	mp3: 'http://icecast.omroep.nl/3fm-bb-mp3',
+	stream: true,	// Indicate streaming contents
+	icecast: true	// Indicate icecast server
 });
 
 player.on('timeupdate', function ( e ) {
