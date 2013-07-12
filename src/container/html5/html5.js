@@ -59,7 +59,6 @@ var Html5 = PB.Class({
 
 		this.element
 			.on('loadedmetadata', this.metadataLoaded, this)
-		//	.on('progress', this.progress, this)
 			.on('error pause play volumechange ended timeupdate', this.eventDelegation, this);
 	},
 
