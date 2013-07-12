@@ -20,7 +20,7 @@ Features:
 
 - customizable skins
 
-A list of examples can be found [here](...).
+A list of examples can be found [here](#examples).
 
 Installation
 ------------
@@ -54,9 +54,9 @@ player.play();
 Examples
 --------
 
-Example 1: [Listening to events](...)    
-Example 2: [Simple skin](...)    
-Example 3: [Custom skin](...)
+Example 1: [Basic](/example/basic.html)    
+Example 2: [Stream](/example/stream.html)    
+Example 3: [Playlist](/example/playlist.html)
 
 Usage
 -----
@@ -129,7 +129,7 @@ Global (default settings)
 pbPlayer.config({
 	
 	// Resources path, swf, etc..
-    containerPath: '/pbPlayer/dist/containers/',
+    containerPath: '/pbPlayer/dist/',
     // Defaults to false
     skin: 'default',
     // Set default volume for all pbPlayers on page
