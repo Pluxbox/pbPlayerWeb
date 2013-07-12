@@ -148,8 +148,6 @@ var Html5 = PB.Class({
 		this.pbPlayer.emit(e.type, args);
 	},
 
-	// Trigger events
-
 	/**
 	 * Set src
 	 */

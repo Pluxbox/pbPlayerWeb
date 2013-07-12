@@ -70,7 +70,7 @@ pbPlayer = PB.Class(PB.Observer, {
 		this.playlist.add(media);
 
 		// Autostart, does not work on some mobile/handheld devices
-		if( this.options.autostart && this.playlist.size() === 1 ) {
+		if( this.options.autostart && this.playlist.size() === 1 && !/(iPod|iPad|iPhone).*AppleWebKit/.test(window.navigator.userAgent) ) {
 
 			this.play();
 		}
