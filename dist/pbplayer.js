@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-07-11 22:40
+ * Build date 2013-07-12 11:07
  */
 (function ( name, context, definition ) {
 	
@@ -739,6 +739,13 @@ var Html5 = PB.Class({
 		this.loading = false;
 
 		this.pbPlayer.emit('stop');
+
+		// Reset time/position to beginning
+		this.pbPlayer.emit('timeupdate', {
+
+			position: 0,
+			progress: 0
+		});
 	},
 
 	/**

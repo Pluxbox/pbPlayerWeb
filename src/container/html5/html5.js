@@ -219,6 +219,13 @@ var Html5 = PB.Class({
 		this.loading = false;
 
 		this.pbPlayer.emit('stop');
+
+		// Reset time/position to beginning
+		this.pbPlayer.emit('timeupdate', {
+
+			position: 0,
+			progress: 0
+		});
 	},
 
 	/**
