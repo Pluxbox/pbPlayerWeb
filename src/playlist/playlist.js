@@ -97,6 +97,8 @@ var Playlist = PB.Class({
 	getCurrent: function() {
 
 		var entry = this._entries[this._currentEntryIndex];
+		
+		this._player.emit('mediachanged', { media: entry });
 
 		return entry ? entry : null;
 	},
