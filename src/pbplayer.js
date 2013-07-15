@@ -10,7 +10,7 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		if( !(this instanceof pbPlayer) ) {
 
-			return new pbPlayer(element, options)
+			return new pbPlayer(element, options);
 		}
 
 		// Initialize Observer
@@ -336,6 +336,6 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 			return this;
 		}
 
-        this.mediaContainer[value].apply(this.mediaContainer, PB.toArray(arguments));
+		this.mediaContainer[value].apply(this.mediaContainer, PB.toArray(arguments));
 	};
 });

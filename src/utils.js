@@ -4,7 +4,7 @@
 function registerPlayerInstance( pbPlayer ) {
 
 	pbPlayerInstances.push(pbPlayer);
-};
+}
 
 /**
  *
@@ -12,4 +12,4 @@ function registerPlayerInstance( pbPlayer ) {
 function unregisterPlayerInstance( pbPlayer ) {
 
 	pbPlayerInstances.unpush(pbPlayer);
-};
+}

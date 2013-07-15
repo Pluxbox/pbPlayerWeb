@@ -34,6 +34,10 @@ var Playlist = PB.Class({
 
 		this._entries.push(media);
 		this._player.emit('mediaadded', { media: media });
+
+		if( this.size() === 1 ) {
+			this._player.emit('mediachanged', { media: media });
+		}
 	},
 
 	/**
@@ -97,8 +101,6 @@ var Playlist = PB.Class({
 	getCurrent: function() {
 
 		var entry = this._entries[this._currentEntryIndex];
-		
-		this._player.emit('mediachanged', { media: entry });
 
 		return entry ? entry : null;
 	},
