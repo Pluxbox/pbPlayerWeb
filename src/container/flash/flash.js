@@ -1,5 +1,6 @@
 var flashVersion;
 
+// Global variable for flash communication
 window.__pbPlayer_flash__ = {};
 
 // Flash detection
@@ -192,8 +193,6 @@ var Flash = PB.Class({
 			this.addToQueue( 'set', arguments );
 			return;
 		}
-
-		//PB.log(src);
 
 		this.element._src(src);
 	},
