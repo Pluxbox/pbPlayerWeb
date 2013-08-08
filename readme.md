@@ -22,15 +22,20 @@ Features:
 
 A list of examples can be found [here](#examples).
 
+*pbPlayer* uses [pbjs](https://github.com/Saartje87/pbjs-0.6) for classical inheritance and dom/event handling.
+
 Installation
 ------------
 
 * Put pbplayer.js and the container folder + all contents in the same folder.
 
+* Download [pbjs.min.js](https://raw.github.com/Saartje87/pbjs-0.6/master/dist/pbjs.min.js) or [pbjs.js](https://raw.github.com/Saartje87/pbjs-0.6/master/dist/pbjs.js)
+
 * Include pbplayer.js:
 
 
 ```html
+<script src="/pbPlayer/dist/pbjs.min.js"></script>
 <script src="/pbPlayer/dist/pbplayer.min.js"></script>
 ```
 
