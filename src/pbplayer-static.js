@@ -3,7 +3,7 @@ pbPlayer.defaults = {
 
 	debug: true,
 	solution: 'html5 flash',	// Flash
-	autostart: false,
+	autoplay: false,
 	volume: 100,
 	path: '/pbPlayer/dist/',
 	preload: 'auto'

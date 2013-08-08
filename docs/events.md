@@ -5,7 +5,7 @@ A short example of how to assign events to pbPlayer.
 ```js
 var player = pbPlayer({
   
-  autostart: true  
+  autoplay: true  
 });
 
 // Listen to duration event

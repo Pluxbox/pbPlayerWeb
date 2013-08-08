@@ -71,7 +71,7 @@ Since there is no skin defined by default, the audio will be played in the backg
 ```js
 var pbplayer = new pbPlayer({
 	
-	autostart: true
+	autoplay: true
 });
 
 pbplayer.addMedia({
@@ -141,7 +141,7 @@ Local (disregarding the defaults)
 ```js
 pbPlayer({
 	
-	autostart: false,
+	autoplay: false,
 	volume: 80
 });
 ```

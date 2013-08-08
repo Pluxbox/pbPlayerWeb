@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-07-15 13:11
+ * Build date 2013-08-08 16:09
  */
 (function ( name, context, definition ) {
 	
@@ -122,8 +122,8 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		this.playlist.add(media);
 
-		// Autostart, does not work on some mobile/handheld devices
-		if( this.options.autostart && this.playlist.size() === 1 && !/(iPod|iPad|iPhone).*AppleWebKit/.test(window.navigator.userAgent) ) {
+		// Autoplay, does not work on some mobile/handheld devices
+		if( this.options.autoplay && this.playlist.size() === 1 && !/(iPod|iPad|iPhone).*AppleWebKit/.test(window.navigator.userAgent) ) {
 
 			this.play();
 		}
@@ -397,7 +397,7 @@ pbPlayer.defaults = {
 
 	debug: true,
 	solution: 'html5 flash',	// Flash
-	autostart: false,
+	autoplay: false,
 	volume: 100,
 	path: '/pbPlayer/dist/',
 	preload: 'auto'
@@ -891,6 +891,7 @@ pbPlayer.registerMediaContainer('html5', Html5);
 
 var flashVersion;
 
+// Global variable for flash communication
 window.__pbPlayer_flash__ = {};
 
 // Flash detection
@@ -1083,8 +1084,6 @@ var Flash = PB.Class({
 			this.addToQueue( 'set', arguments );
 			return;
 		}
-
-		//PB.log(src);
 
 		this.element._src(src);
 	},
