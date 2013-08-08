@@ -129,7 +129,7 @@ Global (default settings)
 pbPlayer.config({
 	
 	// Resources path, swf, etc..
-    containerPath: '/pbPlayer/dist/',
+    path: '/pbPlayer/dist/',
     // Defaults to false
     skin: 'default',
     // Set default volume for all pbPlayers on page
