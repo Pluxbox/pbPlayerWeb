@@ -7,13 +7,15 @@ var Html5 = PB.Class({
 	 */
 	construct: function ( pbPlayer, src ) {
 
+		console.log('Container construct');
+
 		var preload = pbPlayer.options.preload === 'metadata' ? 'metadata' : 'auto';
 
 		// Needed when stopping playback / download
 		this._src = src;
 
-        // Wrapper for Safari
-        this._play = this.play.bind(this);
+		// Wrapper for Safari
+		this._play = this.play.bind(this);
 
 		this.pbPlayer = pbPlayer;
 
@@ -39,6 +41,8 @@ var Html5 = PB.Class({
 	 *
 	 */
 	destroy: function () {
+
+		console.log('Container destroy');
 
 		this.element.pause();
 		this.element.src = '';
@@ -168,28 +172,30 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if( this.element.src.indexOf(this._src) < 0 ) {
+		if( this.element && this.element.src.indexOf(this._src) < 0 ) {
 
 			this.element.src = this._src;
 		}
 
-        try {
+		try {
 
-        	this.element.currentTime = this.element.currentTime;
+			this.element.currentTime = this.element.currentTime;
 
-            this.element.play();
+			this.element.play();
 
-        } catch ( e ) {
+		} catch ( e ) {
 
-        	if( !this.loading ) {
+			if( !this.loading ) {
 
-        		this.element.load();
-        		this.loading = true;
-        	}
+				this.element.load();
+				this.loading = true;
+			}
 
-        	// Safari doesn't load duration
-            setTimeout(this._play, 17);
-        }
+			// Safari doesn't load duration
+			if( this.element ) {
+				setTimeout(this._play, 17);
+			}
+		}
 	},
 
 	/**

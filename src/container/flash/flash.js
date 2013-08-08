@@ -149,14 +149,14 @@ var Flash = PB.Class({
 		clearTimeout( this.isLoadedTimer );
 
 		// abort open request
-        try { 
+		try { 
 
-            if ( this.element._close) {
+			if ( this.element._close) {
 
-                this.element._close();
-            }
+				this.element._close();
+			}
 
-        } catch(e) {}
+		} catch(e) {}
 
 		PB.$(this.element).remove();
 

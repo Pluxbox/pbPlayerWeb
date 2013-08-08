@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-07-12 16:18
+ * Build date 2013-07-15 13:11
  */
 (function ( name, context, definition ) {
 	
@@ -42,7 +42,7 @@ if( !PB ) {
 function registerPlayerInstance( pbPlayer ) {
 
 	pbPlayerInstances.push(pbPlayer);
-};
+}
 
 /**
  *
@@ -50,8 +50,7 @@ function registerPlayerInstance( pbPlayer ) {
 function unregisterPlayerInstance( pbPlayer ) {
 
 	pbPlayerInstances.unpush(pbPlayer);
-};
-
+}
 pbPlayer = PB.Class(PB.Observer, {
 
 	/**
@@ -64,7 +63,7 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		if( !(this instanceof pbPlayer) ) {
 
-			return new pbPlayer(element, options)
+			return new pbPlayer(element, options);
 		}
 
 		// Initialize Observer
@@ -390,10 +389,9 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 			return this;
 		}
 
-        this.mediaContainer[value].apply(this.mediaContainer, PB.toArray(arguments));
+		this.mediaContainer[value].apply(this.mediaContainer, PB.toArray(arguments));
 	};
 });
-
 // pbPlayer default options
 pbPlayer.defaults = {
 
@@ -472,6 +470,10 @@ var Playlist = PB.Class({
 
 		this._entries.push(media);
 		this._player.emit('mediaadded', { media: media });
+
+		if( this.size() === 1 ) {
+			this._player.emit('mediachanged', { media: media });
+		}
 	},
 
 	/**
@@ -535,8 +537,6 @@ var Playlist = PB.Class({
 	getCurrent: function() {
 
 		var entry = this._entries[this._currentEntryIndex];
-		
-		this._player.emit('mediachanged', { media: entry });
 
 		return entry ? entry : null;
 	},
@@ -584,13 +584,15 @@ var Html5 = PB.Class({
 	 */
 	construct: function ( pbPlayer, src ) {
 
+		console.log('Container construct');
+
 		var preload = pbPlayer.options.preload === 'metadata' ? 'metadata' : 'auto';
 
 		// Needed when stopping playback / download
 		this._src = src;
 
-        // Wrapper for Safari
-        this._play = this.play.bind(this);
+		// Wrapper for Safari
+		this._play = this.play.bind(this);
 
 		this.pbPlayer = pbPlayer;
 
@@ -616,6 +618,8 @@ var Html5 = PB.Class({
 	 *
 	 */
 	destroy: function () {
+
+		console.log('Container destroy');
 
 		this.element.pause();
 		this.element.src = '';
@@ -745,28 +749,30 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if( this.element.src.indexOf(this._src) < 0 ) {
+		if( this.element && this.element.src.indexOf(this._src) < 0 ) {
 
 			this.element.src = this._src;
 		}
 
-        try {
+		try {
 
-        	this.element.currentTime = this.element.currentTime;
+			this.element.currentTime = this.element.currentTime;
 
-            this.element.play();
+			this.element.play();
 
-        } catch ( e ) {
+		} catch ( e ) {
 
-        	if( !this.loading ) {
+			if( !this.loading ) {
 
-        		this.element.load();
-        		this.loading = true;
-        	}
+				this.element.load();
+				this.loading = true;
+			}
 
-        	// Safari doesn't load duration
-            setTimeout(this._play, 17);
-        }
+			// Safari doesn't load duration
+			if( this.element ) {
+				setTimeout(this._play, 17);
+			}
+		}
 	},
 
 	/**
@@ -1033,14 +1039,14 @@ var Flash = PB.Class({
 		clearTimeout( this.isLoadedTimer );
 
 		// abort open request
-        try { 
+		try { 
 
-            if ( this.element._close) {
+			if ( this.element._close) {
 
-                this.element._close();
-            }
+				this.element._close();
+			}
 
-        } catch(e) {}
+		} catch(e) {}
 
 		PB.$(this.element).remove();
 
