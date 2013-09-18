@@ -34,7 +34,7 @@ var html5 = PB.Class({
 		try {
 
 			// Desktop safari fails playing audio before version 5
-			if( PB.browser.isSafari && navigator.userAgent.indexOf('Mobile') === -1 ) {
+			if( PB.browser.isSafari && ( navigator.userAgent.indexOf('Mobile') === -1 && navigator.userAgent.indexOf('SmartTV') === -1 ) ) {
 
 				if( PB.browser.version <= 5.0 ) {
 
