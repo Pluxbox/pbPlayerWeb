@@ -296,7 +296,9 @@ Html5.canPlayType = function ( codec ) {
 	// Safari 4 issues
 	try {
 
-		if(navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Mobile') === -1 ) {
+		if(navigator.userAgent.indexOf('Safari') > -1 && 
+				( navigator.userAgent.indexOf('Mobile') === -1 && 
+						navigator.userAgen.indexOf('SmartTV') === -1 ) ) {
 
 			if( PB.browser.version <= 5.0 ) {
 
