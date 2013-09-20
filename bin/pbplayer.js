@@ -27,7 +27,7 @@ var PB = context.PB,
 
 var PBPlayer = PB.Class(PB.Observer, {
 
-	VERSION: '3.4.1',
+	VERSION: '3.4.2',
 
 	/**
 	 *
@@ -492,11 +492,10 @@ var html5 = PB.Class({
 
 		var audio = new window.Audio;
 
-		// Safari 4 issues
+
 		try {
 
-			// Desktop safari fails playing audio before version 5
-			if( PB.browser.isSafari && navigator.userAgent.indexOf('Mobile') === -1 ) {
+			if( PB.browser.isSafari && ( navigator.userAgent.indexOf('Mobile') === -1 && navigator.userAgent.indexOf('SmartTV') === -1 ) ) {
 
 				if( PB.browser.version <= 5.0 ) {
 
@@ -682,9 +681,11 @@ var html5 = PB.Class({
 	 */
 	stop: function () {
 
+
 		this.element.pause();
 
 		try { this.element.currentTime = 0; } catch (e){};
+
 
 		this.context.emit('stop');
 	},
