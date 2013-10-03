@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-08-08 16:09
+ * Build date 2013-10-03 21:09
  */
 (function ( name, context, definition ) {
 	
@@ -575,6 +575,7 @@ var Playlist = PB.Class({
 		return true;
 	}
 });
+
 var Html5 = PB.Class({
 
 	NETWORK_ERROR: 'NETWORK_EMPTY NETWORK_IDLE NETWORK_LOADED NETWORK_LOADING NETWORK_NO_SOURCE'.split(' '),
@@ -583,8 +584,6 @@ var Html5 = PB.Class({
 	 *
 	 */
 	construct: function ( pbPlayer, src ) {
-
-		console.log('Container construct');
 
 		var preload = pbPlayer.options.preload === 'metadata' ? 'metadata' : 'auto';
 
@@ -619,8 +618,6 @@ var Html5 = PB.Class({
 	 */
 	destroy: function () {
 
-		console.log('Container destroy');
-
 		this.element.pause();
 		this.element.src = '';
 
@@ -641,6 +638,12 @@ var Html5 = PB.Class({
 		this.element
 			.on('loadedmetadata', this.metadataLoaded, this)
 			.on('error pause play volumechange ended timeupdate', this.eventDelegation, this);
+
+		// Manually emit volumechange
+		this.pbPlayer.emit('volumechange', {
+
+			volume: this.pbPlayer._playerData.volume
+		});
 	},
 
 	/**
@@ -859,7 +862,9 @@ Html5.codecs = {
 Html5.canPlayType = function ( codec ) {
 
 	var audio,
-		canPlay;
+		canPlay,
+		version,
+		ua = navigator.userAgent;
 
 	if( !window.Audio || !Html5.codecs[codec] ) {
 
@@ -870,12 +875,15 @@ Html5.canPlayType = function ( codec ) {
 	audio = new window.Audio;
 	canPlay = audio.canPlayType(Html5.codecs[codec]);
 
-	// Safari 4 issues
 	try {
 
-		if(navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Mobile') === -1 ) {
+		// Desktop safari4 should use flash. (It says it can play, but doesn't..)
+		if( ua.indexOf('Safari') > -1 && ua.indexOf('Mobile') === -1 && ua.indexOf('SmartTV') ) {
 
-			if( PB.browser.version <= 5.0 ) {
+			var version = navigator.userAgent.match(/Version\/([0-9\.]+)/);
+			version = version[1] && parseFloat(version[1]);
+
+			if( version <= 5.0 ) {
 
 				return false;
 			}
