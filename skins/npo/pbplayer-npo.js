@@ -307,7 +307,7 @@
 					break;
 
 				case 'ended':
-					this.player.stop();
+					this.player.pause();
 					break;
 
 				case 'change':
@@ -347,22 +347,17 @@
 		},
 
 		progressPoint: function ( e ) {
-	
-			var position = this._playerbar.getXY(true),
-				width = this._playerbar.width(),
-				x = e.pageX - position.left,
-				percent = x / (width / 100);
-	
-			// Min / max
-			percent = ( percent < 0 ) ? 0 : ( percent > 100 ) ? 100 : percent;
-									
-			percent = percent/100;
 
-			// Temp check
-			if ( this._bufferbar.number === 100 ) {
+            var position = this._playerbar.getXY(true),
+                width = this._playerbar.width(),
+                pageX = e.pageX, //fix for ie7
+                x = pageX - position.left,
+                percent = x / (width / 100);
 
-				this.player.playAt( this.duration * percent );
-			}			
+            // Min / max
+            percent = ( percent < 0 ) ? 0 : ( percent > 100 ) ? 100 : percent;
+
+            this.player.playAt( this.duration * (percent/100) );
 		},
 
 		/**

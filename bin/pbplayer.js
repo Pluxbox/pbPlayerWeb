@@ -1,5 +1,5 @@
 /*!
- * pbPlayer v3.4.1
+ * pbPlayer v3.4.2
  * https://github.com/Pluxbox/pbPlayer
  *
  * Requires pbjs javascript framework (>= 0.5.7)
@@ -27,7 +27,7 @@ var PB = context.PB,
 
 var PBPlayer = PB.Class(PB.Observer, {
 
-	VERSION: '3.4.1',
+	VERSION: '3.4.2',
 
 	/**
 	 *
@@ -492,14 +492,12 @@ var html5 = PB.Class({
 			return false;
 		}
 
-		var audio = new window.Audio,
-			ogg = ('no' != audio.canPlayType(codecs.ogg)) && ('' != audio.canPlayType(codecs.ogg)),
-			mp3 = ('no' != audio.canPlayType(codecs.mp3)) && ('' != audio.canPlayType(codecs.mp3)),
-			aac = ('no' != audio.canPlayType(codecs.aac)) && ('' != audio.canPlayType(codecs.aac));
+		var audio = new window.Audio;
+
 
 		try {
 
-			if( PB.browser.isSafari && !PB.browser.isNokiaBrowser ) {
+			if( PB.browser.isSafari && ( navigator.userAgent.indexOf('Mobile') === -1 && navigator.userAgent.indexOf('SmartTV') === -1 ) ) {
 
 				if( PB.browser.version <= 5.0 ) {
 
@@ -685,14 +683,11 @@ var html5 = PB.Class({
 	 */
 	stop: function () {
 
-		var src = this.element.src;
 
 		this.element.pause();
-		this.element.src = '';
 
 		try { this.element.currentTime = 0; } catch (e){};
 
-		this.element.src = src;
 
 		this.context.emit('stop');
 	},

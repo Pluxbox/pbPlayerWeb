@@ -24,15 +24,17 @@ var html5 = PB.Class({
 		}
 
 		// Not just a fake tag... Android...
-		var audio = new window.Audio,
-			ogg = ('no' != audio.canPlayType(codecs.ogg)) && ('' != audio.canPlayType(codecs.ogg)),
-			mp3 = ('no' != audio.canPlayType(codecs.mp3)) && ('' != audio.canPlayType(codecs.mp3)),
-			aac = ('no' != audio.canPlayType(codecs.aac)) && ('' != audio.canPlayType(codecs.aac));
+		var audio = new window.Audio;
+
+		//	ogg = ('no' != audio.canPlayType(codecs.ogg)) && ('' != audio.canPlayType(codecs.ogg)),
+		//	mp3 = ('no' != audio.canPlayType(codecs.mp3)) && ('' != audio.canPlayType(codecs.mp3)),
+		//	aac = ('no' != audio.canPlayType(codecs.aac)) && ('' != audio.canPlayType(codecs.aac));
 
 		// Safari 4 issues
 		try {
 
-			if( PB.browser.isSafari && !PB.browser.isNokiaBrowser ) {
+			// Desktop safari fails playing audio before version 5
+			if( PB.browser.isSafari && ( navigator.userAgent.indexOf('Mobile') === -1 && navigator.userAgent.indexOf('SmartTV') === -1 ) ) {
 
 				if( PB.browser.version <= 5.0 ) {
 
@@ -224,14 +226,15 @@ var html5 = PB.Class({
 	 */
 	stop: function () {
 
-		var src = this.element.src;
+		// Do not reset src, on iPad3 this will trigger an autoplay..
+		//var src = this.element.src;
 
 		this.element.pause();
-		this.element.src = '';
+		//this.element.src = '';
 
 		try { this.element.currentTime = 0; } catch (e){};
 
-		this.element.src = src;
+		//this.element.src = src;
 
 		this.context.emit('stop');
 	},

@@ -22,15 +22,12 @@
 	
 	<script type="text/javascript" charset="utf-8">
 	
-	var player = PB.Player([
-				{
-					url: 'digital.mp3'
-					
-				},
-				{
-					url: 'fallin.mp3'
-				}
-			],{		
+	var player = PB.Player({
+		
+				url: 'http://radiobox2.omroep.nl/broadcaststream/file/150851.mp3',
+				codec: 'mp3',
+				name: 'Radiobox fragment'
+			},{		
 			skin: 'npo',
 			volume: 40
 	});
