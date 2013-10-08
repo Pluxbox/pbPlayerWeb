@@ -291,6 +291,8 @@ var PBPlayer = PB.Class(PB.Observer, {
 				}
 			}, this);
 		}, this);
+
+		this.emit('noPlugin', {});
 	},
 
 	/*
