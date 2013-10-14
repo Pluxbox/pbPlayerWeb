@@ -37,6 +37,7 @@ package {
 		private var duration:Number = 0;
 		
 		private var timeupdateTimer:Timer = new Timer( 333, 0 );
+		private var memoryTimer:Timer = new Timer(1000, 0);
 		
 		private var progressTrottle:Number = 0;
 		
@@ -49,6 +50,10 @@ package {
 		private var pseudestreamStart:Number = 0;
 		private var pseudestreamStartPercent:Number = 0;
 		private var skipTime:Number = 0;
+
+		//
+		private var downloadStopped:Boolean = false;
+		private var maxBytes:Number = (150 * 1024 * 1024);
 		
 		/**
 		 * Constructor
@@ -57,7 +62,7 @@ package {
 			
 			flash.system.Security.allowDomain('*');
 			
-			debug("PB.Player Flex, V3.4.0");
+			debug("PB.Player Flex, V3.5.0");
 			
 			addGlobalEvents();
 		}
@@ -79,6 +84,8 @@ package {
 			
 			// Add timer callback
 			timeupdateTimer.addEventListener(TimerEvent.TIMER, timeupdate);
+			memoryTimer.addEventListener(TimerEvent.TIMER, debugMemory);
+			//memoryTimer.start();
 		}
 		
 		/**
@@ -114,9 +121,10 @@ package {
 		private function connect ():void {
 			
 			audioLoaded = false;
+			downloadStopped = false;
 			
 			// Change offset to start
-			request = new URLRequest( audioURL+(pseudestreamStart ? (audioURL.indexOf('?') ? '?' : ':')+'offset='+pseudestreamStart : '') );
+			request = new URLRequest( audioURL+(pseudestreamStart ? (audioURL.indexOf('?') ? '?' : ':')+'start='+pseudestreamStart : '') );
 			
 			sound = new Sound;
 			
@@ -144,7 +152,15 @@ package {
 		}
 		
 		public function timeupdate (event:Event):void {
-			
+
+			if( downloadStopped && position && audio.position === position ) {
+
+				streamBuffer.start = 0;
+				streamBuffer.end = 0;
+
+				playAt((skipTime + audio.position) / 1000);
+			}
+
 			position = audio.position;
 			callPBArg('timeupdate', {
 				
@@ -249,6 +265,8 @@ package {
 				pseudestreamStartPercent = ((pseudestreamStart / filesize) || 0);
 				skipTime = duration * pseudestreamStartPercent;
 
+				debug('pseudestreamStart: '+pseudestreamStart+' pseudestreamStartPercent: '+pseudestreamStartPercent+' skipTime: '+skipTime);
+
 				streamBuffer.start = position;
 				streamBuffer.end = position;
 				
@@ -318,7 +336,8 @@ package {
 		
 		public function debugMemory ( e:TimerEvent ):void {
 			
-			ExternalInterface.call("console.log", ['Memory: '+System.totalMemory.toString()]);
+			// totalMemory is shared accross all player instances
+			ExternalInterface.call("console.log", 'Memory: '+(System.totalMemory / 1024 / 1024).toFixed()+' mb');
 		}
 		
 		private function completeHandler(event:Event):void {
@@ -358,13 +377,15 @@ package {
         private function progressHandler(event:ProgressEvent):void {
 		
 			// Flash fires like a trilion progress events each second so throttle
-			// the progress event to ~3 event per second
+			// progress event to ~3 event per second
 			if( (progressTrottle + 300) > (new Date()).getTime() ) {
 				
 				return;
 			}
 			
 			progressTrottle = (new Date()).getTime();
+
+			//debug( (event.bytesTotal / 1024 / 1024)+' mb' );
 			
 			callPBArg('progress', {
 				
@@ -391,6 +412,20 @@ package {
 				
 				length: duration / 1000
 			});
+
+			//
+			if( event.bytesTotal > maxBytes ) {
+
+				if( event.bytesLoaded > maxBytes ) {
+
+					debug('Closing download');
+
+					downloadStopped = true;
+					sound.close();
+
+					return;
+				}
+			}
         }
 
 		private function soundCompleteHandler(event:Event):void {
