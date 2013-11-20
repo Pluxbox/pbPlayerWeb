@@ -109,13 +109,15 @@
      */
     function formatTime ( seconds ) {
 
-        var date = new Date( seconds*1000 ),
-            minutes = date.getMinutes(),
-            seconds = date.getSeconds();
+        var date = new Date( seconds * 1000 ),
+            hours = date.getUTCHours(),
+            minutes = date.getUTCMinutes(),
+            seconds = date.getUTCSeconds();
 
-        return (minutes < 10 ? '0': '')+minutes
-            +':'
-            +(seconds < 10 ? '0': '')+seconds;
+        return (hours > 0 ? hours + ':' : '')
+            + (minutes < 10 ? '0' : '') + minutes
+            + ':'
+            + (seconds < 10 ? '0' : '') + seconds;
     }
 
     var pluxbox = PB.Class(/* PB.Player.Skin, */ {
