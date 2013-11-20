@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-11-20 12:34
+ * Build date 2013-11-20 12:59
  */
 (function ( name, context, definition ) {
 	
@@ -322,6 +322,24 @@ pbPlayer = PB.Class(PB.Observer, {
 		if( this.playlist.previous() ) {
 
 			this.play();
+		}
+	},
+
+	/**
+	 * Return player state
+	 */
+	getPlayState: function () {
+
+		switch ( this._playerData.playState ) {
+
+			case pbPlayer.PLAYSTATE_PLAYING:
+				return 'playing';
+
+			case pbPlayer.PLAYSTATE_PAUSED:
+				return 'paused';
+
+			case pbPlayer.PLAYSTATE_STOPPED:
+				return 'stopped';
 		}
 	},
 

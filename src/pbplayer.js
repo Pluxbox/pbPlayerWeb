@@ -273,6 +273,24 @@ pbPlayer = PB.Class(PB.Observer, {
 	},
 
 	/**
+	 * Return player state
+	 */
+	getPlayState: function () {
+
+		switch ( this._playerData.playState ) {
+
+			case pbPlayer.PLAYSTATE_PLAYING:
+				return 'playing';
+
+			case pbPlayer.PLAYSTATE_PAUSED:
+				return 'paused';
+
+			case pbPlayer.PLAYSTATE_STOPPED:
+				return 'stopped';
+		}
+	},
+
+	/**
 	 * Sets the volume of the player, values between 0 and 100 are valid.
 	 *
 	 * @param {Number} between 0 and 100
