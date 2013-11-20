@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-10-03 21:09
+ * Build date 2013-11-20 12:34
  */
 (function ( name, context, definition ) {
 	
@@ -88,7 +88,8 @@ pbPlayer = PB.Class(PB.Observer, {
 
 			volume: this.options.volume,
 			time: 0,
-			duration: 0
+			duration: 0,
+			playState: pbPlayer.PLAYSTATE_STOPPED
 		};
 	},
 

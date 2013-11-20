@@ -35,7 +35,8 @@ pbPlayer = PB.Class(PB.Observer, {
 
 			volume: this.options.volume,
 			time: 0,
-			duration: 0
+			duration: 0,
+			playState: pbPlayer.PLAYSTATE_STOPPED
 		};
 	},
 
