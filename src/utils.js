@@ -11,5 +11,14 @@ function registerPlayerInstance( pbPlayer ) {
  */
 function unregisterPlayerInstance( pbPlayer ) {
 
-	pbPlayerInstances.unpush(pbPlayer);
+	var i = pbPlayerInstances.length;
+
+	while( i-- ) {
+
+		if( pbPlayerInstances[i] === pbPlayer ) {
+
+			pbPlayerInstances.splice(i, 1);
+			return;
+		}
+	}
 }

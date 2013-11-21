@@ -8,7 +8,7 @@
  * Copyright 2013 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-11-20 12:59
+ * Build date 2013-11-21 17:34
  */
 (function ( name, context, definition ) {
 	
@@ -49,7 +49,16 @@ function registerPlayerInstance( pbPlayer ) {
  */
 function unregisterPlayerInstance( pbPlayer ) {
 
-	pbPlayerInstances.unpush(pbPlayer);
+	var i = pbPlayerInstances.length;
+
+	while( i-- ) {
+
+		if( pbPlayerInstances[i] === pbPlayer ) {
+
+			pbPlayerInstances.splice(i, 1);
+			return;
+		}
+	}
 }
 pbPlayer = PB.Class(PB.Observer, {
 
