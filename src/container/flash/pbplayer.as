@@ -180,6 +180,11 @@ package {
 		 */
 		public function stop ():void {
 
+			if( isPlaying === false ) {
+
+				return;
+			}
+
 			isPlaying = false;
 
 			position = 0;
