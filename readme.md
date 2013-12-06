@@ -191,4 +191,4 @@ License
 -------
 This project is under the MIT License.
 
-*Copyright 2011-2012, Pluxbox*
+*Copyright 2011-2013, Pluxbox*
