@@ -196,11 +196,6 @@ Browser support
 
 License
 -------
-<<<<<<< HEAD
-This project is under the MIT License.
-
-*Copyright 2011-2013, Pluxbox*
-=======
  Copyright (c) 2013 Pluxbox
 
  Permission is hereby granted, free of charge, to any person
@@ -223,4 +218,3 @@ This project is under the MIT License.
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  OTHER DEALINGS IN THE SOFTWARE.
->>>>>>> 4.0-dev
