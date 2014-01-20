@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<script type="text/javascript" src="pbjs.min.js"></script>
+<script type="text/javascript" src="../dist/pbplayer.js"></script>
+
+<script type="text/javascript">
+
+pbPlayer.config({
+	
+	path: '/pbPlayer/dist/',
+	solution: 'html5 flash',
+	volume: 50,
+	debug: false
+});
+
+// without new ie9 fails
+var player = new pbPlayer({
+
+	autoplay: true
+});
+
+// Set single file
+player.addMedia({
+
+	//ogg: 'http://152.46.7.128:8000/wxyc.ogg', // Coudn't find a ogg (vorbis or opus) stream
+	mp3: 'http://icecast.omroep.nl/3fm-bb-mp3',
+	stream: true,	// Indicate streaming contents
+	icecast: true	// Indicate icecast server
+});
+
+player.on('timeupdate', function ( e ) {
+
+	PB.$('#time').setText(''+e.position);
+	PB.$('#timeprogress').setStyle({width: e.progress+'%'});
+});
+
+player.on('duration', function ( e ) {
+
+	PB.$('#duration').setText(''+e.length);
+});
+
+player.on('progress', function ( e ) {
+
+	PB.$('#progress').setStyle({width: e.loaded+'%'});
+});
+
+player.on('error', function ( e ) {
+
+	PB.log('error', e.message);
+})
+
+</script>
+
+<br />
+<button onclick="player.play()">Play</button>
+<button onclick="player.stop()">Stop</button>
+<br />
+<button onclick="player.setVolume(100)">Volume 100%</button>
+<button onclick="player.setVolume(50)">Volume 50%</button>
+<button onclick="player.setVolume(0)">Volume 0%</button>
+<br />
+<div style="width: 200px; height: 8px; position: relative;">
+	<div id="progress" style="background-color: #CCCC9A; width: 0%; height: 8px; position: absolute; left: 0; top: 0;"></div>
+	<div id="timeprogress" style="background-color: #999967; width: 0%; height: 8px; position: absolute; left: 0; top: 0;"></div>
+</div>
+<br />
+<span id="time">0</span> / <span id="duration">0</span>
+
+</body>
+</html>

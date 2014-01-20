@@ -1,0 +1,24 @@
+{
+	"undef": true,
+	"unused": true,
+	"camelcase": true,
+	"curly": true,
+	"eqeqeq": true,
+	"forin": true,
+	"immed": true,
+	"latedef": true,
+	"newcap": true,
+	"noarg": true,
+	"noempty": true,
+	"quotmark": "single",
+	"strict": false,
+	"trailing": false,
+	"maxdepth": 5,
+	"onevar": true,
+	"globals": {
+
+		"ActiveXObject": false,
+		"console": false
+	},
+	"browser": true
+}
