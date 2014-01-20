@@ -1,5 +1,5 @@
-pbPlayer
-========
+pbPlayer (Beta)
+===============
 
 About
 -----
