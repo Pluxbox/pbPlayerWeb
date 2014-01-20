@@ -25,3 +25,16 @@ Dispatched when (new) module data is provided from manifest file.
   data: {Object} Module data
 }
 ```
+
+### module-components
+
+Dispatched when (new) components data is provided from manifest file.
+
+###### Event data
+```
+{
+  type: {String} "module-component",
+  target: {Object} pbPlayer,
+  data: {Object} Component data
+}
+```
