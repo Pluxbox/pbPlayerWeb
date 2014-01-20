@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-duration
-```js
-=======
 ## pbPlayer events
 
 A short example of how to assign events to pbPlayer.
@@ -89,17 +85,11 @@ Dispatched when download is completed.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "loaded",
   target: {Object} pbPlayer
 }
 ```
-<<<<<<< HEAD
-
-error
-```js
-=======
 
 ---
 
@@ -109,25 +99,12 @@ Dispatched when pbPlayer starts playing.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "play",
   target: {Object} pbPlayer
 }
 ```
 
-<<<<<<< HEAD
-loadProgress(\<3.4) -> progress
-```js
-{
-	type: 'progress',
-	loaded: int		// In percentage
-}
-```
-
-load(\<3.4) -> loaded
-```js
-=======
 ---
 
 ### pause
@@ -150,17 +127,11 @@ Dispatched when pbPlayer get stopped.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "stop",
   target: {Object} pbPlayer
 }
 ```
-<<<<<<< HEAD
-
-pause
-```js
-=======
 
 ---
 
@@ -170,17 +141,12 @@ Dispatched when audio playback has ended.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "ended",
   target: {Object} pbPlayer
 }
 ```
 
-<<<<<<< HEAD
-play
-```js
-=======
 ---
 
 ### volumechange
@@ -189,18 +155,12 @@ Dispatched when volume has changed.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "volumechange",
   target: {Object} pbPlayer,
   volume: {Number} Volume range from 0 to 100
 }
 ```
-<<<<<<< HEAD
-
-volumechange
-```js
-=======
 
 ---
 
@@ -210,18 +170,12 @@ Dispatched when a media object is added to the playlist.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "mediaadded",
   target: {Object} pbPlayer,
   media: {Object} The media object that was added to the playlist.
 }
 ```
-<<<<<<< HEAD
-
-ended
-```js
-=======
 
 ---
 
@@ -231,7 +185,6 @@ Dispatched when a media object is removed from the playlist.
 
 ###### Event data
 ```
->>>>>>> 4.0-dev
 {
   type: {String} "mediaremoved",
   target: {Object} pbPlayer,
@@ -239,16 +192,6 @@ Dispatched when a media object is removed from the playlist.
 }
 ```
 
-<<<<<<< HEAD
-timeupdate
-```js
-{
-	type: 'timeupdate',
-	position: float,
-	progress: float		// Percentage played
-}
-```
-=======
 ---
 
 ### mediachanged
@@ -265,18 +208,9 @@ Dispatched when the current media has changed, i.e. by calling the `next()` or `
 ```
 
 ---
->>>>>>> 4.0-dev
 
 ### error
 
-<<<<<<< HEAD
-change 
-```js
-{
-	type: 'change'
-}
-```
-=======
 Dispatched when an error occurs.
 
 ###### Event data
@@ -289,4 +223,3 @@ Dispatched when an error occurs.
 ```
 
 ---
->>>>>>> 4.0-dev
