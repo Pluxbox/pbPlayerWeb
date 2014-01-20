@@ -5,7 +5,7 @@
  * Requires pbjs javascript framework (>= 0.5.7)
  * https://github.com/Saartje87/pbjs
  *
- * copyright 2011-2012, Pluxbox
+ * copyright 2011-2013, Pluxbox
  * MIT License
  */
 (function ( context, undefined ){
