@@ -35,7 +35,7 @@ player.addMedia({
 
 ### duration
 
-Dispatched when duration of current media object is avaible.
+Dispatched when duration of current media object is avaible. If the given file is a stream `length` should be `Infinite`. Note: Flash does not handle this correctly. Among different operating systems there are different values returned..
 
 ###### Event data
 ```
