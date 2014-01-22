@@ -4,7 +4,6 @@ var SimpleDash = PB.Class({
 
 		var AudioContext = window.AudioContext || window.webkitAudioContext;
 
-		this._segmentProvider = new SegmentProvider(src); // Provides new segments to decode
 		this._audioContext = new AudioContext();
 	},
 

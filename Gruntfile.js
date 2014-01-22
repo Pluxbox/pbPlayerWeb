@@ -40,7 +40,7 @@ module.exports = function(grunt) {
 					// Media containers
 					'src/container/html5/html5.js',
 					'src/container/flash/flash.js',
-					'src/container/simple-dash/segment-provider.js',
+					'src/container/simple-dash/manifest.js',
 					'src/container/simple-dash/simple-dash.js',
 
 					// Outro

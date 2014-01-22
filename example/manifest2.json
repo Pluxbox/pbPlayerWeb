@@ -1,0 +1,52 @@
+{
+	"duration": false,
+	"modules": [],
+	"name": "Station 1",
+	"containers": [{
+		"content_type": "audio/vorbis",
+		"bitrate": 32000,
+		"segments": [{
+			"id": 258,
+			"type": "chunk",
+			"url": "258.ogg"
+		}, {
+			"id": 259,
+			"type": "chunk",
+			"url": "259.ogg"
+		}, {
+			"id": 260,
+			"type": "chunk",
+			"url": "260.ogg"
+		}, {
+			"id": 261,
+			"type": "chunk",
+			"url": "261.ogg"
+		}, {
+			"type": "manifest",
+			"url": "http://localhost:4000/example/manifest3.json"
+		}]
+	}, {
+		"content_type": "audio/mpeg",
+		"bitrate": 19200,
+		"segments": [{
+			"id": 254,
+			"type": "chunk",
+			"url": "254.mp3"
+		}, {
+			"id": 255,
+			"type": "chunk",
+			"url": "255.mp3"
+		}, {
+			"id": 256,
+			"type": "chunk",
+			"url": "256.mp3"
+		}, {
+			"id": 257,
+			"type": "chunk",
+			"url": "257.mp3"
+		}, {
+			"type": "manifest",
+			"url": "manifest.json"
+		}]
+	}]
+}
