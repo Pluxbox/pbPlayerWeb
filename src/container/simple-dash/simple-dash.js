@@ -1,15 +1,8 @@
 var SimpleDash = PB.Class({
 
-	construct: function( player, src ) {
+	construct: function( player, src ) {},
 
-		var AudioContext = window.AudioContext || window.webkitAudioContext;
-
-		this._audioContext = new AudioContext();
-	},
-
-	destroy: function() {
-
-	},
+	destroy: function() {},
 
 	play: function() {},
 
@@ -26,6 +19,8 @@ var SimpleDash = PB.Class({
 	unmute: function() {}
 
 });
+
+window.SimpleDash = SimpleDash;
 
 SimpleDash.canPlayType = function( codec ) {
 
