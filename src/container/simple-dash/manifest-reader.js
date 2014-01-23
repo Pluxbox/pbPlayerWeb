@@ -72,11 +72,13 @@
 		});
 	};
 
-	ManifestReader.prototype.hasChunks = function() {
+	ManifestReader.prototype.hasChunk = function() {
+
+		var segment = this._segments[0];
 
 		if( this._manifest === null ||
-			this.segments[0] instanceof Chunk ||
-			this.segments[0] instanceof ManifestReader && this.segments[0].hasChunks() ) {
+			segment instanceof Chunk ||
+			(segment instanceof ManifestReader && segment.hasChunk()) ) {
 
 			return true;
 		}
@@ -100,7 +102,7 @@
 
 		if( segment instanceof ManifestReader ) {
 
-			if( segment.hasChunks() ) {
+			if( segment.hasChunk() ) {
 				return segment.getChunk();
 			} else {
 				this._segments.shift();
