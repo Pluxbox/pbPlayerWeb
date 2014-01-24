@@ -53,8 +53,6 @@ var SimpleDash = SimpleDash || {};
 			this._chunks.push(chunk);
 			this._bufferedChunks++;
 
-			console.log('Buffer has a new chunk', chunk);
-
 			this._bufferChunk();
 
 		}.bind(this));

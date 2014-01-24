@@ -11,7 +11,7 @@ var SimpleDash = SimpleDash || {};
 		this._src = src;
 		this._manifest = new ManifestReader(this._src);
 		this._buffer = new Buffer(this._manifest);
-		this._audioContext = new AudioContext();
+		this._audioContext = null;
 		this._nextBufferStart = 0;
 		this._bufferTimer = null;
 	};
@@ -49,9 +49,10 @@ var SimpleDash = SimpleDash || {};
 
 	Container.prototype.play = function() {
 
+		this._audioContext = new AudioContext();
 		this._buffer.start();
 
-		window.setTimeout(this._decodeChunk.bind(this), 2000);
+		this._bufferTimer = window.setTimeout(this._decodeChunk.bind(this), 2000);
 	};
 
 	Container.prototype.pause = function() {};
