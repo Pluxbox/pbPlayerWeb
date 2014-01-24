@@ -1,4 +1,6 @@
-(function() {
+var SimpleDash = SimpleDash || {};
+
+(function( SimpleDash ) {
 
 	var Buffer = function( manifest ) {
 
@@ -60,4 +62,4 @@
 
 	SimpleDash.Buffer = Buffer;
 
-})();
+})(SimpleDash);

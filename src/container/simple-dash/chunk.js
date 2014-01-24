@@ -1,7 +1,9 @@
-(function() {
+var SimpleDash = SimpleDash || {};
 
-	// TODO: Rename to Fragment
+(function( SimpleDash ) {
+
 	var Chunk = function( data ) {
+
 		this.id = data.id;
 		this.url = data.url;
 		this.audioData = null;
@@ -34,4 +36,4 @@
 
 	SimpleDash.Chunk = Chunk;
 
-})();
+})( SimpleDash );

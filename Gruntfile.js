@@ -42,10 +42,10 @@ module.exports = function(grunt) {
 					
 					'src/container/flash/flash.js',
 
-					'src/container/simple-dash/simple-dash.js',
 					'src/container/simple-dash/chunk.js',
 					'src/container/simple-dash/manifest-reader.js',
 					'src/container/simple-dash/buffer.js',
+					'src/container/simple-dash/container.js',
 
 					// Outro
 					'src/outro.js'

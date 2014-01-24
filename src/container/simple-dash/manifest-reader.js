@@ -1,8 +1,11 @@
-(function() {
+var SimpleDash = SimpleDash || {};
+
+(function( SimpleDash ) {
 
 	var Chunk = SimpleDash.Chunk;
 
 	var ManifestReader = function( src ) {
+
 		this._src = src;
 		this._manifest = null;
 		this._segments = [];
@@ -119,4 +122,4 @@
 
 	SimpleDash.ManifestReader = ManifestReader;
 
-})();
+})(SimpleDash);
