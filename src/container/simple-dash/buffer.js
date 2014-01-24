@@ -7,12 +7,17 @@
 		this._bufferedChunks = 0;
 		this._currentChunk = 0;
 		this._minChunks = 4;
-		this._maxChunks = 20;
+		this._maxChunks = 6;
 	};
 
 	Buffer.prototype.start = function() {
 
 		this._bufferChunk();
+	};
+
+	Buffer.prototype.hasChunk = function() {
+
+		return this._chunks[this._currentChunk] !== undefined;
 	};
 
 	Buffer.prototype.getChunk = function() {
@@ -35,10 +40,7 @@
 			throw 'The manifest has no chunks left.';
 		}
 
-		// Check if we need a new chunk
-		if( this._bufferedChunks > this._minChunks &&
-			this._bufferedChunks > this._maxChunks ) {
-
+		if( this._bufferedChunks >= this._maxChunks ) {
 			return;
 		}
 
@@ -47,8 +49,6 @@
 			return chunk.fillAudioData();
 
 		}).then(function( chunk ) {
-
-			console.log(chunk);
 
 			this._chunks.push(chunk);
 			this._bufferedChunks++;
