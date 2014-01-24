@@ -13,42 +13,46 @@ var SimpleDash = SimpleDash || {};
 		this._buffer = new Buffer(this._manifest);
 		this._audioContext = new AudioContext();
 		this._nextBufferStart = 0;
+		this._bufferTimer = null;
+	};
 
-		this._buffer.start();
+	Container.prototype._decodeChunk = function() {
 
-		window.setInterval(function() {
+		if( !this._buffer.hasChunk() ) {
+			return;
+		}
 
-			if( !this._buffer.hasChunk() ) {
-				return;
+		var chunk = this._buffer.getChunk();
+
+		this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
+
+			var source = this._audioContext.createBufferSource();
+			
+			source.buffer = buffer;
+			source.connect(this._audioContext.destination);
+
+			if( this._nextBufferStart === 0 ) {
+				this._nextBufferStart = this._audioContext.currentTime;
 			}
 
-			var chunk = this._buffer.getChunk();
+			source.start(this._nextBufferStart);
+			this._nextBufferStart += buffer.duration;
 
-			console.log('Player got new chunk from buffer', chunk);
+			// Decode chunk 500ms before it starts
+			this._bufferTimer = window.setTimeout(this._decodeChunk.bind(this), (this._nextBufferStart - this._audioContext.currentTime) * 1000 - 500);
 
-			this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
+		}.bind(this));
 
-				var source = this._audioContext.createBufferSource();
-
-				source.buffer = buffer;
-				source.connect(this._audioContext.destination);
-
-				if( this._nextBufferStart === 0 ) {
-					this._nextBufferStart = this._audioContext.currentTime;
-				}
-
-				source.start(this._nextBufferStart);
-
-				this._nextBufferStart += buffer.duration;
-
-			}.bind(this));
-
-		}.bind(this), 4000);
 	};
 
 	Container.prototype.destroy = function() {};
 
-	Container.prototype.play = function() {};
+	Container.prototype.play = function() {
+
+		this._buffer.start();
+
+		window.setTimeout(this._decodeChunk.bind(this), 2000);
+	};
 
 	Container.prototype.pause = function() {};
 
