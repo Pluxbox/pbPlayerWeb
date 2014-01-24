@@ -42,6 +42,7 @@ module.exports = function(grunt) {
 					
 					'src/container/flash/flash.js',
 
+					'src/container/simple-dash/promise-0.1.1.js',
 					'src/container/simple-dash/chunk.js',
 					'src/container/simple-dash/manifest-reader.js',
 					'src/container/simple-dash/buffer.js',
