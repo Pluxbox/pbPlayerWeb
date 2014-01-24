@@ -38,11 +38,9 @@ var SimpleDash = SimpleDash || {};
 
 	Buffer.prototype._bufferChunk = function() {
 
-		if( !this._manifest.hasChunk() ) {
-			throw 'The manifest has no chunks left.';
-		}
+		if( this._bufferedChunks >= this._maxChunks ||
+			!this._manifest.hasChunk() ) {
 
-		if( this._bufferedChunks >= this._maxChunks ) {
 			return;
 		}
 
@@ -54,6 +52,8 @@ var SimpleDash = SimpleDash || {};
 
 			this._chunks.push(chunk);
 			this._bufferedChunks++;
+
+			console.log('Buffer has a new chunk', chunk);
 
 			this._bufferChunk();
 

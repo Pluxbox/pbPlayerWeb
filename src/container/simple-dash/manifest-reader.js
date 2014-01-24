@@ -91,7 +91,7 @@ var SimpleDash = SimpleDash || {};
 
 	ManifestReader.prototype.getChunk = function() {
 
-		// WARNING: Might cause infinite loop if manifest is never retrieved
+		// Retrieve manifest from server if it's not set
 		if( this._manifest === null ) {
 			return this._requestManifest().then(this.getChunk.bind(this));
 		}
