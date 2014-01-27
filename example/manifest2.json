@@ -8,23 +8,19 @@
 		"segments": [{
 			"id": 6,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/35.ogg"
+			"url": "http://localhost:1337/example/test/30.wav"
 		}, {
 			"id": 7,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/40.ogg"
+			"url": "http://localhost:1337/example/test/35.wav"
 		}, {
 			"id": 8,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/45.ogg"
+			"url": "http://localhost:1337/example/test/40.wav"
 		}, {
 			"id": 9,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/50.ogg"
-		}, {
-			"id": 10,
-			"type": "chunk",
-			"url": "http://localhost:1337/example/test/55.ogg"
+			"url": "http://localhost:1337/example/test/45.wav"
 		}]
 	}]
 }

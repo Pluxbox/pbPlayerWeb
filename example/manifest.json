@@ -6,29 +6,25 @@
 		"content_type": "audio/vorbis",
 		"bitrate": 32000,
 		"segments": [{
-			"id": 0,
-			"type": "chunk",
-			"url": "http://localhost:1337/example/test/00.ogg"
-		}, {
 			"id": 1,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/05.ogg"
+			"url": "http://localhost:1337/example/test/05.wav"
 		}, {
 			"id": 2,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/15.ogg"
+			"url": "http://localhost:1337/example/test/10.wav"
 		}, {
 			"id": 3,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/20.ogg"
-		}, {
+			"url": "http://localhost:1337/example/test/15.wav"
+		},{
 			"id": 4,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/25.ogg"
+			"url": "http://localhost:1337/example/test/20.wav"
 		}, {
 			"id": 5,
 			"type": "chunk",
-			"url": "http://localhost:1337/example/test/30.ogg"
+			"url": "http://localhost:1337/example/test/25.wav"
 		}, {
 			"type": "manifest",
 			"url": "http://localhost:1337/example/manifest2.json"
