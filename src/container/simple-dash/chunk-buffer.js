@@ -2,7 +2,7 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
-	var Buffer = function( manifest ) {
+	var ChunkBuffer = function( manifest ) {
 
 		this._manifest = manifest;
 		this._chunks = [];
@@ -12,17 +12,17 @@ var SimpleDash = SimpleDash || {};
 		this._maxChunks = 6;
 	};
 
-	Buffer.prototype.start = function() {
+	ChunkBuffer.prototype.start = function() {
 
 		this._bufferChunk();
 	};
 
-	Buffer.prototype.hasChunk = function() {
+	ChunkBuffer.prototype.hasChunk = function() {
 
 		return this._chunks[this._currentChunk] !== undefined;
 	};
 
-	Buffer.prototype.getChunk = function() {
+	ChunkBuffer.prototype.getChunk = function() {
 
 		var chunk = this._chunks[this._currentChunk];
 
@@ -36,7 +36,7 @@ var SimpleDash = SimpleDash || {};
 		return chunk;
 	};
 
-	Buffer.prototype._bufferChunk = function() {
+	ChunkBuffer.prototype._bufferChunk = function() {
 
 		if( this._bufferedChunks >= this._maxChunks ||
 			!this._manifest.hasChunk() ) {
@@ -58,6 +58,6 @@ var SimpleDash = SimpleDash || {};
 		}.bind(this));
 	};
 
-	SimpleDash.Buffer = Buffer;
+	SimpleDash.ChunkBuffer = ChunkBuffer;
 
 })(SimpleDash);
