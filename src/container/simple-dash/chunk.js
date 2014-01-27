@@ -14,7 +14,6 @@ var SimpleDash = SimpleDash || {};
 		return new Promise(function( resolve, reject ) {
 
 			var request = new XMLHttpRequest();
-
 			request.open('GET', this.url, true);
 			request.responseType = 'arraybuffer';
 

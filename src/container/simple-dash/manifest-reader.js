@@ -15,23 +15,18 @@ var SimpleDash = SimpleDash || {};
 
 		return new Promise(function( resolve, reject ) {
 
-			var request = new PB.Request({
-				url: this._src,
-				method: 'GET',
-				json: true
-			});
+			var request = new XMLHttpRequest();
+			request.open('GET', this._src, true);
 
-			request.on('success', function( request ) {
-				this._manifest = request.responseJSON;
-				this._addSegments(this._manifest.containers[0].segments); // TODO: Select container based on codec & bitrate
+			request.onload = function() {
 
+				this._manifest = JSON.parse(request.response);
+				this._addSegments(this._manifest.containers[0].segments);
 				resolve();
-			}, this);
 
-			request.on('error', function( request, code ) {
+			}.bind(this);
 
-				reject(code + ': Could not get manifest.');
-			}, this);
+			request.onerror = reject;
 
 			request.send();
 
