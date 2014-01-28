@@ -13,8 +13,9 @@ var SimpleDash = SimpleDash || {};
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader); // Buffer for loading chunks of data from the manifest
 		this._audioContext = new AudioContext();                   // Contols audio processing and decoding
 		this._startAt = 0;                                         // The offset to use to start the next chunk of audio
-		this._playChunkTimer = null;                               // The timer to schedule the next chunk of audio for playback
-		this._queuedSources= [];
+		this._scheduleChunkTimer = null;                           // The timer to schedule the next chunk of audio for playback
+		this._scheduledSources = [];                               // Sources that have been scheduled for playback
+		this._sources = [];
 	};
 
 	/**
@@ -25,7 +26,7 @@ var SimpleDash = SimpleDash || {};
 		this._chunkBuffer.start(); // Start buffering chunks
 
 		// Let's play pretend! (buffer is loaded, probably, maybe)
-		window.setTimeout(this._playChunk.bind(this), 3000);
+		window.setTimeout(this._scheduleChunk.bind(this), 1000);
 	};
 
 	/**
@@ -34,15 +35,19 @@ var SimpleDash = SimpleDash || {};
 	Player.prototype.pause = function() {
 
 		// Stop adding new chunks
-		window.clearTimeout(this._playChunkTimer);
+		window.clearTimeout(this._scheduleChunkTimer);
 
-		// Destroy buffers
-		while( this._queuedSources.length > 0 ) {
+		// Stop playback & cache sources
+		while( this._scheduledSources.length > 0 ) {
 
-			var source = this._queuedSources.shift();
-			source.stop();
+			var oldSource = this._scheduledSources.shift();
+			var newSource = this._audioContext.createBufferSource();
 
-			// TODO: Save buffers for future playback
+			newSource.buffer = oldSource.buffer;
+			newSource.connect(this._audioContext.destination);
+
+			this._sources.push(newSource);
+			oldSource.stop();
 		}
 
 	};
@@ -50,7 +55,7 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 *	Decodes a chunk and adds it to the audiocontext.
 	 */
-	Player.prototype._playChunk = function() {
+	Player.prototype._scheduleChunk = function() {
 
 		var context = this._audioContext;
 
@@ -77,15 +82,15 @@ var SimpleDash = SimpleDash || {};
 			this._startAt += buffer.duration;
 
 			// Remove old source
-			if( this._queuedSources.length > 1 ) {
-				this._queuedSources.shift();
+			if( this._scheduledSources.length > 1 ) {
+				this._scheduledSources.shift();
 			}
 
 			// Add new source
-			this._queuedSources.push(source);
+			this._scheduledSources.push(source);
 
 			// Schedule decoding of next chunk
-			this._playChunkTimer = window.setTimeout(this._playChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 500 );
+			this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 500 );
 
 		}.bind(this));
 	};
