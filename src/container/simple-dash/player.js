@@ -12,9 +12,9 @@ var SimpleDash = SimpleDash || {};
 		this._manifestReader = new ManifestReader(this._src);      // Reader for the manifest file
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader); // Buffer for loading chunks of data from the manifest
 		this._audioContext = new AudioContext();                   // Contols audio processing and decoding
-		this._queuedBuffers = [];                                  // Contains decoded audio buffers that are placed in the audiocontext
 		this._startAt = 0;                                         // The offset to use to start the next chunk of audio
 		this._playChunkTimer = null;                               // The timer to schedule the next chunk of audio for playback
+		this._queuedSources= [];
 	};
 
 	/**
@@ -26,6 +26,25 @@ var SimpleDash = SimpleDash || {};
 
 		// Let's play pretend! (buffer is loaded, probably, maybe)
 		window.setTimeout(this._playChunk.bind(this), 3000);
+	};
+
+	/**
+	 * Pauses the playback.
+	 */
+	Player.prototype.pause = function() {
+
+		// Stop adding new chunks
+		window.clearTimeout(this._playChunkTimer);
+
+		// Destroy buffers
+		while( this._queuedSources.length > 0 ) {
+
+			var source = this._queuedSources.shift();
+			source.stop();
+
+			// TODO: Save buffers for future playback
+		}
+
 	};
 
 	/**
@@ -54,7 +73,16 @@ var SimpleDash = SimpleDash || {};
 				source.noteOn(this._startAt); // Older webkit implementation
 			}
 
+			// Set start point for next source
 			this._startAt += buffer.duration;
+
+			// Remove old source
+			if( this._queuedSources.length > 1 ) {
+				this._queuedSources.shift();
+			}
+
+			// Add new source
+			this._queuedSources.push(source);
 
 			// Schedule decoding of next chunk
 			this._playChunkTimer = window.setTimeout(this._playChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 500 );
@@ -68,6 +96,3 @@ var SimpleDash = SimpleDash || {};
 
 // For debugging purposes
 window.SimpleDash = SimpleDash;
-
-var player = new SimpleDash.Player('http://localhost:1337/example/manifest.json');
-player.play();
