@@ -1,33 +1,54 @@
 {
-	"duration": false,
-	"modules": [],
+	"duration": 45000,
 	"name": "Station 1",
 	"containers": [{
-		"content_type": "audio/vorbis",
+		"content_type": "audio/ogg",
 		"bitrate": 32000,
 		"segments": [{
-			"id": 1,
+			"id": "1",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/05.wav"
 		}, {
-			"id": 2,
+			"id": "2",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/10.wav"
 		}, {
-			"id": 3,
+			"id": "3",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/15.wav"
 		},{
-			"id": 4,
+			"id": "4",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/20.wav"
 		}, {
-			"id": 5,
+			"id": "5",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/25.wav"
 		}, {
 			"type": "manifest",
+			"duration": 20000,
 			"url": "http://localhost:1337/example/manifest2.json"
 		}]
+	}, {
+		"content_type": "audio/ogg",
+		"bitrate": 192000,
+		"segments": [{
+			"type": "manifest",
+			"duration": 20000,
+			"url": "http://localhost:1337/example/manifest-ogg.json"
+		}]
+	}],
+	"modules": [{
+		"type": "dash:trackinfo",
+		"data": {
+			"artist": "The Heavy",
+			"title": "Be Mine",
+			"duration": 3453
+		}
 	}]
 }

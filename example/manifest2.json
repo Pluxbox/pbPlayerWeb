@@ -1,25 +1,28 @@
 {
-	"duration": false,
-	"modules": [],
+	"duration": 45000,
 	"name": "Station 1",
 	"containers": [{
-		"content_type": "audio/vorbis",
+		"content_type": "audio/ogg",
 		"bitrate": 32000,
 		"segments": [{
-			"id": 6,
+			"id": "6",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/30.wav"
 		}, {
-			"id": 7,
+			"id": "7",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/35.wav"
 		}, {
-			"id": 8,
+			"id": "8",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/40.wav"
 		}, {
-			"id": 9,
+			"id": "9",
 			"type": "chunk",
+			"duration": 5000,
 			"url": "http://localhost:1337/example/test/45.wav"
 		}]
 	}]
