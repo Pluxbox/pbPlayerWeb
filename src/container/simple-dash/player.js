@@ -23,7 +23,7 @@ var SimpleDash = SimpleDash || {};
 		this._chunkBuffer.start(); // Start buffering chunks
 
 		// Let's play pretend! (buffer is loaded, probably, maybe)
-		window.setTimeout(this._scheduleChunk.bind(this), 1000);
+		window.setTimeout(this._scheduleChunk.bind(this), 2000);
 	};
 
 	Player.prototype.pause = function() {
@@ -54,13 +54,15 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype._scheduleChunk = function() {
 
-		var context = this._audioContext;
+		var context = this._audioContext,
+			chunk;
 
-		if( !this._chunkBuffer.hasChunk() ) {
-			throw 'The buffer is out of chunks but the player requested one anyways.';
+		// TODO: Replace this with events from buffer.
+		try {
+			chunk = this._chunkBuffer.getChunk();
+		} catch( err ) {
+			return;
 		}
-
-		var chunk = this._chunkBuffer.getChunk();
 
 		this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
 

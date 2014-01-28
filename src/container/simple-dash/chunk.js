@@ -9,6 +9,12 @@ var SimpleDash = SimpleDash || {};
 		this.audioData = null;
 	};
 
+
+	/**
+	 * Fills the chunk with data from the server.
+	 *
+	 * @returns {Promise} A promise that resolves when teh chunk is filled.
+	 */
 	Chunk.prototype.fillAudioData = function() {
 
 		return new Promise(function( resolve, reject ) {

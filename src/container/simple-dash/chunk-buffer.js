@@ -2,60 +2,64 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
-	var ChunkBuffer = function( manifest ) {
+	var ChunkBuffer = function( manifestReader ) {
 
-		this._manifest = manifest;
-		this._chunks = [];
-		this._bufferedChunks = 0;
-		this._currentChunk = 0;
+		this._manifestReader = manifestReader;
+		this._bufferedChunks = [];
 		this._minChunks = 4;
 		this._maxChunks = 6;
 	};
 
-	ChunkBuffer.prototype.start = function() {
-
-		this._bufferChunk();
-	};
-
-	ChunkBuffer.prototype.hasChunk = function() {
-
-		return this._chunks[this._currentChunk] !== undefined;
-	};
-
-	ChunkBuffer.prototype.getChunk = function() {
-
-		var chunk = this._chunks[this._currentChunk];
-
-		// TODO: Check for possible non-buffered chunk
-
-		this._bufferedChunks--;
-		this._currentChunk++;
-
-		this._bufferChunk();
-
-		return chunk;
-	};
-
+	/**
+	 * Buffers a new chunk from the manifest reader.
+	 */
 	ChunkBuffer.prototype._bufferChunk = function() {
 
-		if( this._bufferedChunks >= this._maxChunks ||
-			!this._manifest.hasChunk() ) {
+		// Prevent buffering if manifest is out of chunks or buffer is full 
+		if( !this._manifestReader.hasChunk() ||
+			this._bufferedChunks.length >= this._maxChunks ) {
 
 			return;
 		}
 
-		this._manifest.getChunk().then(function( chunk ) {
+		// Get chunk from manifest & fill it with data
+		this._manifestReader.getChunk().then(function( chunk ) {
 
 			return chunk.fillAudioData();
 
 		}).then(function( chunk ) {
 
-			this._chunks.push(chunk);
-			this._bufferedChunks++;
-
+			// Add chunk to buffer & buffer a new chunk
+			this._bufferedChunks.push(chunk);
 			this._bufferChunk();
 
 		}.bind(this));
+	};
+
+	/**
+	 * Starts the buffering proccess.
+	 */
+	ChunkBuffer.prototype.start = function() {
+
+		this._bufferChunk();
+	};
+
+	/**
+	 * Takes a filled chunk from the buffer.
+	 *
+	 * @returns {Chunk} The filled chunk.
+	 */
+	ChunkBuffer.prototype.getChunk = function() {
+
+		var chunk = this._bufferedChunks.shift();
+
+		if( chunk === undefined ) {
+			throw 'The buffer is out of chunks but one was requested anyways.';
+		}
+
+		this._bufferChunk();
+
+		return chunk;
 	};
 
 	SimpleDash.ChunkBuffer = ChunkBuffer;
