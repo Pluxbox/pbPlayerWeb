@@ -2,7 +2,7 @@
 	"duration": 45000,
 	"name": "Station 1",
 	"containers": [{
-		"content_type": "audio/ogg",
+		"content_type": "audio/wav",
 		"bitrate": 32000,
 		"segments": [{
 			"id": "1",
