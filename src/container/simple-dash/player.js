@@ -18,9 +18,6 @@ var SimpleDash = SimpleDash || {};
 		this._sources = [];
 	};
 
-	/**
-	 * Starts the playback.
-	 */
 	Player.prototype.play = function() {
 
 		this._chunkBuffer.start(); // Start buffering chunks
@@ -29,15 +26,12 @@ var SimpleDash = SimpleDash || {};
 		window.setTimeout(this._scheduleChunk.bind(this), 1000);
 	};
 
-	/**
-	 * Pauses the playback.
-	 */
 	Player.prototype.pause = function() {
 
 		// Stop adding new chunks
 		window.clearTimeout(this._scheduleChunkTimer);
 
-		// Stop playback & cache sources
+		// Stop playback & copy sources
 		while( this._scheduledSources.length > 0 ) {
 
 			var oldSource = this._scheduledSources.shift();
@@ -52,9 +46,12 @@ var SimpleDash = SimpleDash || {};
 
 	};
 
-	/**
-	 *	Decodes a chunk and adds it to the audiocontext.
-	 */
+	Player.prototype.resume = function() {
+
+		this._startAt = this._audioContext.currentTime;
+
+	};
+
 	Player.prototype._scheduleChunk = function() {
 
 		var context = this._audioContext;
