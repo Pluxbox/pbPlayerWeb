@@ -10,53 +10,8 @@
 
 <script type="text/javascript">
 
-pbPlayer.config({
-	
-	path: '/pbPlayer/dist/',
-	solution: 'simpledash',
-	volume: 50,
-	debug: false
-});
-
-// without new does not work on ie9
-var player = new pbPlayer({
-
-	preload: 'auto',
-	volume: 0,
-	autoplay: false
-});
-
-// Set single file
-player.addMedia({
-
-	simpledash: 'http://localhost:1337/example/manifest.json'
-});
-
-player.on('timeupdate', function ( e ) {
-
-	PB.$('#time').setText(''+e.position);
-	PB.$('#timeprogress').setStyle({width: e.progress+'%'});
-});
-
-player.on('duration', function ( e ) {
-
-	PB.$('#duration').setText(''+e.length);
-});
-
-player.on('progress', function ( e ) {
-
-	PB.$('#progress').setStyle({width: e.loaded+'%'});
-});
-
-player.on('ended', function ( e ) {
-
-	PB.log('ended');
-});
-
-player.on('error', function ( e ) {
-
-	PB.log('error', e.message);
-});
+var player = new SimpleDash.Player('http://localhost:1337/example/manifest.json');
+player.play();
 
 </script>
 
