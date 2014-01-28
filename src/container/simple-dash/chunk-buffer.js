@@ -6,6 +6,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._manifestReader = manifestReader;
 		this._bufferedChunks = [];
+		this._preventBuffering = false;
 		this._minChunks = 4;
 		this._maxChunks = 6;
 	};
@@ -15,9 +16,10 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ChunkBuffer.prototype._bufferChunk = function() {
 
-		// Prevent buffering if manifest is out of chunks or buffer is full 
-		if( !this._manifestReader.hasChunk() ||
-			this._bufferedChunks.length >= this._maxChunks ) {
+		// Prevent buffering when buffer is full or manifest ran out of chunks
+		if( this._preventBuffering ||
+			this._bufferedChunks.length >= this._maxChunks ||
+			!this._manifestReader.hasChunk() ) {
 
 			return;
 		}
@@ -41,7 +43,24 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ChunkBuffer.prototype.start = function() {
 
+		this._preventBuffering = false;
 		this._bufferChunk();
+	};
+
+	/**
+	 * Stops the buffering proccess.
+	 */
+	ChunkBuffer.prototype.stop = function() {
+
+		this._preventBuffering = true;
+	};
+
+	/**
+	 * Empties the buffer.
+	 */
+	ChunkBuffer.prototype.empty = function() {
+
+		this._bufferedChunks = [];
 	};
 
 	/**
@@ -54,7 +73,7 @@ var SimpleDash = SimpleDash || {};
 		var chunk = this._bufferedChunks.shift();
 
 		if( chunk === undefined ) {
-			throw 'The buffer is out of chunks but one was requested anyways.';
+			throw 'The buffer ran out of chunks but one was requested anyway.';
 		}
 
 		this._bufferChunk();
