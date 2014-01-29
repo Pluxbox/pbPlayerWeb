@@ -10,8 +10,23 @@
 
 <script type="text/javascript">
 
-var player = new SimpleDash.Player('http://localhost:1337/example/manifest.json');
-player.play();
+// var player = new SimpleDash.Player('http://localhost:1337/example/manifest.json');
+// player.play();
+
+// without new does not work on ie9
+var player = new pbPlayer({
+
+	preload: 'auto',
+	volume: 0,
+	autoplay: true,
+	solution: 'simpledash html5 flash'
+});
+
+// Set single file
+player.addMedia({
+
+	simpledash: 'http://alex.pb:3000/now_playing.json'
+});
 
 </script>
 

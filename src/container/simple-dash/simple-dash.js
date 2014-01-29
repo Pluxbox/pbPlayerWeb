@@ -1,36 +1,93 @@
-var SimpleDash = SimpleDash || {};
+var SimpleDash = PB.Class({
 
-(function( SimpleDash ) {
+	/**
+	 *
+	 */
+	construct: function ( pbPlayer, src ) {
 
-	var Container = function( player, src ) {};
+		this.pbPlayer = pbPlayer;
 
-	Container.prototype._concatAudioBuffer = function( buffer ) {};
+		this.player = new SimpleDash.Player(src);
+	},
 
-	Container.prototype.destroy = function() {};
+	/**
+	 *
+	 */
+	destroy: function () {
 
-	Container.prototype.play = function() {};
 
-	Container.prototype.pause = function() {};
+	},
 
-	Container.prototype.stop = function() {};
+	/**
+	 *
+	 */
+	play: function () {
 
-	Container.prototype.playAt = function() {};
+		this.player.play();
+	},
 
-	Container.prototype.setVolume = function() {};
+	/**
+	 *
+	 */
+	pause: function () {
 
-	Container.prototype.mute = function() {};
 
-	Container.prototype.unmute = function() {};
+	},
 
-	Container.canPlayType = function( codec ) {
+	/**
+	 *
+	 */
+	stop: function () {
 
-		// TODO: Improvements to detection
 
-		return !!(window.AudioContext || window.webkitAudioContext);
-	};
+	},
 
-	pbPlayer.registerMediaContainer('simpledash', Container);
+	/**
+	 *
+	 */
+	playAt: function () {
 
-	SimpleDash.Container = Container;
 
-})(SimpleDash);
+	},
+
+	/**
+	 *
+	 */
+	setVolume: function () {
+
+
+	},
+
+	/**
+	 *
+	 */
+	mute: function () {
+
+
+	},
+
+	/**
+	 *
+	 */
+	unmute: function () {
+
+
+	}   
+});
+
+/**
+ * SimpleDash available and supports audio file?
+ */
+SimpleDash.canPlayType = function ( codec ) {
+
+	// Only support simpledash
+	if( codec !== 'simpledash' ) {
+
+		return false;
+	}
+
+	return !!(window.AudioContext || window.webkitAudioContext);
+};
+
+pbPlayer.registerMediaContainer('simpledash', SimpleDash);
+
