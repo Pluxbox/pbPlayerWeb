@@ -8,7 +8,7 @@
  * Copyright 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2014-01-29 14:07
+ * Build date 2014-01-29 14:12
  */
 (function ( name, context, definition ) {
 	
@@ -1254,7 +1254,7 @@ var SimpleDash = PB.Class({
 	 */
 	destroy: function () {
 
-
+		this.pbPlayer = this.player = null;
 	},
 
 	/**
@@ -2443,17 +2443,30 @@ var SimpleDash = SimpleDash || {};
 		this._scheduleChunkTimer = null;                           // The timer to schedule the next chunk of audio for playback
 		this._scheduledSources = [];                               // Sources that have been scheduled for playback
 		this._cachedSources = [];                                  // Sources that have been cached because of changes in the playback state
+		this._isPaused = false;
+		this._resumeOffset = 0;
 	};
 
 	Player.prototype.play = function() {
 
-		this._chunkBuffer.start(); // Start buffering chunks
+		// Resume playback is paused
+		if( this._isPaused ) {
+			this._resume();
+			return;
+		}
+
+		// Start buffering chunks
+		this._chunkBuffer.start();
 
 		// Let's play pretend! (buffer is loaded, probably, maybe)
 		window.setTimeout(this._scheduleChunk.bind(this), 2000);
 	};
 
 	Player.prototype.pause = function() {
+
+		if( this._isPaused ) {
+			return;
+		}
 
 		// Stop adding new chunks
 		window.clearTimeout(this._scheduleChunkTimer);
@@ -2471,6 +2484,8 @@ var SimpleDash = SimpleDash || {};
 			oldSource.stop();
 		}
 
+		this._resumeOffset = this._startAt - this._audioContext.currentTime;
+		this._isPaused = true;
 	};
 
 	Player.prototype.stop = function() {
@@ -2498,16 +2513,24 @@ var SimpleDash = SimpleDash || {};
 		this._cachedSources = [];
 	};
 
-	Player.prototype.resume = function() {
+	Player.prototype._resume = function() {
 
+		if( !this._isPaused ) {
+			return;
+		}
+
+		console.log(this._resumeOffset);
 		this._startAt = this._audioContext.currentTime;
 
+		// Schedule cached sources
 		while( this._cachedSources.length > 0 ) {
 
-			var source = this._cachedSources.shift();
-
-			this._scheduleSource(source);
+			this._scheduleSource(this._cachedSources.shift());
 		}
+
+		this._isPaused = false;
+
+		this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 500 );
 	};
 
 	Player.prototype._scheduleChunk = function() {
