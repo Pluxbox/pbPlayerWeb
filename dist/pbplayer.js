@@ -8,7 +8,7 @@
  * Copyright 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2014-01-29 14:12
+ * Build date 2014-01-29 14:23
  */
 (function ( name, context, definition ) {
 	
@@ -1270,7 +1270,7 @@ var SimpleDash = PB.Class({
 	 */
 	pause: function () {
 
-
+		this.player.pause();
 	},
 
 	/**
@@ -1278,7 +1278,7 @@ var SimpleDash = PB.Class({
 	 */
 	stop: function () {
 
-
+		this.player.stop();
 	},
 
 	/**
