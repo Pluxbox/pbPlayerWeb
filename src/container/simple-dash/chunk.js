@@ -6,6 +6,7 @@ var SimpleDash = SimpleDash || {};
 
 		this.id = data.id;
 		this.url = data.url;
+		this.duration = data.duration;
 		this.audioData = null;
 	};
 
@@ -13,10 +14,16 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 * Fills the chunk with data from the server.
 	 *
-	 * @returns {Promise} A promise that resolves when teh chunk is filled.
+	 * @returns {Promise} A promise that resolves when the chunk is filled.
 	 */
 	Chunk.prototype.fillAudioData = function() {
 
+		// Resolve if audio data is already retrieved
+		if( this.audioData ) {
+			return Promise.resolve(this);
+		}
+
+		// Return a promise for when the audio data is retrieved
 		return new Promise(function( resolve, reject ) {
 
 			var request = new XMLHttpRequest();
@@ -31,7 +38,7 @@ var SimpleDash = SimpleDash || {};
 			}.bind(this);
 
 			request.onerror = function( error ) {
-				// TODO: Handle errors
+				reject('Could not get audio data for chunk.');
 			};
 
 			request.send();
