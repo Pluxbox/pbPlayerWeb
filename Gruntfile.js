@@ -38,10 +38,13 @@ module.exports = function(grunt) {
 					'src/playlist/playlist.js',
 
 					// Media containers
+					// -- html5
 					'src/container/html5/html5.js',
 					
+					// -- flash
 					'src/container/flash/flash.js',
 
+					// -- simple-dash
 					'src/container/simple-dash/promise-0.1.1.js',
 					'src/container/simple-dash/chunk.js',
 					'src/container/simple-dash/manifest-reader.js',
