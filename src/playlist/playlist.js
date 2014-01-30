@@ -81,6 +81,11 @@ var Playlist = PB.Class({
 		if( index !== -1 ) {
 			this._player.emit('mediaremoved', { media: this._entries.splice(index, 1)[0] });
 		}
+
+		if( !this._entries[this._currentEntryIndex] ) {
+
+			this._currentEntryIndex = 0;
+		}
 	},
 
 	/**

@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 				' * Requires pbjs javascript framework (>= 0.6.0)\n' +
 				' * https://github.com/Saartje87/pbjs-0.6\n' +
 				' *\n' +
-				' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
+				' * Copyright 2013 - <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
 		        ' * Licensed <%= pkg.license %>\n' +
 				' *\n' +
 				' * Build date <%= grunt.template.today("yyyy-mm-dd HH:MM") %>\n' +
