@@ -31,7 +31,7 @@ var SimpleDash = PB.Class({
 	 */
 	pause: function () {
 
-
+		this.player.pause();
 	},
 
 	/**
@@ -39,7 +39,7 @@ var SimpleDash = PB.Class({
 	 */
 	stop: function () {
 
-
+		this.player.stop();
 	},
 
 	/**
