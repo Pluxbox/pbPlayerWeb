@@ -1,14 +1,14 @@
 /*!
- * pbPlayer v4.0.0
+ * pbPlayer v4.0.1
  * https://github.com/Pluxbox/pbPlayer
  *
  * Requires pbjs javascript framework (>= 0.6.0)
  * https://github.com/Saartje87/pbjs-0.6
  *
- * Copyright 2014 Pluxbox
+ * Copyright 2013 - 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2014-01-29 14:23
+ * Build date 2014-01-30 15:28
  */
 (function ( name, context, definition ) {
 	
@@ -151,6 +151,8 @@ pbPlayer = PB.Class(PB.Observer, {
 	 * Removes all media from the playlist.
 	 */
 	emptyMedia: function() {
+
+		this.destroyCurrentMediaContainer();
 
 		this.playlist.empty();
 	},
@@ -423,7 +425,7 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 // pbPlayer default options
 pbPlayer.defaults = {
 
-	debug: true,
+	debug: false,
 	solution: 'html5 flash',	// Flash
 	autoplay: false,
 	volume: 100,
@@ -544,6 +546,11 @@ var Playlist = PB.Class({
 
 		if( index !== -1 ) {
 			this._player.emit('mediaremoved', { media: this._entries.splice(index, 1)[0] });
+		}
+
+		if( !this._entries[this._currentEntryIndex] ) {
+
+			this._currentEntryIndex = 0;
 		}
 	},
 
@@ -780,7 +787,12 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if( this.element && this.element.src.indexOf(this._src) < 0 ) {
+		if( !this.element ) {
+
+			return;
+		}
+
+		if( this.element.src.indexOf(this._src) < 0 ) {
 
 			this.element.src = this._src;
 		}
@@ -818,6 +830,9 @@ var Html5 = PB.Class({
 	 *
 	 */
 	stop: function () {
+
+		// `stop` must be queued when isPlaying is false (atleast when player is still loading/buffering and playback has
+		// not begin yet)
 
 		this.element.pause();
 
@@ -1246,7 +1261,7 @@ var SimpleDash = PB.Class({
 
 		this.pbPlayer = pbPlayer;
 
-		this.player = new SimpleDash.Player(src);
+		this.player = new SimpleDash.Player(src, pbPlayer);
 	},
 
 	/**
@@ -1292,9 +1307,9 @@ var SimpleDash = PB.Class({
 	/**
 	 *
 	 */
-	setVolume: function () {
-
-
+	setVolume: function ( volume ) {
+		
+		this.player.setVolume( volume / 100 );
 	},
 
 	/**
@@ -2123,7 +2138,7 @@ var SimpleDash = SimpleDash || {};
 	 *
 	 * @returns {Promise} A promise that resolves when the chunk is filled.
 	 */
-	Chunk.prototype.fillAudioData = function() {
+	Chunk.prototype.fill = function() {
 
 		// Resolve if audio data is already retrieved
 		if( this.audioData ) {
@@ -2153,6 +2168,14 @@ var SimpleDash = SimpleDash || {};
 		}.bind(this));
 	};
 
+	/**
+	 * Empties the data in the chunk.
+	 */
+	Chunk.prototype.empty = function() {
+
+		this.audioData = null;
+	};
+
 	SimpleDash.Chunk = Chunk;
 
 })( SimpleDash );
@@ -2162,178 +2185,198 @@ var SimpleDash = SimpleDash || {};
 
 	var Chunk = SimpleDash.Chunk;
 
-	var ManifestReader = function( src ) {
+	var Manifest = function( src, player ) {
 
+		this._player = player;
 		this._src = src;
-		this._manifestLoaded = false;
 		this._segments = [];
-		this._currentSegment = 0;
 	};
 
-	/**
-	 * Loads the manifest from the server and parses it.
-	 *
-	 * @param {String} src The url where the manifest can be found.
-	 * @returns {Promise} A promise for when loading succeeds or fails.
-	 */
-	ManifestReader.prototype._loadManifest = function( src ) {
+	Manifest.prototype.getSegments = function() {
+
+		var self = this;
+
+		if( this._segments.length ) {
+			return Promise.resolve(this._segments);
+		}
 
 		return new Promise(function( resolve, reject ) {
 
 			var request = new XMLHttpRequest();
-			request.open('GET', src, true);
 
 			request.onload = function() {
 
-				try {
+				var data = JSON.parse(request.response);
+				var segments = self._parseSegments(data.containers[0].segments);
 
-					var manifest = JSON.parse(request.response);
+				self._parseModuleDate(data.modules || []);
 
-					// TODO: Add support for selecting a container
-					this._appendSegments(manifest.containers[0].segments);
-					this._manifestLoaded = true;
+				self._segments = segments;
 
-					resolve();
-
-				} catch( err ) {
-
-					reject('Could not parse manifest.')
-				}
-
-
-			}.bind(this);
-
-			request.onerror = function() {
-
-				reject('Could not load manifest from server.');
+				resolve(self._segments);
 			};
 
-			request.send();
+			request.onerror = function() {
+				reject('Could not load manifest from server');
+			};
 
-		}.bind(this));
+			request.open('GET', self._src, true);
+			request.send();
+		});
+		
 	};
 
-	/**
-	 * Appends a bunch of segments removing duplicates in the proccess.
-	 *
-	 * @param {Array} segments The segments to append.
-	 */
-	ManifestReader.prototype._appendSegments = function( segments ) {
+	Manifest.prototype._parseSegments = function( segments ) {
 
-		// Get current segment ids
-		var currentSegments = this._getSegmentIds(this._segments);
-
-		// Filter out all unwanted segments
-		segments = segments.filter(function( segment ) {
-
-			if( segment.type === 'chunk' ) {
-				return currentSegments.indexOf(segment.id) === -1;
-			}
-
-			if( segment.type === 'manifest' ) {
-				return true;
-			}
-
-			return false;
-		});
-
-		// Create instances for segments
-		segments = segments.map(function( segment ) {
+		// Map segments to instances
+		var results = segments.map(function( segment ) {
 
 			switch( segment.type ) {
 				case 'chunk':
 					return new Chunk(segment);
 					break;
 				case 'manifest':
-					return new ManifestReader(segment.url);
+					return new Manifest(segment.url);
 					break;
 			}
 
 			return segment;
 		});
 
-		this._segments = this._segments.concat(segments);
+		return results;
+	};
+
+	/**
+	 * 
+	 */
+	Manifest.prototype._parseModuleDate = function ( moduleData ) {
+
+		var i = 0,
+			module;
+
+		moduleData.push({
+
+			"type": "dash:pb-hour-info",
+			"data": {
+
+				"id": 1,
+				"startdatetime": "2014-01-23 03:00:00",
+				"stopdatetime": "2014-01-23 04:00:00",
+			}
+		});
+
+		for( ; i < moduleData.length; i++ ) {
+
+			module = moduleData[i];
+
+			this._player.emit('module:'+module.type, module.data);
+
+			// this.emit('module:'+module.type, module.data);
+			// console.log(module);
+		}
+	};
+
+	SimpleDash.Manifest = Manifest;
+
+})(SimpleDash);
+var SimpleDash = SimpleDash || {};
+
+(function( SimpleDash ) {
+
+	var Chunk = SimpleDash.Chunk,
+		Manifest = SimpleDash.Manifest;
+
+	var ManifestReader = function( src, player ) {
+
+		this._player = player;
+		this._src = src;
+		this._manifestLoaded = false;
+		this._segments = [];
+		this._currentSegment = 0;
+
+		// Add main manifest
+		this._segments.push(new Manifest(this._src, player));
+	};
+
+	/**
+	 * Checks if there is a segment available.
+	 * @returns {Boolean} True if a segment is available, false otherwise.
+	 */
+	ManifestReader.prototype.hasChunk = function() {
+
+		return !(this._currentSegment > this._segments.length);
+	};
+
+	/**
+	 * Get the next chunk in the manifest in sequence.
+	 * @returns {Promise} A promise that resolves with the Chunk.
+	 */
+	ManifestReader.prototype.getChunk = function() {
+
+		var segment = this._segments[this._currentSegment],
+			self = this;
+
+		// Resolve with chunk
+		if( segment instanceof Chunk ) {
+			this._currentSegment++;
+			return Promise.resolve(segment);
+		}
+
+		// Load segment from manifest and resolve
+		if( segment instanceof Manifest ) {
+
+			return segment.getSegments().then(function( segments ) {
+				self._appendSegments(segments);
+				self._currentSegment++;
+			}).then(self.getChunk.bind(self));
+
+		}
+
+		// The segment is of an unknown type, reject.
+		return Promise.reject('Got an unknown segment on index ' + this._currentSegment);
+	};
+
+	/**
+	 * Appends a bunch of segments removing duplicates in the proccess.
+	 * @param {Array} segments The segments to append.
+	 */
+	ManifestReader.prototype._appendSegments = function( segments ) {
+
+		// Get current segment ids
+		var currentSegments = this._getSegmentIds(this._segments),
+			results;
+
+		// Filter out any unwanted segments
+		results = segments.filter(function( segment ) {
+
+			// Chunks with the same ID
+			if( segment instanceof Chunk ) {
+				return currentSegments.indexOf(segment.id) === -1;
+			}
+
+			// Always keep manifests
+			if( segment instanceof Manifest ) {
+				return true;
+			}
+
+			// Remove unknowns
+			return false;
+		});
+
+		this._segments = this._segments.concat(results);
 	};
 
 	/**
 	 * Creates an array of ids from the specified segments.
-	 * 
 	 * @param {Array} segments The segments to extract the ids from.
 	 * @returns {Array} A collection of ids.
 	 */
 	ManifestReader.prototype._getSegmentIds = function( segments ) {
 
-		var results;
-
-		// Fill results with ids of segments
-		results = segments.map(function( segment ) {
+		// Return mapped ids of segments
+		return segments.map(function( segment ) {
 			return segment.id;
 		});
-
-		// Filter out any undefined segments
-		results = results.filter(function( id ) {
-			return id !== undefined;
-		});
-
-		return results;
-	};
-
-	/**
-	 * Checks if there is a segment available.
-	 *
-	 * @returns {Boolean} True if a segment is available, false otherwise.
-	 */
-	ManifestReader.prototype.hasChunk = function() {
-
-		var segment = this._segments[this._currentSegment];
-
-		if( !this._manifestLoaded ||
-			segment instanceof Chunk ||
-			( segment instanceof ManifestReader && segment.hasChunk() ) ) {
-
-			return true;
-		}
-
-		return false;
-	};
-
-	/**
-	 * Get the next chunk in the manifest in sequence.
-	 *
-	 * @returns {Promise} A promise that resolves with the Chunk.
-	 */
-	ManifestReader.prototype.getChunk = function() {
-
-		// Load manifest if not yet loaded
-		if( !this._manifestLoaded ) {
-
-			return this._loadManifest(this._src)
-				.then(this.getChunk.bind(this));
-		}
-
-		// Get current segment
-		var segment = this._segments[this._currentSegment];
-
-		// Resolve if segment is of type chunk
-		if( segment instanceof Chunk ) {
-
-			this._currentSegment++;
-			return Promise.resolve(segment);
-		}
-
-		// Get chunk from nested manifestreader or load next chunk if it's out of chunks
-		if( segment instanceof ManifestReader ) {
-
-			if( segment.hasChunk() ) {
-				return segment.getChunk();
-			} else {
-				this._currentSegment++;
-				return this.getChunk()
-			}
-		}
-
-		// There are no more comparisons, segment is unknown
-		return Promise.reject('Got an unknown segment on index ' + (this._currentSegment + 1));
 	};
 
 	SimpleDash.ManifestReader = ManifestReader;
@@ -2343,13 +2386,15 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
+	// TODO: Prevent buffer from DDOSing the whole thing
+
 	var ChunkBuffer = function( manifestReader ) {
 
 		this._manifestReader = manifestReader;
 		this._bufferedChunks = [];
 		this._preventBuffering = false;
-		this._minChunks = 4;
-		this._maxChunks = 6;
+		this._minChunks = 2;
+		this._maxChunks = 3;
 	};
 
 	/**
@@ -2368,7 +2413,7 @@ var SimpleDash = SimpleDash || {};
 		// Get chunk from manifest & fill it with data
 		this._manifestReader.getChunk().then(function( chunk ) {
 
-			return chunk.fillAudioData();
+			return chunk.fill();
 
 		}).then(function( chunk ) {
 
@@ -2406,7 +2451,6 @@ var SimpleDash = SimpleDash || {};
 
 	/**
 	 * Takes a filled chunk from the buffer.
-	 *
 	 * @returns {Chunk} The filled chunk.
 	 */
 	ChunkBuffer.prototype.getChunk = function() {
@@ -2417,6 +2461,7 @@ var SimpleDash = SimpleDash || {};
 			throw 'The buffer ran out of chunks but one was requested anyway.';
 		}
 
+		// Make sure the buffer stays filled
 		this._bufferChunk();
 
 		return chunk;
@@ -2433,18 +2478,47 @@ var SimpleDash = SimpleDash || {};
 		ChunkBuffer = SimpleDash.ChunkBuffer,
 		AudioContext = window.AudioContext || window.webkitAudioContext;
 
-	var Player = function( src ) {
+	var Player = function( src, pbPlayer ) {
 
-		this._src = src;                                           // Location of manifest file
-		this._manifestReader = new ManifestReader(this._src);      // Reader for the manifest file
-		this._chunkBuffer = new ChunkBuffer(this._manifestReader); // Buffer for loading chunks of data from the manifest
-		this._audioContext = new AudioContext();                   // Contols audio processing and decoding
-		this._startAt = 0;                                         // The offset to use to start the next chunk of audio
-		this._scheduleChunkTimer = null;                           // The timer to schedule the next chunk of audio for playback
-		this._scheduledSources = [];                               // Sources that have been scheduled for playback
-		this._cachedSources = [];                                  // Sources that have been cached because of changes in the playback state
+		// We need instance of pbPlayer
+		this._pbPlayer = pbPlayer;
+
+		this._src = src;
+		this._manifestReader = new ManifestReader(this._src, this);
+		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
+		this._audioContext = new AudioContext();
+		this._gainNode = this._audioContext.createGain();
+		this._startAt = 0;
+		this._scheduleChunkTimer = null;
+		this._scheduledSources = [];
+		this._cachedSources = [];
 		this._isPaused = false;
 		this._resumeOffset = 0;
+
+		this._gainNode.connect(this._audioContext.destination);
+	};
+
+	Player.prototype.emit = function ( type, data ) {
+
+		this._pbPlayer.emit(type, data);
+	}
+
+	Player.prototype.getVolume = function() {
+
+		return this._gainNode.gain.value;
+	};
+
+	Player.prototype.setVolume = function( volume ) {
+
+		if( volume > 1 ) {
+			volume = 1;
+		}
+
+		if( volume < 0 ) {
+			volume = 0;
+		}
+
+		this._gainNode.gain.value = volume;
 	};
 
 	Player.prototype.play = function() {
@@ -2475,12 +2549,10 @@ var SimpleDash = SimpleDash || {};
 		while( this._scheduledSources.length > 0 ) {
 
 			var oldSource = this._scheduledSources.shift();
-			var newSource = this._audioContext.createBufferSource();
-
-			newSource.buffer = oldSource.buffer;
-			newSource.connect(this._audioContext.destination);
+			var newSource = this._createSource(oldSource.buffer);
 
 			this._cachedSources.push(newSource);
+
 			oldSource.stop();
 		}
 
@@ -2503,14 +2575,7 @@ var SimpleDash = SimpleDash || {};
 			source.stop();
 		}
 
-		// Reset variables
-		this._manifestReader = new ManifestReader(this._src);
-		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
-		this._audioContext = new AudioContext();
-		this._startAt = 0;
-		this._scheduleChunkTimer = null;
-		this._scheduledSources = [];
-		this._cachedSources = [];
+		// TODO: Re-init
 	};
 
 	Player.prototype._resume = function() {
@@ -2535,21 +2600,11 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype._scheduleChunk = function() {
 
-		var chunk;
-
-		// TODO: Replace this error handling with events from buffer.
-		try {
-			chunk = this._chunkBuffer.getChunk();
-		} catch( err ) {
-			return;
-		}
+		var chunk = this._chunkBuffer.getChunk();
 
 		this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
 
-			var source = this._audioContext.createBufferSource();
-
-			source.buffer = buffer;
-			source.connect(this._audioContext.destination);
+			var source = this._createSource(buffer);
 
 			this._scheduleSource(source);
 
@@ -2560,6 +2615,10 @@ var SimpleDash = SimpleDash || {};
 	};
 
 	Player.prototype._scheduleSource = function( source ) {
+
+		if( this._startAt === 0 ) {
+			this._startAt = this._audioContext.currentTime;
+		}
 
 		if( source.start ) {
 			source.start(this._startAt);
@@ -2577,6 +2636,16 @@ var SimpleDash = SimpleDash || {};
 
 		// Add new source
 		this._scheduledSources.push(source);
+	};
+
+	Player.prototype._createSource = function( buffer ) {
+
+		var source = this._audioContext.createBufferSource();
+
+		source.buffer = buffer;
+		source.connect(this._gainNode);
+
+		return source;
 	};
 
 	SimpleDash.Player = Player;

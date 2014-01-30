@@ -183,7 +183,7 @@ Creating your own skin for the player is straight forward. You just need to decl
 
 
 Browser support
--------------
+---------------
 
 - IE7+
 - Firefox 3.5+
@@ -192,6 +192,10 @@ Browser support
 - Chrome
 - iOS 4+
 - Android 2.1+
+
+Release History
+---------------
+* 2014-01-30	v4.0.1 		Fixed bug where playlist queue wasn't clearing properly
 
 
 License

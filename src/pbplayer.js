@@ -90,6 +90,8 @@ pbPlayer = PB.Class(PB.Observer, {
 	 */
 	emptyMedia: function() {
 
+		this.destroyCurrentMediaContainer();
+
 		this.playlist.empty();
 	},
 

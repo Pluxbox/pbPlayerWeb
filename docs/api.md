@@ -93,19 +93,19 @@ Gets the volume
 Checks if it's possible to read the duration of the current media, i.e. streams do not have a duration.
 
 
-#### getDuration() {int}
-Gets the total duration of the current media in milliseconds.
+#### getDuration() {Float}
+Gets the total duration of the current media in seconds.
 
 
-#### getPosition() {int}
-Gets the current position of the playback in milliseconds.
+#### getTime() {Float}
+Gets the current position of the playback in seconds.
 
 
-#### setPosition( position )
-Sets the current position of the playback in milliseconds.
+#### playAt( position )
+Sets the current position of the playback in seconds.
 
 ##### Parameters
-{int} New postion of the playback in milliseconds.
+{Float} New postion of the playback in seconds.
 
 #### isBuffering() {boolean}
 Checks if the player is currently buffering.

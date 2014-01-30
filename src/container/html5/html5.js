@@ -175,7 +175,12 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if( this.element && this.element.src.indexOf(this._src) < 0 ) {
+		if( !this.element ) {
+
+			return;
+		}
+
+		if( this.element.src.indexOf(this._src) < 0 ) {
 
 			this.element.src = this._src;
 		}
@@ -213,6 +218,9 @@ var Html5 = PB.Class({
 	 *
 	 */
 	stop: function () {
+
+		// `stop` must be queued when isPlaying is false (atleast when player is still loading/buffering and playback has
+		// not begin yet)
 
 		this.element.pause();
 
