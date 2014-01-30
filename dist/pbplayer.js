@@ -8,7 +8,7 @@
  * Copyright 2013 - 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2014-01-30 12:01
+ * Build date 2014-01-30 15:26
  */
 (function ( name, context, definition ) {
 	
@@ -425,7 +425,7 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 // pbPlayer default options
 pbPlayer.defaults = {
 
-	debug: true,
+	debug: false,
 	solution: 'html5 flash',	// Flash
 	autoplay: false,
 	volume: 100,
