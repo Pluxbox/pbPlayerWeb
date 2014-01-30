@@ -16,7 +16,7 @@ var SimpleDash = SimpleDash || {};
 	 *
 	 * @returns {Promise} A promise that resolves when the chunk is filled.
 	 */
-	Chunk.prototype.fillAudioData = function() {
+	Chunk.prototype.fill = function() {
 
 		// Resolve if audio data is already retrieved
 		if( this.audioData ) {
@@ -44,6 +44,14 @@ var SimpleDash = SimpleDash || {};
 			request.send();
 
 		}.bind(this));
+	};
+
+	/**
+	 * Empties the data in the chunk.
+	 */
+	Chunk.prototype.empty = function() {
+
+		this.audioData = null;
 	};
 
 	SimpleDash.Chunk = Chunk;

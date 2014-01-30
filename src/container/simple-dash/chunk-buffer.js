@@ -2,13 +2,15 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
+	// TODO: Prevent buffer from DDOSing the whole thing
+
 	var ChunkBuffer = function( manifestReader ) {
 
 		this._manifestReader = manifestReader;
 		this._bufferedChunks = [];
 		this._preventBuffering = false;
-		this._minChunks = 4;
-		this._maxChunks = 6;
+		this._minChunks = 2;
+		this._maxChunks = 3;
 	};
 
 	/**
@@ -27,7 +29,7 @@ var SimpleDash = SimpleDash || {};
 		// Get chunk from manifest & fill it with data
 		this._manifestReader.getChunk().then(function( chunk ) {
 
-			return chunk.fillAudioData();
+			return chunk.fill();
 
 		}).then(function( chunk ) {
 
@@ -65,7 +67,6 @@ var SimpleDash = SimpleDash || {};
 
 	/**
 	 * Takes a filled chunk from the buffer.
-	 *
 	 * @returns {Chunk} The filled chunk.
 	 */
 	ChunkBuffer.prototype.getChunk = function() {
@@ -76,6 +77,7 @@ var SimpleDash = SimpleDash || {};
 			throw 'The buffer ran out of chunks but one was requested anyway.';
 		}
 
+		// Make sure the buffer stays filled
 		this._bufferChunk();
 
 		return chunk;

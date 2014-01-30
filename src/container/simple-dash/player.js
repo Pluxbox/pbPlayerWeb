@@ -111,11 +111,8 @@ var SimpleDash = SimpleDash || {};
 		var chunk;
 
 		// TODO: Replace this error handling with events from buffer.
-		try {
-			chunk = this._chunkBuffer.getChunk();
-		} catch( err ) {
-			return;
-		}
+		chunk = this._chunkBuffer.getChunk();
+
 
 		this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
 
