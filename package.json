@@ -17,7 +17,7 @@
 	},
 	"description": "",
 	"contributors": [],
-	"keywords": ["audio", "player", "html5", "flash"],
+	"keywords": ["audio", "html5", "flash", "Pluxbox", "stream", "shoutcast", "icecast"],
 	"license": "MIT",
 	"devDependencies": {
 		"grunt": "~0.4.1",
