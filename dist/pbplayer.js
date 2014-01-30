@@ -1,14 +1,14 @@
 /*!
- * pbPlayer v4.0.0
+ * pbPlayer v4.0.1
  * https://github.com/Pluxbox/pbPlayer
  *
  * Requires pbjs javascript framework (>= 0.6.0)
  * https://github.com/Saartje87/pbjs-0.6
  *
- * Copyright 2013 Pluxbox
+ * Copyright 2013 - 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2013-11-21 17:34
+ * Build date 2014-01-30 12:01
  */
 (function ( name, context, definition ) {
 	
@@ -151,6 +151,8 @@ pbPlayer = PB.Class(PB.Observer, {
 	 * Removes all media from the playlist.
 	 */
 	emptyMedia: function() {
+
+		this.destroyCurrentMediaContainer();
 
 		this.playlist.empty();
 	},
@@ -545,6 +547,11 @@ var Playlist = PB.Class({
 		if( index !== -1 ) {
 			this._player.emit('mediaremoved', { media: this._entries.splice(index, 1)[0] });
 		}
+
+		if( !this._entries[this._currentEntryIndex] ) {
+
+			this._currentEntryIndex = 0;
+		}
 	},
 
 	/**
@@ -780,7 +787,12 @@ var Html5 = PB.Class({
 	 */
 	play: function () {
 
-		if( this.element && this.element.src.indexOf(this._src) < 0 ) {
+		if( !this.element ) {
+
+			return;
+		}
+
+		if( this.element.src.indexOf(this._src) < 0 ) {
 
 			this.element.src = this._src;
 		}
@@ -818,6 +830,9 @@ var Html5 = PB.Class({
 	 *
 	 */
 	stop: function () {
+
+		// `stop` must be queued when isPlaying is false (atleast when player is still loading/buffering and playback has
+		// not begin yet)
 
 		this.element.pause();
 
