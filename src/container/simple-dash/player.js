@@ -8,16 +8,37 @@ var SimpleDash = SimpleDash || {};
 
 	var Player = function( src ) {
 
-		this._src = src;                                           // Location of manifest file
-		this._manifestReader = new ManifestReader(this._src);      // Reader for the manifest file
-		this._chunkBuffer = new ChunkBuffer(this._manifestReader); // Buffer for loading chunks of data from the manifest
-		this._audioContext = new AudioContext();                   // Contols audio processing and decoding
-		this._startAt = 0;                                         // The offset to use to start the next chunk of audio
-		this._scheduleChunkTimer = null;                           // The timer to schedule the next chunk of audio for playback
-		this._scheduledSources = [];                               // Sources that have been scheduled for playback
-		this._cachedSources = [];                                  // Sources that have been cached because of changes in the playback state
+		this._src = src;
+		this._manifestReader = new ManifestReader(this._src);
+		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
+		this._audioContext = new AudioContext();
+		this._gainNode = this._audioContext.createGain();
+		this._startAt = 0;
+		this._scheduleChunkTimer = null;
+		this._scheduledSources = [];
+		this._cachedSources = [];
 		this._isPaused = false;
 		this._resumeOffset = 0;
+
+		this._gainNode.connect(this._audioContext.destination);
+	};
+
+	Player.prototype.getVolume = function() {
+
+		return this._gainNode.gain.value;
+	};
+
+	Player.prototype.setVolume = function( volume ) {
+
+		if( volume > 1 ) {
+			volume = 1;
+		}
+
+		if( volume < 0 ) {
+			volume = 0;
+		}
+
+		this._gainNode.gain.value = volume;
 	};
 
 	Player.prototype.play = function() {
@@ -48,12 +69,10 @@ var SimpleDash = SimpleDash || {};
 		while( this._scheduledSources.length > 0 ) {
 
 			var oldSource = this._scheduledSources.shift();
-			var newSource = this._audioContext.createBufferSource();
-
-			newSource.buffer = oldSource.buffer;
-			newSource.connect(this._audioContext.destination);
+			var newSource = this._createSource(oldSource.buffer);
 
 			this._cachedSources.push(newSource);
+
 			oldSource.stop();
 		}
 
@@ -76,14 +95,7 @@ var SimpleDash = SimpleDash || {};
 			source.stop();
 		}
 
-		// Reset variables
-		this._manifestReader = new ManifestReader(this._src);
-		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
-		this._audioContext = new AudioContext();
-		this._startAt = 0;
-		this._scheduleChunkTimer = null;
-		this._scheduledSources = [];
-		this._cachedSources = [];
+		// TODO: Re-init
 	};
 
 	Player.prototype._resume = function() {
@@ -108,18 +120,11 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype._scheduleChunk = function() {
 
-		var chunk;
-
-		// TODO: Replace this error handling with events from buffer.
-		chunk = this._chunkBuffer.getChunk();
-
+		var chunk = this._chunkBuffer.getChunk();
 
 		this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
 
-			var source = this._audioContext.createBufferSource();
-
-			source.buffer = buffer;
-			source.connect(this._audioContext.destination);
+			var source = this._createSource(buffer);
 
 			this._scheduleSource(source);
 
@@ -130,6 +135,10 @@ var SimpleDash = SimpleDash || {};
 	};
 
 	Player.prototype._scheduleSource = function( source ) {
+
+		if( this._startAt === 0 ) {
+			this._startAt = this._audioContext.currentTime;
+		}
 
 		if( source.start ) {
 			source.start(this._startAt);
@@ -147,6 +156,16 @@ var SimpleDash = SimpleDash || {};
 
 		// Add new source
 		this._scheduledSources.push(source);
+	};
+
+	Player.prototype._createSource = function( buffer ) {
+
+		var source = this._audioContext.createBufferSource();
+
+		source.buffer = buffer;
+		source.connect(this._gainNode);
+
+		return source;
 	};
 
 	SimpleDash.Player = Player;

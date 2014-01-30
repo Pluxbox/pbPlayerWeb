@@ -53,9 +53,9 @@ var SimpleDash = PB.Class({
 	/**
 	 *
 	 */
-	setVolume: function () {
-
-
+	setVolume: function ( volume ) {
+		
+		this.player.setVolume( volume / 100 );
 	},
 
 	/**
