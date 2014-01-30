@@ -4,8 +4,9 @@ var SimpleDash = SimpleDash || {};
 
 	var Chunk = SimpleDash.Chunk;
 
-	var Manifest = function( src ) {
+	var Manifest = function( src, player ) {
 
+		this._player = player;
 		this._src = src;
 		this._segments = [];
 	};
@@ -26,6 +27,8 @@ var SimpleDash = SimpleDash || {};
 
 				var data = JSON.parse(request.response);
 				var segments = self._parseSegments(data.containers[0].segments);
+
+				self._parseModuleDate(data.modules || []);
 
 				self._segments = segments;
 
@@ -60,6 +63,36 @@ var SimpleDash = SimpleDash || {};
 		});
 
 		return results;
+	};
+
+	/**
+	 * 
+	 */
+	Manifest.prototype._parseModuleDate = function ( moduleData ) {
+
+		var i = 0,
+			module;
+
+		moduleData.push({
+
+			"type": "dash:pb-hour-info",
+			"data": {
+
+				"id": 1,
+				"startdatetime": "2014-01-23 03:00:00",
+				"stopdatetime": "2014-01-23 04:00:00",
+			}
+		});
+
+		for( ; i < moduleData.length; i++ ) {
+
+			module = moduleData[i];
+
+			this._player.emit('module:'+module.type, module.data);
+
+			// this.emit('module:'+module.type, module.data);
+			// console.log(module);
+		}
 	};
 
 	SimpleDash.Manifest = Manifest;

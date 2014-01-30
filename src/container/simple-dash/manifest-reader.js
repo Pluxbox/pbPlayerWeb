@@ -5,15 +5,16 @@ var SimpleDash = SimpleDash || {};
 	var Chunk = SimpleDash.Chunk,
 		Manifest = SimpleDash.Manifest;
 
-	var ManifestReader = function( src ) {
+	var ManifestReader = function( src, player ) {
 
+		this._player = player;
 		this._src = src;
 		this._manifestLoaded = false;
 		this._segments = [];
 		this._currentSegment = 0;
 
 		// Add main manifest
-		this._segments.push(new Manifest(this._src));
+		this._segments.push(new Manifest(this._src, player));
 	};
 
 	/**

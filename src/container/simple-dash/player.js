@@ -6,10 +6,13 @@ var SimpleDash = SimpleDash || {};
 		ChunkBuffer = SimpleDash.ChunkBuffer,
 		AudioContext = window.AudioContext || window.webkitAudioContext;
 
-	var Player = function( src ) {
+	var Player = function( src, pbPlayer ) {
+
+		// We need instance of pbPlayer
+		this._pbPlayer = pbPlayer;
 
 		this._src = src;
-		this._manifestReader = new ManifestReader(this._src);
+		this._manifestReader = new ManifestReader(this._src, this);
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
 		this._audioContext = new AudioContext();
 		this._gainNode = this._audioContext.createGain();
@@ -22,6 +25,11 @@ var SimpleDash = SimpleDash || {};
 
 		this._gainNode.connect(this._audioContext.destination);
 	};
+
+	Player.prototype.emit = function ( type, data ) {
+
+		this._pbPlayer.emit(type, data);
+	}
 
 	Player.prototype.getVolume = function() {
 

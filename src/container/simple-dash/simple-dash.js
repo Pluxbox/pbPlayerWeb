@@ -7,7 +7,7 @@ var SimpleDash = PB.Class({
 
 		this.pbPlayer = pbPlayer;
 
-		this.player = new SimpleDash.Player(src);
+		this.player = new SimpleDash.Player(src, pbPlayer);
 	},
 
 	/**
