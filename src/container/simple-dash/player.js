@@ -26,6 +26,7 @@ var SimpleDash = SimpleDash || {};
 		this._scheduledSources = [];
 		this._cachedSources = [];
 		this._isPaused = false;
+		this._isPlaying = false;
 		this._resumeOffset = 0;
 
 		this._gainNode.connect(this._audioContext.destination);
@@ -118,6 +119,10 @@ var SimpleDash = SimpleDash || {};
 			source.stop();
 		}
 
+
+		this._isPlaying = false;
+		this.emit('stop');
+
 		this._init();
 	};
 
@@ -150,6 +155,11 @@ var SimpleDash = SimpleDash || {};
 			var source = this._createSource(buffer);
 
 			this._scheduleSource(source);
+
+			if( !this._isPlaying ) {
+				this._isPlaying = true;
+				this.emit('play');
+			}
 
 			// Schedule decoding of next chunk
 			this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 1000 );
