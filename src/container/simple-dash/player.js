@@ -97,7 +97,11 @@ var SimpleDash = SimpleDash || {};
 
 			this._cachedSources.push(newSource);
 
-			oldSource.stop();
+			if( oldSource.noteOff ) {
+				oldSource.noteOff(0); // Older webkit
+			} else {
+				oldSource.stop();
+			}
 		}
 
 		this._resumeOffset = this._startAt - this._audioContext.currentTime;
@@ -116,7 +120,12 @@ var SimpleDash = SimpleDash || {};
 		while( this._scheduledSources.length > 0 ) {
 
 			var source = this._scheduledSources.shift();
-			source.stop();
+
+			if( source.noteOff ) {
+				source.noteOff(0); // Older webkit
+			} else {
+				source.stop();
+			}
 		}
 
 
@@ -132,7 +141,6 @@ var SimpleDash = SimpleDash || {};
 			return;
 		}
 
-		console.log(this._resumeOffset);
 		this._startAt = this._audioContext.currentTime;
 
 		// Schedule cached sources
