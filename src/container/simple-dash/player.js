@@ -58,10 +58,8 @@ var SimpleDash = SimpleDash || {};
 		}
 
 		// Start buffering chunks
+		this._chunkBuffer.on('ready', this._scheduleChunk, this);
 		this._chunkBuffer.start();
-
-		// Let's play pretend! (buffer is loaded, probably, maybe)
-		window.setTimeout(this._scheduleChunk.bind(this), 2000);
 	};
 
 	Player.prototype.pause = function() {

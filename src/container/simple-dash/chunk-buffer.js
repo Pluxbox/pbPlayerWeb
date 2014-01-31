@@ -2,42 +2,70 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
-	// TODO: Prevent buffer from DDOSing the whole thing
+	var Eventable = SimpleDash.Eventable;
 
 	var ChunkBuffer = function( manifestReader ) {
 
+		Eventable.call(this);
+
 		this._manifestReader = manifestReader;
-		this._bufferedChunks = [];
-		this._preventBuffering = false;
-		this._minChunks = 2;
-		this._maxChunks = 3;
+		this._chunks = [];
+		this._currentBuffer = 0; // In milliseconds
+		this._minBuffer = 5000; // In milliseconds
+		this._maxBuffer = 10000; // In milliseconds
+		this._minBufferFilled = false;
+		this._bufferingChunk = false;
+		this._preventBuffering = true;
 	};
+
+	// Extend Eventable
+	ChunkBuffer.prototype = Object.create(Eventable.prototype);
+	ChunkBuffer.prototype.constructor = ChunkBuffer;
 
 	/**
 	 * Buffers a new chunk from the manifest reader.
 	 */
 	ChunkBuffer.prototype._bufferChunk = function() {
 
-		// Prevent buffering when buffer is full or manifest ran out of chunks
-		if( this._preventBuffering ||
-			this._bufferedChunks.length >= this._maxChunks ||
-			!this._manifestReader.hasChunk() ) {
+		// Prevent buffering if we're already buffering
+		if( this._bufferingChunk ) {
 
 			return;
 		}
 
+		// Prevent buffering if buffer is full
+		if( this._currentBuffer >= this._maxBuffer ) {
+
+			return;
+		}
+
+		this._bufferingChunk = true;
+
 		// Get chunk from manifest & fill it with data
+		// TODO: Prevent buffer from DDOSing the server
 		this._manifestReader.getChunk().then(function( chunk ) {
 
+			// Fill the chunk with audio data
 			return chunk.fill();
 
 		}).then(function( chunk ) {
 
-			// Add chunk to buffer & buffer a new chunk
-			this._bufferedChunks.push(chunk);
+			// Add chunk to buffer
+			this._currentBuffer += chunk.duration;
+			this._chunks.push(chunk);
+
+			// Check if buffer is full enough to start playing
+			if( !this._minBufferFilled && this._currentBuffer >= this._minBuffer ) {
+
+				this._minBufferFilled = true;
+				this.emit('ready');
+			}
+
+			this._bufferingChunk = false;
 			this._bufferChunk();
 
 		}.bind(this));
+
 	};
 
 	/**
@@ -62,7 +90,11 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ChunkBuffer.prototype.empty = function() {
 
-		this._bufferedChunks = [];
+		this._chunks = [];
+		this._currentBuffer = 0;
+		this._preventBuffering = true;
+
+		// TODO: Trigger empty event
 	};
 
 	/**
@@ -71,13 +103,15 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ChunkBuffer.prototype.getChunk = function() {
 
-		var chunk = this._bufferedChunks.shift();
+		console.log('Player asked for a chunk.');
+
+		var chunk = this._chunks.shift();
 
 		if( chunk === undefined ) {
 			throw 'The buffer ran out of chunks but one was requested anyway.';
 		}
 
-		// Make sure the buffer stays filled
+		this._currentBuffer -= chunk.duration;
 		this._bufferChunk();
 
 		return chunk;
