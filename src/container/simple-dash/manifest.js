@@ -47,6 +47,8 @@ var SimpleDash = SimpleDash || {};
 
 	Manifest.prototype._parseSegments = function( segments ) {
 
+		var self = this;
+
 		// Map segments to instances
 		var results = segments.map(function( segment ) {
 
@@ -55,7 +57,7 @@ var SimpleDash = SimpleDash || {};
 					return new Chunk(segment);
 					break;
 				case 'manifest':
-					return new Manifest(segment.url);
+					return new Manifest(segment.url, self._player);
 					break;
 			}
 
