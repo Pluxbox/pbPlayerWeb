@@ -10,8 +10,13 @@ var SimpleDash = SimpleDash || {};
 
 		// We need instance of pbPlayer
 		this._pbPlayer = pbPlayer;
-
 		this._src = src;
+
+		this._init();
+	};
+
+	Player.prototype._init = function() {
+
 		this._manifestReader = new ManifestReader(this._src, this);
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
 		this._audioContext = new AudioContext();
@@ -101,7 +106,7 @@ var SimpleDash = SimpleDash || {};
 			source.stop();
 		}
 
-		// TODO: Re-init
+		this._init();
 	};
 
 	Player.prototype._resume = function() {
