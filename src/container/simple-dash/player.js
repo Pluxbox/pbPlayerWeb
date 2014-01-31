@@ -63,7 +63,19 @@ var SimpleDash = SimpleDash || {};
 		}
 
 		// Start buffering chunks
-		this._chunkBuffer.on('ready', this._scheduleChunk, this);
+		this._chunkBuffer.on('canplay', function() {
+
+			this._scheduleChunk();
+			this.emit('canplay');
+
+		}, this);
+
+		this._chunkBuffer.on('waiting', function() {
+
+			this.emit('waiting');
+
+		}, this)
+
 		this._chunkBuffer.start();
 	};
 
@@ -126,7 +138,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._isPaused = false;
 
-		this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 500 );
+		this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 1000 );
 	};
 
 	Player.prototype._scheduleChunk = function() {
@@ -140,7 +152,7 @@ var SimpleDash = SimpleDash || {};
 			this._scheduleSource(source);
 
 			// Schedule decoding of next chunk
-			this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 500 );
+			this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 1000 );
 
 		}.bind(this));
 	};

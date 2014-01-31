@@ -12,7 +12,7 @@ var SimpleDash = SimpleDash || {};
 		this._chunks = [];
 		this._currentBuffer = 0; // In milliseconds
 		this._minBuffer = 5000; // In milliseconds
-		this._maxBuffer = 10000; // In milliseconds
+		this._maxBuffer = 15000; // In milliseconds
 		this._minBufferFilled = false;
 		this._bufferingChunk = false;
 		this._preventBuffering = true;
@@ -58,14 +58,13 @@ var SimpleDash = SimpleDash || {};
 			if( !this._minBufferFilled && this._currentBuffer >= this._minBuffer ) {
 
 				this._minBufferFilled = true;
-				this.emit('ready');
+				this.emit('canplay');
 			}
 
 			this._bufferingChunk = false;
 			this._bufferChunk();
 
 		}.bind(this));
-
 	};
 
 	/**
@@ -103,8 +102,6 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ChunkBuffer.prototype.getChunk = function() {
 
-		console.log('Player asked for a chunk.');
-
 		var chunk = this._chunks.shift();
 
 		if( chunk === undefined ) {
@@ -112,6 +109,12 @@ var SimpleDash = SimpleDash || {};
 		}
 
 		this._currentBuffer -= chunk.duration;
+
+		// Check if buffer is empty
+		if( this._currentBuffer === 0 ) {
+			this.emit('waiting');
+		}
+
 		this._bufferChunk();
 
 		return chunk;
