@@ -22,13 +22,15 @@ var SimpleDash = SimpleDash || {};
 		this._audioContext = new AudioContext();
 		this._gainNode = this._audioContext.createGain();
 		this._startAt = 0;
+		this._startOffset = 0;
 		this._scheduleChunkTimer = null;
 		this._scheduledSources = [];
 		this._cachedSources = [];
 		this._isPaused = false;
 		this._isPlaying = false;
-		this._resumeOffset = 0;
+		this._playbackReportTimer = null;
 
+		// Connect node for regulating volume
 		this._gainNode.connect(this._audioContext.destination);
 	};
 
@@ -53,6 +55,11 @@ var SimpleDash = SimpleDash || {};
 		}
 
 		this._gainNode.gain.value = volume;
+
+		// Trigger volume changed event
+		this.emit('volumechange', {
+			volume: volume * 100
+		});
 	};
 
 	Player.prototype.play = function() {
@@ -68,6 +75,9 @@ var SimpleDash = SimpleDash || {};
 
 			this._scheduleChunk();
 			this.emit('canplay');
+			this.emit('duration', { length: Infinity });
+
+			this._playbackReportTimer = window.setInterval(this._reportPlayback.bind(this), 1000);
 
 		}, this);
 
@@ -86,8 +96,8 @@ var SimpleDash = SimpleDash || {};
 			return;
 		}
 
-		// Stop adding new chunks
 		window.clearTimeout(this._scheduleChunkTimer);
+		window.clearTimeout(this._playbackReportTimer);
 
 		// Stop playback & copy sources
 		while( this._scheduledSources.length > 0 ) {
@@ -104,14 +114,17 @@ var SimpleDash = SimpleDash || {};
 			}
 		}
 
-		this._resumeOffset = this._startAt - this._audioContext.currentTime;
 		this._isPaused = true;
+
+		// Emit pause event
+		this.emit('pause');
 	};
 
 	Player.prototype.stop = function() {
 
 		// Stop scheduling chunks
 		window.clearTimeout(this._scheduleChunkTimer);
+		window.clearTimeout(this._playbackReportTimer);
 
 		// Stop buffer
 		this._chunkBuffer.stop();
@@ -150,8 +163,17 @@ var SimpleDash = SimpleDash || {};
 		}
 
 		this._isPaused = false;
+		this.emit('play');
 
+		this._playbackReportTimer = window.setInterval(this._reportPlayback.bind(this), 1000);
 		this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 1000 );
+	};
+
+	Player.prototype._reportPlayback = function() {
+
+		this.emit('timeupdate', {
+			time: this._audioContext.currentTime - this._startOffset
+		});
 	};
 
 	Player.prototype._scheduleChunk = function() {

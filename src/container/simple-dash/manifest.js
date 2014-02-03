@@ -26,11 +26,9 @@ var SimpleDash = SimpleDash || {};
 			request.onload = function() {
 
 				var data = JSON.parse(request.response);
-				var segments = self._parseSegments(data.containers[0].segments);
 
-				self._parseModuleDate(data.modules || []);
-
-				self._segments = segments;
+				self._parseSegments(data.containers[0].segments);
+				self._parseModuleData(data.modules || []);
 
 				resolve(self._segments);
 			};
@@ -64,13 +62,13 @@ var SimpleDash = SimpleDash || {};
 			return segment;
 		});
 
-		return results;
+		return self._segments = results;
 	};
 
 	/**
 	 * 
 	 */
-	Manifest.prototype._parseModuleDate = function ( moduleData ) {
+	Manifest.prototype._parseModuleData = function ( moduleData ) {
 
 		var i = 0,
 			module;
