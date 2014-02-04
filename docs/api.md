@@ -152,7 +152,7 @@ Removes a media object from the playlist.
 media : Object - The media object to remove. Also accepts a collection.
 
 
-#### emptyPlaylist()
+#### emptyMedia()
 Removes all media objects from the playlist.
 
 
