@@ -15,6 +15,8 @@ var SimpleDash = PB.Class({
 	 */
 	destroy: function () {
 
+		this.player.stop();
+
 		this.pbPlayer = this.player = null;
 	},
 
