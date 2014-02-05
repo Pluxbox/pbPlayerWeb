@@ -6,6 +6,9 @@ var SimpleDash = SimpleDash || {};
 		ChunkBuffer = SimpleDash.ChunkBuffer,
 		AudioContext = window.AudioContext || window.webkitAudioContext;
 
+	// Shared audio context
+	var audioContext = new AudioContext();
+
 	var Player = function( src, pbPlayer ) {
 
 		// We need instance of pbPlayer
@@ -19,8 +22,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._manifestReader = new ManifestReader(this._src, this);
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
-		this._audioContext = new AudioContext();
-		this._gainNode = this._audioContext.createGain();
+		this._gainNode = audioContext.createGain();
 		this._startAt = 0;
 		this._startOffset = 0;
 		this._scheduleChunkTimer = null;
@@ -31,7 +33,7 @@ var SimpleDash = SimpleDash || {};
 		this._playbackReportTimer = null;
 
 		// Connect node for regulating volume
-		this._gainNode.connect(this._audioContext.destination);
+		this._gainNode.connect(audioContext.destination);
 	};
 
 	Player.prototype.emit = function ( type, data ) {
@@ -176,7 +178,7 @@ var SimpleDash = SimpleDash || {};
 			return;
 		}
 
-		this._startAt = this._audioContext.currentTime;
+		this._startAt = audioContext.currentTime;
 
 		// Schedule cached sources
 		while( this._cachedSources.length > 0 ) {
@@ -188,13 +190,13 @@ var SimpleDash = SimpleDash || {};
 		this.emit('play');
 
 		this._playbackReportTimer = window.setInterval(this._reportPlayback.bind(this), 1000);
-		this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 1000 );
+		this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - audioContext.currentTime) * 1000 - 1000 );
 	};
 
 	Player.prototype._reportPlayback = function() {
 
 		this.emit('timeupdate', {
-			time: this._audioContext.currentTime - this._startOffset
+			time: audioContext.currentTime - this._startOffset
 		});
 	};
 
@@ -202,7 +204,7 @@ var SimpleDash = SimpleDash || {};
 
 		var chunk = this._chunkBuffer.getChunk();
 
-		this._audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
+		audioContext.decodeAudioData(chunk.audioData, function( buffer ) {
 
 			var source = this._createSource(buffer);
 
@@ -214,7 +216,7 @@ var SimpleDash = SimpleDash || {};
 			}
 
 			// Schedule decoding of next chunk
-			this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - this._audioContext.currentTime) * 1000 - 1000 );
+			this._scheduleChunkTimer = window.setTimeout(this._scheduleChunk.bind(this), (this._startAt - audioContext.currentTime) * 1000 - 1000 );
 
 		}.bind(this));
 	};
@@ -222,7 +224,7 @@ var SimpleDash = SimpleDash || {};
 	Player.prototype._scheduleSource = function( source, startOffset, endOffset ) {
 
 		if( this._startAt === 0 ) {
-			this._startAt = this._audioContext.currentTime;
+			this._startAt = audioContext.currentTime;
 		}
 
 		// Schedule playback of source
@@ -246,7 +248,7 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype._createSource = function( buffer ) {
 
-		var source = this._audioContext.createBufferSource();
+		var source = audioContext.createBufferSource();
 
 		source.buffer = buffer;
 		source.connect(this._gainNode);
