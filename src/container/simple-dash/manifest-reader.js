@@ -29,8 +29,7 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ManifestReader.prototype.getChunk = function() {
 
-		var segment = this._segments[this._currentSegment],
-			self = this;
+		var segment = this._segments[this._currentSegment];
 
 		// Resolve with chunk
 		if( segment instanceof Chunk ) {
@@ -42,14 +41,48 @@ var SimpleDash = SimpleDash || {};
 		if( segment instanceof Manifest ) {
 
 			return segment.getSegments().then(function( segments ) {
-				self._appendSegments(segments);
-				self._currentSegment++;
-			}).then(self.getChunk.bind(self));
+
+				this._appendSegments(segments);
+				this._currentSegment++;
+
+			}.bind(this)).then(this.getChunk.bind(this));
 
 		}
 
 		// The segment is of an unknown type, reject.
 		return Promise.reject('Got an unknown segment on index ' + this._currentSegment);
+	};
+
+	ManifestReader.prototype.seekTo = function( target ) {
+
+		// TODO: Seeking for the truth
+
+		var i = 0,
+			prevSegment,
+			segment,
+			now = 0;
+
+		for( ; i < this._segments.length; i++ ) {
+
+			segment = this._segments[i];
+
+			if( segment instanceof Manifest || !segment.duration ) {
+
+				continue;
+			}
+
+			if( true ) {
+
+				console.log('A winner is you!', now, target);
+				break;
+			}
+
+			now += segment.duration / 1000;
+
+			console.log(now);
+
+		}
+
 	};
 
 	/**

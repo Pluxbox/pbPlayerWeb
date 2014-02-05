@@ -46,9 +46,9 @@ var SimpleDash = PB.Class({
 	/**
 	 *
 	 */
-	playAt: function () {
+	playAt: function ( seconds ) {
 
-
+		this.player.seekTo(seconds);
 	},
 
 	/**

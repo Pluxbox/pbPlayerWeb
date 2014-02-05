@@ -24,13 +24,12 @@ var SimpleDash = SimpleDash || {};
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
 		this._gainNode = audioContext.createGain();
 		this._startAt = 0;
-		this._startOffset = 0;
 		this._scheduleChunkTimer = null;
+		this._playbackReportTimer = null;
 		this._scheduledSources = [];
 		this._cachedSources = [];
 		this._isPaused = false;
 		this._isPlaying = false;
-		this._playbackReportTimer = null;
 
 		// Connect node for regulating volume
 		this._gainNode.connect(audioContext.destination);
@@ -90,6 +89,12 @@ var SimpleDash = SimpleDash || {};
 		}, this)
 
 		this._chunkBuffer.start();
+	};
+
+	Player.prototype.seekTo = function( seconds ) {
+	
+		this._manifestReader.seekTo(seconds);
+		//this._chunkBuffer.empty();
 	};
 
 	Player.prototype.pause = function() {
@@ -196,7 +201,7 @@ var SimpleDash = SimpleDash || {};
 	Player.prototype._reportPlayback = function() {
 
 		this.emit('timeupdate', {
-			time: audioContext.currentTime - this._startOffset
+			time: audioContext.currentTime
 		});
 	};
 

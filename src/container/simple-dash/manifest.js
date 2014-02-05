@@ -9,6 +9,8 @@ var SimpleDash = SimpleDash || {};
 		this._player = player;
 		this._src = src;
 		this._segments = [];
+		this.duration = false;
+		this.isLoaded = false;
 	};
 
 	Manifest.prototype.getSegments = function() {

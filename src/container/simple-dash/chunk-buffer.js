@@ -91,7 +91,6 @@ var SimpleDash = SimpleDash || {};
 
 		this._chunks = [];
 		this._currentBuffer = 0;
-		this._preventBuffering = true;
 
 		// TODO: Trigger empty event
 	};
