@@ -120,6 +120,28 @@ var SimpleDash = SimpleDash || {};
 		this.emit('pause');
 	};
 
+	Player.prototype.destroy = function() {
+
+		// Stop scheduling chunks
+		window.clearTimeout(this._scheduleChunkTimer);
+		window.clearTimeout(this._playbackReportTimer);
+
+		// Stop buffer
+		this._chunkBuffer.stop();
+
+		// Stop scheduled sources
+		while( this._scheduledSources.length > 0 ) {
+
+			var source = this._scheduledSources.shift();
+
+			if( source.noteOff ) {
+				source.noteOff(0); // Older webkit
+			} else {
+				source.stop();
+			}
+		}
+	};
+
 	Player.prototype.stop = function() {
 
 		// Stop scheduling chunks
