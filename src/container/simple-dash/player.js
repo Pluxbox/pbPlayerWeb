@@ -184,7 +184,7 @@ var SimpleDash = SimpleDash || {};
 
 			var source = this._createSource(buffer);
 
-			this._scheduleSource(source);
+			this._scheduleSource(source, chunk.startOffset, chunk.endOffset);
 
 			if( !this._isPlaying ) {
 				this._isPlaying = true;
@@ -197,20 +197,21 @@ var SimpleDash = SimpleDash || {};
 		}.bind(this));
 	};
 
-	Player.prototype._scheduleSource = function( source ) {
+	Player.prototype._scheduleSource = function( source, startOffset, endOffset ) {
 
 		if( this._startAt === 0 ) {
 			this._startAt = this._audioContext.currentTime;
 		}
 
+		// Schedule playback of source
 		if( source.start ) {
-			source.start(this._startAt);
+			source.start(this._startAt, startOffset, source.buffer.duration + endOffset);
 		} else {
-			source.noteOn(this._startAt); // Older webkit implementation
+			source.noteOn(this._startAt, startOffset, source.buffer.duration + endOffset); // Older webkit implementation
 		}
 
 		// Set start point for next source
-		this._startAt += source.buffer.duration;
+		this._startAt += source.buffer.duration - startOffset - endOffset;
 
 		// Remove old sources
 		if( this._scheduledSources.length > 1 ) {

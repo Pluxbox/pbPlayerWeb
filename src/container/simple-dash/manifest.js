@@ -13,8 +13,6 @@ var SimpleDash = SimpleDash || {};
 
 	Manifest.prototype.getSegments = function() {
 
-		var self = this;
-
 		if( this._segments.length ) {
 			return Promise.resolve(this._segments);
 		}
@@ -27,25 +25,25 @@ var SimpleDash = SimpleDash || {};
 
 				var data = JSON.parse(request.response);
 
-				self._parseSegments(data.containers[0].segments);
-				self._parseModuleData(data.modules || []);
+				this._parseSegments(data.containers[0].segments);
+				this._parseModuleData(data.modules || []);
 
-				resolve(self._segments);
-			};
+				resolve(this._segments);
+
+			}.bind(this);
 
 			request.onerror = function() {
 				reject('Could not load manifest from server');
 			};
 
-			request.open('GET', self._src, true);
+			request.open('GET', this._src, true);
 			request.send();
-		});
+
+		}.bind(this));
 		
 	};
 
 	Manifest.prototype._parseSegments = function( segments ) {
-
-		var self = this;
 
 		// Map segments to instances
 		var results = segments.map(function( segment ) {
@@ -55,14 +53,15 @@ var SimpleDash = SimpleDash || {};
 					return new Chunk(segment);
 					break;
 				case 'manifest':
-					return new Manifest(segment.url, self._player);
+					return new Manifest(segment.url, this._player);
 					break;
 			}
 
 			return segment;
-		});
 
-		return self._segments = results;
+		}.bind(this));
+
+		return this._segments = results;
 	};
 
 	/**

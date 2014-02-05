@@ -7,9 +7,10 @@ var SimpleDash = SimpleDash || {};
 		this.id = data.id;
 		this.url = data.url;
 		this.duration = data.duration;
+		this.startOffset = (data.start_offset / 1000) || 0;
+		this.endOffset = (data.end_offset / 1000) || 0;
 		this.audioData = null;
 	};
-
 
 	/**
 	 * Fills the chunk with data from the server.
@@ -33,6 +34,8 @@ var SimpleDash = SimpleDash || {};
 			request.onload = function() {
 
 				this.audioData = request.response;
+
+				// Resolve with own instance
 				resolve(this);
 
 			}.bind(this);
