@@ -94,7 +94,7 @@ var SimpleDash = SimpleDash || {};
 	Player.prototype.seekTo = function( seconds ) {
 	
 		this._manifestReader.seekTo(seconds);
-		//this._chunkBuffer.empty();
+		this._chunkBuffer.empty();
 	};
 
 	Player.prototype.pause = function() {

@@ -53,12 +53,13 @@ var SimpleDash = SimpleDash || {};
 		return Promise.reject('Got an unknown segment on index ' + this._currentSegment);
 	};
 
+	/**
+	 * Seeks the manifest to a specific point in time.
+	 * @param {Number} target The target to seek to in seconds.
+	 */
 	ManifestReader.prototype.seekTo = function( target ) {
 
-		// TODO: Seeking for the truth
-
 		var i = 0,
-			prevSegment,
 			segment,
 			now = 0;
 
@@ -71,15 +72,15 @@ var SimpleDash = SimpleDash || {};
 				continue;
 			}
 
-			if( true ) {
+			// TODO: Handle unloaded manifests
 
-				console.log('A winner is you!', now, target);
+			now += (segment.duration - segment.startOffset - segment.endOffset) / 1000;
+
+			if( now > target ) {
+
+				this._currentSegment = i;
 				break;
 			}
-
-			now += segment.duration / 1000;
-
-			console.log(now);
 
 		}
 
