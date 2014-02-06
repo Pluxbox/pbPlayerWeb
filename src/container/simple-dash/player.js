@@ -1,6 +1,6 @@
 var SimpleDash = SimpleDash || {};
 
-(function( SimpleDash ) {
+(function( SimpleDash, window ) {
 
 	var ManifestReader = SimpleDash.ManifestReader,
 		ChunkBuffer = SimpleDash.ChunkBuffer,
@@ -24,10 +24,12 @@ var SimpleDash = SimpleDash || {};
 		this._chunkBuffer = new ChunkBuffer(this._manifestReader);
 		this._gainNode = audioContext.createGain();
 		this._startAt = 0;
+		this._startOffset = 0;
+		this._duration = 0;
 		this._scheduleChunkTimer = null;
 		this._playbackReportTimer = null;
-		this._scheduledSources = [];
-		this._cachedSources = [];
+		this._scheduledSources = []; // DEPRECATED
+		this._cachedSources = []; // DEPRECATED
 		this._isPaused = false;
 		this._isPlaying = false;
 
@@ -44,15 +46,18 @@ var SimpleDash = SimpleDash || {};
 
 		}, this);
 
-		this._chunkBuffer.on('empty', function() {
+		/*this._chunkBuffer.on('empty', function() {
+
+			console.log('empty', this);
 
 			this.pause();
 			this.emit('waiting');
 
-		}.bind(this));
+		}.bind(this));*/
 
 		this._manifestReader.on('duration', function( duration ) {
 
+			this._duration = duration;
 			this.emit('duration', { length: duration });
 
 		}.bind(this));
@@ -90,6 +95,7 @@ var SimpleDash = SimpleDash || {};
 
 		// Resume playback is paused
 		if( this._isPaused ) {
+
 			this._resume();
 			return;
 		}
@@ -130,7 +136,7 @@ var SimpleDash = SimpleDash || {};
 		this._isPaused = true;
 
 		// Emit pause event
-		this.emit('pause');
+		//this.emit('pause');
 	};
 
 	Player.prototype.destroy = function() {
@@ -206,8 +212,17 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype._reportPlayback = function() {
 
+		var position = audioContext.currentTime - this._startOffset;
+		var progress = this._duration === Infinity ? this._duration : position / this._duration;
+
+		console.log({
+			position: position,
+			progress: progress
+		});
+
 		this.emit('timeupdate', {
-			time: audioContext.currentTime
+			position: position,
+			progress: progress
 		});
 	};
 
@@ -269,7 +284,7 @@ var SimpleDash = SimpleDash || {};
 
 	SimpleDash.Player = Player;
 
-})(SimpleDash);
+})(SimpleDash, window);
 
 // For debugging purposes
 window.SimpleDash = SimpleDash;
