@@ -33,6 +33,29 @@ var SimpleDash = SimpleDash || {};
 
 		// Connect node for regulating volume
 		this._gainNode.connect(audioContext.destination);
+
+		// Add events
+		this._chunkBuffer.on('canplay', function() {
+
+			this._scheduleChunk();
+			this.emit('canplay');
+
+			this._playbackReportTimer = window.setInterval(this._reportPlayback.bind(this), 1000);
+
+		}, this);
+
+		this._chunkBuffer.on('empty', function() {
+
+			this.pause();
+			this.emit('waiting');
+
+		}.bind(this));
+
+		this._manifestReader.on('duration', function( duration ) {
+
+			this.emit('duration', { length: duration });
+
+		}.bind(this));
 	};
 
 	Player.prototype.emit = function ( type, data ) {
@@ -70,23 +93,6 @@ var SimpleDash = SimpleDash || {};
 			this._resume();
 			return;
 		}
-
-		// Start buffering chunks
-		this._chunkBuffer.on('canplay', function() {
-
-			this._scheduleChunk();
-			this.emit('canplay');
-			this.emit('duration', { length: Infinity });
-
-			this._playbackReportTimer = window.setInterval(this._reportPlayback.bind(this), 1000);
-
-		}, this);
-
-		this._chunkBuffer.on('waiting', function() {
-
-			this.emit('waiting');
-
-		}, this)
 
 		this._chunkBuffer.start();
 	};

@@ -2,17 +2,25 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
-	var Chunk = SimpleDash.Chunk,
-		Manifest = SimpleDash.Manifest;
+	var Eventable = SimpleDash.Eventable,
+		Manifest = SimpleDash.Manifest,
+		Chunk = SimpleDash.Chunk;
 
 	var ManifestReader = function( src, player ) {
 
+		Eventable.call(this);
+
 		this._segments = [];
 		this._currentSegment = 0;
+		this._metaDataGiven = false;
 
 		// Add main manifest
 		this._segments.push(new Manifest(src, player));
 	};
+
+	// Extend Eventable
+	ManifestReader.prototype = Object.create(Eventable.prototype);
+	ManifestReader.prototype.constructor = ManifestReader;
 
 	/**
 	 * Checks if there is a segment available.
@@ -33,6 +41,7 @@ var SimpleDash = SimpleDash || {};
 
 		// Resolve with chunk
 		if( segment instanceof Chunk ) {
+
 			this._currentSegment++;
 			return Promise.resolve(segment);
 		}
@@ -41,6 +50,16 @@ var SimpleDash = SimpleDash || {};
 		if( segment instanceof Manifest ) {
 
 			return segment.getSegments().then(function( segments ) {
+
+				// Detect if metadata events should be triggered
+				if( !this._metaDataGiven && this._currentSegment === 0 ) {
+
+					var meta = segment.metaData;
+
+					this._metaDataGiven = true;
+
+					this.emit('duration', meta.duration);
+				}
 
 				this._appendSegments(segments);
 				this._currentSegment++;

@@ -2,15 +2,15 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
-	var Chunk = SimpleDash.Chunk;
+	var Eventable = SimpleDash.Eventable,
+		Chunk = SimpleDash.Chunk;
 
 	var Manifest = function( src, player ) {
 
 		this._player = player;
 		this._src = src;
 		this._segments = [];
-		this.duration = false;
-		this.isLoaded = false;
+		this.metaData = null;
 	};
 
 	Manifest.prototype.getSegments = function() {
@@ -25,10 +25,11 @@ var SimpleDash = SimpleDash || {};
 
 			request.onload = function() {
 
-				var data = JSON.parse(request.response);
+				var manifest = JSON.parse(request.response);
 
-				this._parseSegments(data.containers[0].segments);
-				this._parseModuleData(data.modules || []);
+				this._parseSegments(manifest.containers[0].segments);
+				this._parseModuleData(manifest.modules || []);
+				this._parseMetaData(manifest);
 
 				resolve(this._segments);
 
@@ -94,6 +95,15 @@ var SimpleDash = SimpleDash || {};
 			// this.emit('module:'+module.type, module.data);
 			// console.log(module);
 		}
+	};
+
+	Manifest.prototype._parseMetaData = function( manifest ) {
+
+		var meta = {};
+
+		meta.duration = manifest.duration || Infinity;
+
+		this.metaData = meta;
 	};
 
 	SimpleDash.Manifest = Manifest;
