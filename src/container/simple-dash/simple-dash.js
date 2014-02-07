@@ -18,19 +18,25 @@ var SimpleDash = SimpleDash || {};
 		this._scheduler.on('progress', this._onReportTimeUpdate, this);
 	};
 
-	Player.prototype.play = function() {
-
-		this._scheduler.start();
-	};
-
 	Player.prototype.destroy = function() {
 
 		this.stop();
 	};
 
-	Player.prototype.pause = function() {};
+	Player.prototype.play = function() {
 
-	Player.prototype.stop = function() {};
+		this._scheduler.start();
+	};
+
+	Player.prototype.pause = function() {
+
+		this._pbPlayer.emit('pause');
+	};
+
+	Player.prototype.stop = function() {
+
+		this._pbPlayer.emit('stop');
+	};
 
 	Player.prototype.setVolume = function( volume ) {
 
