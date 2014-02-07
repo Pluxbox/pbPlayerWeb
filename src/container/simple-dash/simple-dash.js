@@ -35,6 +35,10 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype.stop = function() {
 
+		this._reader.reset();
+		this._buffer.reset();
+		this._scheduler.reset();
+
 		this._pbPlayer.emit('stop');
 	};
 

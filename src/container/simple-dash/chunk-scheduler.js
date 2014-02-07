@@ -14,6 +14,7 @@
 		this._scheduleTimer = null;
 		this._reportProgressTimer = null;
 		this._chunks = [];
+		this._scheduledSources = [];
 		this._minChunks = 4;
 		this._startPosition = 0;
 		this._chunkPosition = 0;
@@ -31,7 +32,33 @@
 		this._chunkBuffer.start();
 	};
 
-	ChunkScheduler.prototype.stop = function() {};
+	ChunkScheduler.prototype.reset = function() {
+
+		this._chunkBuffer.off('progress', this._onBufferProgress);
+
+		window.clearTimeout(this._scheduleTimer);
+		window.clearTimeout(this._reportProgressTimer);
+
+		while( this._scheduledSources.length ) {
+
+			var source = this._scheduledSources.shift();
+
+			if( source.noteOff ) {
+				source.noteOff(0); // Older webkit
+			} else {
+				source.stop();
+			}
+		}
+
+		this._scheduleTimer = null;
+		this._reportProgressTimer = null;
+		this._chunks = [];
+		this._minChunks = 4;
+		this._startPosition = 0;
+		this._chunkPosition = 0;
+		this._totalDuration = 0;
+
+	};
 
 	ChunkScheduler.prototype.clear = function() {};
 
@@ -101,6 +128,7 @@
 				source.noteOn(this._chunkPosition, chunk.startOffset, duration);
 			}
 
+			this._scheduledSources.push(source);
 			this._chunkPosition += duration;
 
 		}

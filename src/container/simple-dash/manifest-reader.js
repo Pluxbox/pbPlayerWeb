@@ -10,6 +10,7 @@ var SimpleDash = SimpleDash || {};
 
 		Eventable.call(this);
 
+		this._src = src;
 		this._segments = [];
 		this._currentSegment = 0;
 		this._metaDataGiven = false;
@@ -103,6 +104,16 @@ var SimpleDash = SimpleDash || {};
 
 		}
 
+	};
+
+	ManifestReader.prototype.reset = function() {
+
+		this._segments = [];
+		this._currentSegment = 0;
+		this._metaDataGiven = false;
+
+		// Add main manifest
+		this._segments.push(new Manifest(this._src));
 	};
 
 	/**
