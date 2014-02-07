@@ -26,6 +26,7 @@ var SimpleDash = SimpleDash || {};
 	Player.prototype.play = function() {
 
 		this._scheduler.start();
+		this._pbPlayer.emit('play');
 	};
 
 	Player.prototype.pause = function() {
