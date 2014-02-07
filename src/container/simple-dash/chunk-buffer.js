@@ -6,17 +6,16 @@ var SimpleDash = SimpleDash || {};
 
 	var ChunkBuffer = function( manifestReader, options ) {
 
-		options = options || {};
-
 		Eventable.call(this);
+
+		options = options || {};
 
 		this._manifestReader = manifestReader;
 		this._chunks = [];
 		this._currentBuffer = 0;
-		this._minBuffer = options.minBuffer || 5000; // TODO: Tweak value
-		this._maxBuffer = options.maxBuffer || 15000; // TODO: Tweak value
+		this._minBuffer = options.minBuffer || 20000; // TODO: Tweak value
+		this._maxBuffer = options.maxBuffer || 30000; // TODO: Tweak value
 		this._minBufferFilled = false;
-		this._maxBufferFilled = false; // TODO: Implement max buffer events
 		this._busyBuffering = false;
 		this._stopBuffering = true;
 	};
@@ -30,8 +29,8 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ChunkBuffer.prototype._bufferChunk = function() {
 
-		// Prevent buffering if we're already buffering
-		if( this._busyBuffering ) {
+		// Prevent buffering if we're already buffering or buffering has stopped
+		if( this._busyBuffering || this._stopBuffering ) {
 
 			return;
 		}
@@ -46,7 +45,7 @@ var SimpleDash = SimpleDash || {};
 
 		// TODO: Prevent buffer from DDOSing the server
 
-		// Get chunk from manifest & fill it with data
+		// Get chunk from manifest
 		this._manifestReader.getChunk().then(function( chunk ) {
 
 			// Fill the chunk with data
@@ -66,6 +65,9 @@ var SimpleDash = SimpleDash || {};
 			}
 
 			this._busyBuffering = false;
+
+			this.emit('progress');
+
 			this._bufferChunk();
 
 		}.bind(this));
@@ -86,22 +88,28 @@ var SimpleDash = SimpleDash || {};
 	ChunkBuffer.prototype.stop = function() {
 
 		// TODO: Might cause error if request for data completes after the buffer was stopped
+		// Should cancel request somehow
 
 		this._stopBuffering = true;
 	};
 
 	/**
-	 * Empties the buffer.
+	 * Clears the buffer.
 	 */
-	ChunkBuffer.prototype.empty = function() {
-
-		this.stop();
+	ChunkBuffer.prototype.clear = function() {
 
 		this._chunks = [];
 		this._currentBuffer = 0;
 		this._minBufferFilled = false;
 
 		this.emit('empty');
+
+		this._bufferChunk();
+	};
+
+	ChunkBuffer.prototype.hasChunk = function() {
+
+		return this._chunks.length !== 0;
 	};
 
 	/**
@@ -113,6 +121,7 @@ var SimpleDash = SimpleDash || {};
 		var chunk = this._chunks.shift();
 
 		if( chunk === undefined ) {
+
 			throw 'The buffer ran out of chunks but one was requested anyway.';
 		}
 
@@ -120,6 +129,7 @@ var SimpleDash = SimpleDash || {};
 
 		// Check if buffer is empty
 		if( this._currentBuffer === 0 ) {
+
 			this.emit('empty');
 		}
 

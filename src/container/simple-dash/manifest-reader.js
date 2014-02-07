@@ -6,7 +6,7 @@ var SimpleDash = SimpleDash || {};
 		Manifest = SimpleDash.Manifest,
 		Chunk = SimpleDash.Chunk;
 
-	var ManifestReader = function( src, player ) {
+	var ManifestReader = function( src ) {
 
 		Eventable.call(this);
 
@@ -15,7 +15,7 @@ var SimpleDash = SimpleDash || {};
 		this._metaDataGiven = false;
 
 		// Add main manifest
-		this._segments.push(new Manifest(src, player));
+		this._segments.push(new Manifest(src));
 	};
 
 	// Extend Eventable
@@ -28,7 +28,7 @@ var SimpleDash = SimpleDash || {};
 	 */
 	ManifestReader.prototype.hasChunk = function() {
 
-		return !(this._currentSegment > this._segments.length);
+		return !(this._currentSegment >= this._segments.length);
 	};
 
 	/**
@@ -58,7 +58,7 @@ var SimpleDash = SimpleDash || {};
 
 					this._metaDataGiven = true;
 
-					this.emit('duration', meta.duration);
+					this.emit('duration', { length: meta.duration });
 				}
 
 				this._appendSegments(segments);

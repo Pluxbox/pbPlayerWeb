@@ -2,14 +2,19 @@ var SimpleDash = SimpleDash || {};
 
 (function( SimpleDash ) {
 
+	var AudioContext = window.AudioContext || window.webkitAudioContext;
+
+	// Shared audio context
+	var audioContext = new AudioContext();
+
 	var Chunk = function( data ) {
 
 		this.id = data.id;
 		this.url = data.url;
 		this.duration = data.duration;
 		this.startOffset = (data.start_offset / 1000) || 0;
-		this.endOffset = (data.end_offset / 1000) || 0;
-		this.audioData = null;
+		this.endOffset = (data.stop_offset / 1000) || 0;
+		this.buffer = null;
 	};
 
 	/**
@@ -19,12 +24,12 @@ var SimpleDash = SimpleDash || {};
 	 */
 	Chunk.prototype.fill = function() {
 
-		// Resolve if audio data is already retrieved
-		if( this.audioData ) {
+		// Resolve if data is already retrieved
+		if( this.buffer ) {
 			return Promise.resolve(this);
 		}
 
-		// Return a promise for when the audio data is retrieved
+		// Return a promise for when the data is retrieved
 		return new Promise(function( resolve, reject ) {
 
 			var request = new XMLHttpRequest();
@@ -33,10 +38,15 @@ var SimpleDash = SimpleDash || {};
 
 			request.onload = function() {
 
-				this.audioData = request.response;
+				var data = request.response;
 
-				// Resolve with own instance
-				resolve(this);
+				audioContext.decodeAudioData(data, function( buffer ) {
+
+					this.buffer = buffer;
+
+					resolve(this);
+
+				}.bind(this));
 
 			}.bind(this);
 
@@ -54,7 +64,7 @@ var SimpleDash = SimpleDash || {};
 	 */
 	Chunk.prototype.empty = function() {
 
-		this.audioData = null;
+		this.buffer = null;
 	};
 
 	SimpleDash.Chunk = Chunk;

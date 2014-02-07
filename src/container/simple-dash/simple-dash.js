@@ -1,94 +1,89 @@
-var SimpleDash = PB.Class({
+var SimpleDash = SimpleDash || {};
 
-	/**
-	 *
-	 */
-	construct: function ( pbPlayer, src ) {
+(function( SimpleDash, PB, pbPlayer, window ) {
 
-		this.pbPlayer = pbPlayer;
+	var	Eventable = SimpleDash.Eventable,
+		ManifestReader = SimpleDash.ManifestReader,
+		ChunkBuffer = SimpleDash.ChunkBuffer,
+		ChunkScheduler = SimpleDash.ChunkScheduler;
 
-		this.player = new SimpleDash.Player(src, pbPlayer);
-	},
+	var Player = function( pbPlayer, src ) {
 
-	/**
-	 *
-	 */
-	destroy: function () {
+		this._pbPlayer = pbPlayer;
+		this._reader = new ManifestReader(src);
+		this._buffer = new ChunkBuffer(this._reader);
+		this._scheduler = new ChunkScheduler(this._buffer);
 
-		this.player.destroy();
-		this.pbPlayer = this.player = null;
-	},
+		this._reader.on('duration', this._onReportDuration, this);
+		this._scheduler.on('progress', this._onReportTimeUpdate, this);
+	};
 
-	/**
-	 *
-	 */
-	play: function () {
+	Player.prototype.play = function() {
 
-		this.player.play();
-	},
+		this._scheduler.start();
+	};
 
-	/**
-	 *
-	 */
-	pause: function () {
+	Player.prototype.destroy = function() {
 
-		this.player.pause();
-	},
+		this.stop();
+	};
 
-	/**
-	 *
-	 */
-	stop: function () {
+	Player.prototype.pause = function() {};
 
-		this.player.stop();
-	},
+	Player.prototype.stop = function() {};
 
-	/**
-	 *
-	 */
-	playAt: function ( seconds ) {
+	Player.prototype.setVolume = function( volume ) {
 
-		this.player.seekTo(seconds);
-	},
+		this._scheduler.setVolume(volume / 100);
 
-	/**
-	 *
-	 */
-	setVolume: function ( volume ) {
-		
-		this.player.setVolume( volume / 100 );
-	},
+		// Trigger volume changed event
+		this.emit('volumechange', {
+			volume: volume * 100
+		});
+	};
 
-	/**
-	 *
-	 */
-	mute: function () {
+	Player.prototype.playAt = function() {};
 
+	Player.prototype.mute = function() {};
 
-	},
+	Player.prototype.unmute = function() {};
 
-	/**
-	 *
-	 */
-	unmute: function () {
+	Player.prototype._onReportDuration = function( evt ) {
 
+		this._duration = evt.length;
 
-	}   
-});
+		this._pbPlayer.emit('duration', { length: evt.length });
+	};
 
-/**
- * SimpleDash available and supports audio file?
- */
-SimpleDash.canPlayType = function ( codec ) {
+	Player.prototype._onReportTimeUpdate = function( evt ) {
 
-	// Only support simpledash
-	if( codec !== 'simpledash' ) {
+		var args = {};
 
-		return false;
-	}
+		args.position = evt.position;
 
-	return !!(window.AudioContext || window.webkitAudioContext);
-};
+		if( this._duration !== Infinity ) {
+			args.progress = (evt.position / this._duration) * 100;
+		}
 
-pbPlayer.registerMediaContainer('simpledash', SimpleDash);
+		this._pbPlayer.emit('timeupdate', args);
+	};
 
+	Player.canPlayType = function ( codec ) {
+
+		// Only support simpledash
+		if( codec !== 'simpledash' ) {
+
+			return false;
+		}
+
+		return !!(window.AudioContext || window.webkitAudioContext);
+	};
+
+	pbPlayer.registerMediaContainer('simpledash', Player);
+
+	SimpleDash.Player = Player;
+
+})(SimpleDash, PB, pbPlayer, window);
+
+// For debugging purposes
+window.SimpleDash = SimpleDash;
