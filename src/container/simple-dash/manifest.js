@@ -24,9 +24,26 @@ var SimpleDash = SimpleDash || {};
 
 			request.onload = function() {
 
-				var manifest = JSON.parse(request.response);
+				var manifest = JSON.parse(request.response),
+					index = -1,
+					audio = new Audio();
 
-				this._parseSegments(manifest.containers[0].segments);
+				manifest.containers.forEach(function ( container, i ) {
+
+					var canPlay = audio.canPlayType(container.content_type);
+
+					if( index === -1 && (canPlay === 'probably' || canPlay === 'maybe') ) {
+
+						index = i;
+					}
+				});
+
+				if( index === -1 ) {
+
+					throw new TypeError();
+				}
+
+				this._parseSegments(manifest.containers[index].segments);
 				this._parseMetaData(manifest);
 
 				resolve(this._segments);
