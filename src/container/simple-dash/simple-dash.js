@@ -15,6 +15,7 @@ var SimpleDash = SimpleDash || {};
 		this._scheduler = new ChunkScheduler(this._buffer);
 
 		this._reader.on('duration', this._onReportDuration, this);
+		this._reader.on('module', this._onModule, this);
 		this._scheduler.on('progress', this._onReportTimeUpdate, this);
 		this._scheduler.on('ended', this._onEnded, this);
 	};
@@ -87,6 +88,13 @@ var SimpleDash = SimpleDash || {};
 		this._scheduler.reset();
 
 		this._pbPlayer.emit('ended');
+	};
+
+	Player.prototype._onModule = function( evt ) {
+
+		var module = evt.module;
+
+		this._pbPlayer.emit('module:' + module.type, module.data);
 	};
 
 	Player.canPlayType = function ( codec ) {

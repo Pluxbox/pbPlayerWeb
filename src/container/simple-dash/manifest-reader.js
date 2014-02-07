@@ -55,11 +55,21 @@ var SimpleDash = SimpleDash || {};
 				// Detect if metadata events should be triggered
 				if( !this._metaDataGiven && this._currentSegment === 0 ) {
 
-					var meta = segment.metaData;
+					var meta = segment.metaData,
+						i = 0,
+						module,
+						moduleData = segment.moduleData;
 
 					this._metaDataGiven = true;
 
 					this.emit('duration', { length: meta.duration });
+
+					for( ; i < moduleData.length; i++ ) {
+
+						module = moduleData[i];
+
+						this.emit('module', { module: module });
+					}
 				}
 
 				this._appendSegments(segments);

@@ -10,6 +10,7 @@ var SimpleDash = SimpleDash || {};
 		this._src = src;
 		this._segments = [];
 		this.metaData = null;
+		this.moduleData = null;
 	};
 
 	Manifest.prototype.getSegments = function() {
@@ -27,6 +28,7 @@ var SimpleDash = SimpleDash || {};
 				var manifest = JSON.parse(request.response);
 
 				this._parseSegments(manifest.containers[0].segments);
+				this._parseModuleData(manifest.modules || []);
 				this._parseMetaData(manifest);
 
 				resolve(this._segments);
@@ -63,6 +65,11 @@ var SimpleDash = SimpleDash || {};
 		}.bind(this));
 
 		return this._segments = results;
+	};
+
+	Manifest.prototype._parseModuleData = function ( moduleData ) {
+
+		this.moduleData = moduleData;
 	};
 
 	Manifest.prototype._parseMetaData = function( manifest ) {
