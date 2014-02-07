@@ -16,6 +16,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._reader.on('duration', this._onReportDuration, this);
 		this._scheduler.on('progress', this._onReportTimeUpdate, this);
+		this._scheduler.on('ended', this._onEnded, this);
 	};
 
 	Player.prototype.destroy = function() {
@@ -77,6 +78,15 @@ var SimpleDash = SimpleDash || {};
 		}
 
 		this._pbPlayer.emit('timeupdate', args);
+	};
+
+	Player.prototype._onEnded = function() {
+
+		this._reader.reset();
+		this._buffer.reset();
+		this._scheduler.reset();
+
+		this._pbPlayer.emit('ended');
 	};
 
 	Player.canPlayType = function ( codec ) {

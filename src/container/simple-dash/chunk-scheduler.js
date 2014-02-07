@@ -48,6 +48,8 @@
 			} else {
 				source.stop();
 			}
+
+			source.onended = null;
 		}
 
 		this._scheduleTimer = null;
@@ -137,6 +139,9 @@
 
 			this._chunks.push(this._chunkBuffer.getChunk());
 			this._scheduleTimer = window.setTimeout(this._scheduleChunk.bind(this), (duration - 1) * 1000 );
+		} else {
+
+			source.onended = this._onEnded.bind(this);
 		}
 
 		if( !this._reportProgressTimer ) {
@@ -163,6 +168,11 @@
 		});
 
 		this._reportProgressTimer = window.setTimeout(this._onReportProgress.bind(this), 250);
+	};
+
+	ChunkScheduler.prototype._onEnded = function() {
+
+		this.emit('ended');
 	};
 
 	SimpleDash.ChunkScheduler = ChunkScheduler;
