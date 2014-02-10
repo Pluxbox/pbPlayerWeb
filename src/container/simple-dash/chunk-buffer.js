@@ -135,8 +135,6 @@ var SimpleDash = SimpleDash || {};
 
 		var chunk = this._chunks.shift();
 
-		console.log('Chunks left: ', this._chunks);
-
 		if( chunk === undefined ) {
 
 			throw 'The buffer ran out of chunks but one was requested anyway.';

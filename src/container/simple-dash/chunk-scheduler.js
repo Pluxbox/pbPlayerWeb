@@ -114,8 +114,6 @@
 				return;
 			}
 
-			console.log('Playing chunk at: ' + audioContext.currentTime, chunk);
-
 			source = this._createSource(chunk.buffer);
 			duration = source.buffer.duration - chunk.startOffset - chunk.endOffset;
 
