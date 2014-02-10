@@ -70,6 +70,17 @@ var SimpleDash = SimpleDash || {};
 
 			this._bufferChunk();
 
+		}.bind(this)).catch(function( reason ) {
+
+			this._busyBuffering = false;
+
+			// TODO: Make sure this timer gets destroyed
+			window.setTimeout(function() {
+
+				this._bufferChunk();
+
+			}.bind(this), 1000);
+
 		}.bind(this));
 	};
 
