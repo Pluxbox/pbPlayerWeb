@@ -13,8 +13,8 @@ var SimpleDash = SimpleDash || {};
 		this._manifestReader = manifestReader;
 		this._chunks = [];
 		this._currentBuffer = 0;
-		this._minBuffer = options.minBuffer || 20000; // TODO: Tweak value
-		this._maxBuffer = options.maxBuffer || 30000; // TODO: Tweak value
+		this._minBuffer = options.minBuffer || 5000; // TODO: Tweak value
+		this._maxBuffer = options.maxBuffer || 120000; // TODO: Tweak value
 		this._minBufferFilled = false;
 		this._busyBuffering = false;
 		this._stopBuffering = true;
@@ -134,6 +134,8 @@ var SimpleDash = SimpleDash || {};
 	ChunkBuffer.prototype.getChunk = function() {
 
 		var chunk = this._chunks.shift();
+
+		console.log('Chunks left: ', this._chunks);
 
 		if( chunk === undefined ) {
 

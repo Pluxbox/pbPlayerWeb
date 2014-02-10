@@ -153,6 +153,8 @@ var SimpleDash = SimpleDash || {};
 			return false;
 		});
 
+		console.log('Adding segments', results);
+
 		this._segments = this._segments.concat(results);
 	};
 

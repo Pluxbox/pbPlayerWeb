@@ -15,7 +15,7 @@
 		this._reportProgressTimer = null;
 		this._chunks = [];
 		this._scheduledSources = [];
-		this._minChunks = 4;
+		this._minChunks = 2;
 		this._startPosition = 0;
 		this._chunkPosition = 0;
 		this._totalDuration = 0;
@@ -114,6 +114,8 @@
 				return;
 			}
 
+			console.log('Playing chunk at: ' + audioContext.currentTime, chunk);
+
 			source = this._createSource(chunk.buffer);
 			duration = source.buffer.duration - chunk.startOffset - chunk.endOffset;
 
@@ -138,7 +140,7 @@
 		if( this._chunkBuffer.hasChunk() ) {
 
 			this._chunks.push(this._chunkBuffer.getChunk());
-			this._scheduleTimer = window.setTimeout(this._scheduleChunk.bind(this), (duration - 1) * 1000 );
+			this._scheduleTimer = window.setTimeout(this._scheduleChunk.bind(this), (duration * 1000) - 10 );
 		} else {
 
 			source.onended = this._onEnded.bind(this);
