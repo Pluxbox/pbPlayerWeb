@@ -13,8 +13,7 @@ var SimpleDash = SimpleDash || {};
 		this.url = data.url;
 		this.duration = data.duration;
 		this.startOffset = (data.start_offset / 1000) || 0;
-		//this.endOffset = (data.stop_offset / 1000) || 0;
-		this.endOffset = 0; // TEMP
+		this.endOffset = (data.stop_offset / 1000) || 0;
 		this.buffer = null;
 	};
 
