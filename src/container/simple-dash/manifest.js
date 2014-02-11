@@ -11,6 +11,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._src = src;
 		this._segments = [];
+		this._containers = [];
 		this.metaData = null;
 		this.moduleData = null;
 	};
@@ -34,25 +35,19 @@ var SimpleDash = SimpleDash || {};
 			request.onload = function() {
 
 				var manifest = JSON.parse(request.response),
-					index = -1,
-					audio = new Audio();
+					container;
 
-				manifest.containers.forEach(function ( container, i ) {
+				this._containers = manifest.containers;
 
-					var canPlay = audio.canPlayType(container.content_type);
+				container = this._selectContainer(this._containers);
 
-					if( index === -1 && (canPlay === 'probably' || canPlay === 'maybe') ) {
+				if( !container ) {
 
-						index = i;
-					}
-				});
-
-				if( index === -1 ) {
-
-					throw new TypeError();
+					reject('Unable to decode any of the provided containers.');
+					return;
 				}
 
-				this._parseSegments(manifest.containers[index].segments);
+				this._parseSegments(container.segments);
 				this._parseModuleData(manifest.modules || []);
 				this._parseMetaData(manifest);
 
@@ -74,6 +69,25 @@ var SimpleDash = SimpleDash || {};
 
 		}.bind(this));
 		
+	};
+
+	Manifest.prototype._selectContainer = function( containers, prefferedBitrate ) {
+
+		var container,
+			audio = new Audio(),
+			canPlay;
+
+		for( var i = 0; i < containers.length; i++ ) {
+
+			container = containers[i];
+
+			if( audio.canPlayType(container.content_type) !== '' ) {
+
+				return container;
+			}
+		}
+
+		return false;
 	};
 
 	Manifest.prototype._parseSegments = function( segments ) {
