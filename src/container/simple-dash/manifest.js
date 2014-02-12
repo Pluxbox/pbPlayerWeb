@@ -12,7 +12,8 @@ var SimpleDash = SimpleDash || {};
 		this._src = src;
 		this._segments = [];
 		this._containers = [];
-		this.metaData = null;
+		this._currentContainer = 0;
+		this.duration = 0;
 		this.moduleData = null;
 	};
 
@@ -37,9 +38,11 @@ var SimpleDash = SimpleDash || {};
 				var manifest = JSON.parse(request.response),
 					container;
 
-				this._containers = manifest.containers;
+				this._parseContainers(manifest.containers);
 
-				container = this._selectContainer(this._containers);
+				container = this._containers[0];
+
+				this._setContainer(container);
 
 				if( !container ) {
 
@@ -47,7 +50,6 @@ var SimpleDash = SimpleDash || {};
 					return;
 				}
 
-				this._parseSegments(container.segments);
 				this._parseModuleData(manifest.modules || []);
 				this._parseMetaData(manifest);
 
@@ -71,23 +73,64 @@ var SimpleDash = SimpleDash || {};
 		
 	};
 
-	Manifest.prototype._selectContainer = function( containers, prefferedBitrate ) {
+	Manifest.prototype.isLoaded = function() {
 
-		var container,
-			audio = new Audio(),
-			canPlay;
+		return this._segments.length !== 0;
+	};
 
-		for( var i = 0; i < containers.length; i++ ) {
+	Manifest.prototype.scaleDown = function() {
 
-			container = containers[i];
+		this._scaleContainer(-1);
+	};
 
-			if( audio.canPlayType(container.content_type) !== '' ) {
+	Manifest.prototype.scaleUp = function() {
 
-				return container;
-			}
+		this._scaleContainer(1);
+	};
+
+	Manifest.prototype._scaleContainer = function( direction ) {
+		
+		var container = this._containers[this._currentContainer + direction];
+
+		if( container ) {
+
+			this._currentContainer += direction;
+			this._setContainer(container);
+
+			return true;
 		}
 
 		return false;
+	};
+
+	Manifest.prototype._setContainer = function( container ) {
+
+		if( !container ) {
+
+			return;
+		}
+
+		this._parseSegments(container.segments);
+	};
+
+	Manifest.prototype._parseContainers = function( containers ) {
+
+		var container,
+			audio = new Audio();
+
+		// Remove unsupported codecs
+		containers = containers.filter(function( container ) {
+
+			return audio.canPlayType(container.content_type) !== '';
+		});
+
+		// Sort containers by bitrate
+		containers = containers.sort(function( a, b ) {
+
+			return a.bitrate - b.bitrate;
+		});
+
+		return this._containers = containers;
 	};
 
 	Manifest.prototype._parseSegments = function( segments ) {
@@ -100,29 +143,24 @@ var SimpleDash = SimpleDash || {};
 					return new Chunk(segment);
 					break;
 				case 'manifest':
-					return new Manifest(segment.url, this._player);
+					return new Manifest(segment.url);
 					break;
 			}
 
 			return segment;
-
-		}.bind(this));
+		});
 
 		return this._segments = results;
 	};
 
 	Manifest.prototype._parseModuleData = function ( moduleData ) {
 
-		this.moduleData = moduleData;
+		return this.moduleData = moduleData;
 	};
 
 	Manifest.prototype._parseMetaData = function( manifest ) {
 
-		var meta = {};
-
-		meta.duration = manifest.duration ? (manifest.duration / 1000) : Infinity;
-
-		this.metaData = meta;
+		this.duration = manifest.duration ? (manifest.duration / 1000) : Infinity;
 	};
 
 	SimpleDash.Manifest = Manifest;

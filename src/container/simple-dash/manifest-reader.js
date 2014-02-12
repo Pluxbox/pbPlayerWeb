@@ -130,30 +130,39 @@ var SimpleDash = SimpleDash || {};
 	 * Appends a bunch of segments removing duplicates in the proccess.
 	 * @param {Array} segments The segments to append.
 	 */
-	ManifestReader.prototype._appendSegments = function( segments ) {
+	ManifestReader.prototype._appendSegments = function( newSegments ) {
 
-		// Get current segment ids
-		var currentSegments = this._getSegmentIds(this._segments),
-			results;
+		var existingSegments = this._segments.slice(0),
+			existingSegmentIds = this._getSegmentIds(existingSegments),
+			newSegments = newSegments.slice(0),
+			newSegmentIds = this._getSegmentIds(newSegments);
 
-		// Filter out any unwanted segments
-		results = segments.filter(function( segment ) {
+		// Replace existing unloaded segments
+		existingSegments = existingSegments.map(function( existingSegment ) {
 
-			// Chunks with the same ID
-			if( segment instanceof Chunk ) {
-				return currentSegments.indexOf(segment.id) === -1;
+			// Map existing if already loaded
+			if( existingSegment.isLoaded() ) {
+
+				return existingSegment;
 			}
 
+			return newSegments[newSegmentIds.indexOf(existingSegment.id)];
+		});
+
+		// Filter out any segments with the same id
+		newSegments = newSegments.filter(function( newSegment ) {
+
 			// Always keep manifests
-			if( segment instanceof Manifest ) {
+			if( newSegment instanceof Manifest ) {
+
 				return true;
 			}
 
-			// Remove unknowns
-			return false;
+			return existingSegmentIds.indexOf(newSegment.id) === -1;
 		});
 
-		this._segments = this._segments.concat(results);
+		this._segments = existingSegments.concat(newSegments);
+		console.log(this._segments);
 	};
 
 	/**
