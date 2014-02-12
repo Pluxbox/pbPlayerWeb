@@ -13,8 +13,18 @@ var SimpleDash = SimpleDash || {};
 		this.url = data.url;
 		this.duration = data.duration;
 		this.startOffset = (data.start_offset / 1000) || 0;
-		this.endOffset = (data.stop_offset / 1000) || 0;
+		this.endOffset = (data.end_offset / 1000) || 0;
 		this.buffer = null;
+	};
+
+	/**
+	 * Checks if a chunk is loaded with data.
+	 *
+	 * @returns {Boolean} A boolean indicating if the chunk is loaded or not.
+	 */
+	Chunk.prototype.isLoaded = function() {
+
+		return this.buffer !== null;
 	};
 
 	/**
