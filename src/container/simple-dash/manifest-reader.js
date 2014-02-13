@@ -13,10 +13,14 @@ var SimpleDash = SimpleDash || {};
 		this._src = src;
 		this._segments = [];
 		this._currentSegment = 0;
+		this._currentManifest = null;
 		this._metaDataGiven = false;
 
 		// Add main manifest
-		this._segments.push(new Manifest(src));
+		this._segments.push(new Manifest({
+
+			url: src
+		}));
 	};
 
 	// Extend Eventable
@@ -50,6 +54,8 @@ var SimpleDash = SimpleDash || {};
 		// Load segment from manifest and resolve
 		if( segment instanceof Manifest ) {
 
+			this._currentManifest = segment;
+
 			return segment.getSegments().then(function( segments ) {
 
 				// Detect if metadata events should be triggered
@@ -72,7 +78,7 @@ var SimpleDash = SimpleDash || {};
 					}
 				}
 
-				this._appendSegments(segments);
+				this._addSegments(segments);
 				this._currentSegment++;
 
 			}.bind(this)).then(this.getChunk.bind(this));
@@ -126,17 +132,29 @@ var SimpleDash = SimpleDash || {};
 		this._segments.push(new Manifest(this._src));
 	};
 
+	ManifestReader.prototype.scaleUp = function() {
+
+		this._currentManifest.scaleUp();
+	};
+
+	ManifestReader.prototype.scaleDown = function() {
+
+		this._currentManifest.scaleDown();
+	};
+
 	/**
-	 * Appends a bunch of segments removing duplicates in the proccess.
+	 * Adds a bunch of segments replacing unloaded duplicates in the proccess.
 	 * @param {Array} segments The segments to append.
 	 */
-	ManifestReader.prototype._appendSegments = function( newSegments ) {
+	ManifestReader.prototype._addSegments = function( newSegments ) {
 
-		var existingSegments = this._segments.slice(0),
+		var existingSegments = this._segments,
 			existingSegmentIds = this._getSegmentIds(existingSegments),
-			newSegments = newSegments.slice(0),
 			newSegmentIds = this._getSegmentIds(newSegments);
 
+
+
+		// TODO: Find existing by new ids, not the other way around.
 		// Replace existing unloaded segments
 		existingSegments = existingSegments.map(function( existingSegment ) {
 
@@ -147,22 +165,23 @@ var SimpleDash = SimpleDash || {};
 			}
 
 			return newSegments[newSegmentIds.indexOf(existingSegment.id)];
-		});
+
+		}.bind(this));
 
 		// Filter out any segments with the same id
 		newSegments = newSegments.filter(function( newSegment ) {
 
-			// Always keep manifests
+			// TEMP: Always keep manifests
 			if( newSegment instanceof Manifest ) {
 
 				return true;
 			}
 
 			return existingSegmentIds.indexOf(newSegment.id) === -1;
-		});
+
+		}.bind(this));
 
 		this._segments = existingSegments.concat(newSegments);
-		console.log(this._segments);
 	};
 
 	/**

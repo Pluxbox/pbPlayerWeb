@@ -7,19 +7,20 @@ var SimpleDash = SimpleDash || {};
 
 	var _lastRequest = null;
 
-	var Manifest = function( src ) {
+	var Manifest = function( data ) {
 
-		this._src = src;
+		this.url = data.url;
+		this.duration = data.duration || Infinity;
+		this.moduleData = null;
+		this._isLoaded = false;
 		this._segments = [];
 		this._containers = [];
-		this._currentContainer = 0;
-		this.duration = 0;
-		this.moduleData = null;
+		this._currentContainerIndex = 0;
 	};
 
 	Manifest.prototype.getSegments = function() {
 
-		if( this._segments.length ) {
+		if( this._isLoaded ) {
 
 			return Promise.resolve(this._segments);
 		}
@@ -42,16 +43,17 @@ var SimpleDash = SimpleDash || {};
 
 				container = this._containers[0];
 
-				this._setContainer(container);
-
 				if( !container ) {
 
 					reject('Unable to decode any of the provided containers.');
 					return;
 				}
 
+				this._segments = this._parseSegments(container.segments);
 				this._parseModuleData(manifest.modules || []);
 				this._parseMetaData(manifest);
+
+				this._isLoaded = true;
 
 				_lastRequest = Date.now();
 
@@ -66,7 +68,7 @@ var SimpleDash = SimpleDash || {};
 				reject('Could not load manifest from server');
 			};
 
-			request.open('GET', this._src, true);
+			request.open('GET', this.url, true);
 			request.send();
 
 		}.bind(this));
@@ -75,7 +77,7 @@ var SimpleDash = SimpleDash || {};
 
 	Manifest.prototype.isLoaded = function() {
 
-		return this._segments.length !== 0;
+		return this._isLoaded;
 	};
 
 	Manifest.prototype.scaleDown = function() {
@@ -90,27 +92,17 @@ var SimpleDash = SimpleDash || {};
 
 	Manifest.prototype._scaleContainer = function( direction ) {
 		
-		var container = this._containers[this._currentContainer + direction];
+		var container = this._containers[this._currentContainerIndex + direction];
 
 		if( container ) {
 
-			this._currentContainer += direction;
-			this._setContainer(container);
+			this._currentContainerIndex += direction;
+			this._segments = container.segments;
 
 			return true;
 		}
 
 		return false;
-	};
-
-	Manifest.prototype._setContainer = function( container ) {
-
-		if( !container ) {
-
-			return;
-		}
-
-		this._parseSegments(container.segments);
 	};
 
 	Manifest.prototype._parseContainers = function( containers ) {
@@ -135,22 +127,19 @@ var SimpleDash = SimpleDash || {};
 
 	Manifest.prototype._parseSegments = function( segments ) {
 
-		// Map segments to instances
-		var results = segments.map(function( segment ) {
+		return segments.map(function( segment ) {
 
 			switch( segment.type ) {
 				case 'chunk':
 					return new Chunk(segment);
 					break;
 				case 'manifest':
-					return new Manifest(segment.url);
+					return new Manifest(segment);
 					break;
 			}
 
 			return segment;
 		});
-
-		return this._segments = results;
 	};
 
 	Manifest.prototype._parseModuleData = function ( moduleData ) {

@@ -43,7 +43,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._busyBuffering = true;
 
-		// TODO: Prevent buffer from DDOSing the server
+		var requestStart = Date.now();
 
 		// Get chunk from manifest
 		this._manifestReader.getChunk().then(function( chunk ) {
@@ -62,6 +62,15 @@ var SimpleDash = SimpleDash || {};
 
 				this._minBufferFilled = true;
 				this.emit('canplay');
+			}
+
+			// TODO: Improve scaling detection
+			if( Date.now() - requestStart > chunk.duration ) {
+
+				this._manifestReader.scaleDown();
+			} else {
+
+				this._manifestReader.scaleUp();
 			}
 
 			this._busyBuffering = false;
