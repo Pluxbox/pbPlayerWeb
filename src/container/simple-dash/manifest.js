@@ -11,11 +11,16 @@ var SimpleDash = SimpleDash || {};
 
 		this.url = data.url;
 		this.duration = data.duration || Infinity;
-		this.moduleData = null;
 		this._isLoaded = false;
 		this._segments = [];
 		this._containers = [];
+		this._modules = [];
 		this._currentContainerIndex = 0;
+	};
+
+	Manifest.prototype.getModules = function() {
+
+		return this._modules;
 	};
 
 	Manifest.prototype.getSegments = function() {
@@ -50,7 +55,7 @@ var SimpleDash = SimpleDash || {};
 				}
 
 				this._segments = this._parseSegments(container.segments);
-				this._parseModuleData(manifest.modules || []);
+				this._modules = manifest.modules || [];
 				this._parseMetaData(manifest);
 
 				this._isLoaded = true;
@@ -140,11 +145,6 @@ var SimpleDash = SimpleDash || {};
 
 			return segment;
 		});
-	};
-
-	Manifest.prototype._parseModuleData = function ( moduleData ) {
-
-		return this.moduleData = moduleData;
 	};
 
 	Manifest.prototype._parseMetaData = function( manifest ) {

@@ -59,7 +59,6 @@
 		this._startPosition = 0;
 		this._chunkPosition = 0;
 		this._totalDuration = 0;
-
 	};
 
 	ChunkScheduler.prototype.clear = function() {};

@@ -50,8 +50,8 @@ var SimpleDash = SimpleDash || {};
 		this._scheduler.setVolume(volume / 100);
 
 		// Trigger volume changed event
-		this.emit('volumechange', {
-			volume: volume * 100
+		this._pbPlayer.emit('volumechange', {
+			volume: volume
 		});
 	};
 

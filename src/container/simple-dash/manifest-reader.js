@@ -12,6 +12,7 @@ var SimpleDash = SimpleDash || {};
 
 		this._src = src;
 		this._segments = [];
+		this._modules = [];
 		this._currentSegment = 0;
 		this._currentManifest = null;
 		this._metaDataGiven = false;
@@ -61,25 +62,17 @@ var SimpleDash = SimpleDash || {};
 				// Detect if metadata events should be triggered
 				if( !this._metaDataGiven && this._currentSegment === 0 ) {
 
-					var meta = segment.metaData,
-						i = 0,
-						module,
-						moduleData = segment.moduleData;
+					var meta = segment.metaData;
 
 					this._metaDataGiven = true;
 
 					this.emit('duration', { length: meta.duration });
-
-					for( ; i < moduleData.length; i++ ) {
-
-						module = moduleData[i];
-
-						this.emit('module', { module: module });
-					}
 				}
 
 				this._addSegments(segments);
 				this._currentSegment++;
+
+				this._dispatchModuleEvents(segment.getModules());
 
 			}.bind(this)).then(this.getChunk.bind(this));
 
@@ -87,6 +80,19 @@ var SimpleDash = SimpleDash || {};
 
 		// The segment is of an unknown type, reject.
 		return Promise.reject('Got an unknown segment on index ' + this._currentSegment);
+	};
+
+	/**
+	 * Dispatches the events for module data.
+	 */
+	ManifestReader.prototype._dispatchModuleEvents = function( modules ) {
+
+		modules.forEach(function( module ) {
+
+			this.emit('module', { module: module });
+
+		}, this);
+
 	};
 
 	/**
