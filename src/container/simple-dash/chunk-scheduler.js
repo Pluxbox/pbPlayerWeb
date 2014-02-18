@@ -5,20 +5,18 @@
 
 	var audioContext = new AudioContext();
 
-	var ChunkScheduler = function( chunkBuffer ) {
+	var ChunkScheduler = function( buffer ) {
 
 		Eventable.call(this);
 
-		this._chunkBuffer = chunkBuffer;
-		this._gainNode = audioContext.createGain();
-		this._scheduleTimer = null;
-		this._reportProgressTimer = null;
-		this._chunks = [];
+		this._buffer = buffer;
+		this._start = 0;
+		this._position = 0;
+		this._scheduledChunks = [];
 		this._scheduledSources = [];
+		this._cachedChunks = [];
 		this._minChunks = 2;
-		this._startPosition = 0;
-		this._chunkPosition = 0;
-		this._totalDuration = 0;
+		this._gainNode = audioContext.createGain();
 
 		this._gainNode.connect(audioContext.destination);
 	};
@@ -28,125 +26,94 @@
 
 	ChunkScheduler.prototype.start = function() {
 
-		this._chunkBuffer.on('progress', this._onBufferProgress, this);
-		this._chunkBuffer.start();
+		if( this._buffer.canPlay() ) {
+
+			this._scheduleChunk();
+			return;
+		}
+
+		this._buffer.on('canplay', this._onBufferCanPlay, this);
 	};
 
-	ChunkScheduler.prototype.reset = function() {
+	ChunkScheduler.prototype.pause = function() {
 
-		this._chunkBuffer.off('progress', this._onBufferProgress);
+		// Stop listening to buffer events
+		this._buffer.off('canplay', this._onBufferCanPlay);
 
-		window.clearTimeout(this._scheduleTimer);
-		window.clearTimeout(this._reportProgressTimer);
+		// Move scheduled chunks to cache
+		this._cachedChunks = this._scheduledChunks.slice(0);
+		this._scheduledChunks.length = 0;
 
+		// Stop scheduled sources
 		while( this._scheduledSources.length ) {
 
 			var source = this._scheduledSources.shift();
 
-			if( source.noteOff ) {
-				source.noteOff(0); // Older webkit
-			} else {
-				source.stop();
-			}
-
 			source.onended = null;
+			source.stop();
 		}
 
-		this._scheduleTimer = null;
-		this._reportProgressTimer = null;
-		this._chunks = [];
-		this._minChunks = 4;
-		this._startPosition = 0;
-		this._chunkPosition = 0;
-		this._totalDuration = 0;
-	};
-
-	ChunkScheduler.prototype.clear = function() {};
-
-	ChunkScheduler.prototype.getVolume = function() {
-
-		return this._gainNode.gain.value;
+		// Reset current position
+		this._position = 0;
 	};
 
 	ChunkScheduler.prototype.setVolume = function( volume ) {
 
-		if( volume > 1 ) {
-			volume = 1;
-		}
-
-		if( volume < 0 ) {
-			volume = 0;
-		}
-
 		this._gainNode.gain.value = volume;
-
-		// Trigger volume changed event
-		this.emit('volumechange', {
-			volume: volume * 100
-		});
 	};
 
-	ChunkScheduler.prototype._onBufferProgress = function( evt ) {
+	ChunkScheduler.prototype._onBufferCanPlay = function() {
 
-		if( this._chunks.length < this._minChunks ) {
+		this._buffer.off('canplay', this._onBufferCanPlay);
 
-			this._chunks.push(this._chunkBuffer.getChunk());
-			return;
-		}
-
-		this._chunkBuffer.off('progress', this._onBufferProgress);
 		this._scheduleChunk();
+	};
+
+	ChunkScheduler.prototype._enoughScheduled = function() {
+
+		return this._scheduledChunks.length >= this._minChunks;
 	};
 
 	ChunkScheduler.prototype._scheduleChunk = function() {
 
-		var chunk,
-			source,
-			duration;
+		// Buffer has no chunks, prevent scheduling.
+		if( !this._buffer.hasChunk() ) {
 
-		while( this._chunks.length ) {
+			return;
+		}
 
-			chunk = this._chunks.shift();
+		// Enough chunks are scheduled, prevent scheduling.
+		if( this._enoughScheduled() ) {
 
-			if( !chunk ) {
+			return;
+		}
 
-				return;
-			}
-
-			source = this._createSource(chunk.buffer);
+		var chunk = this._cachedChunks.shift() || this._buffer.getChunk(),
+			source = this._createSource(chunk.buffer),
 			duration = source.buffer.duration - chunk.startOffset - chunk.endOffset;
 
-			if( this._startPosition === 0 ) {
+		if( this._start === 0 || this._position === 0 ) {
 
-				this._chunkPosition = this._startPosition = audioContext.currentTime;
-			}
-
-			if( source.start ) {
-
-				source.start(this._chunkPosition, chunk.startOffset, duration);
-			} else {
-
-				source.noteOn(this._chunkPosition, chunk.startOffset, duration);
-			}
-
-			this._scheduledSources.push(source);
-			this._chunkPosition += duration;
-
+			this._start = this._position = audioContext.currentTime;
 		}
 
-		if( this._chunkBuffer.hasChunk() ) {
+		source.onended = this._onSourceEnded.bind(this);
+		source.start(this._position, chunk.startOffset, duration);
 
-			this._chunks.push(this._chunkBuffer.getChunk());
-			this._scheduleTimer = window.setTimeout(this._scheduleChunk.bind(this), (duration * 1000) - 10 );
-		} else {
+		this._position += duration;
 
-			source.onended = this._onEnded.bind(this);
-		}
+		this._scheduledSources.push(source);
+		this._scheduledChunks.push(chunk);
 
-		if( !this._reportProgressTimer ) {
+		// Keep scheduling chunks until a minimum is reached
+		this._scheduleChunk();
+	};
 
-			this._reportProgressTimer = window.setTimeout(this._onReportProgress.bind(this), 250);
-		}
+	ChunkScheduler.prototype._onSourceEnded = function( evt ) {
+
+		this._scheduledChunks.shift();
+		this._scheduledSources.shift();
+		this._scheduleChunk();
 	};
 
 	ChunkScheduler.prototype._createSource = function( buffer ) {
@@ -157,21 +124,6 @@
 		source.connect(this._gainNode);
 
 		return source;
-	};
-
-	ChunkScheduler.prototype._onReportProgress = function() {
-
-		this.emit('progress', {
-
-			position: audioContext.currentTime - this._startPosition
-		});
-
-		this._reportProgressTimer = window.setTimeout(this._onReportProgress.bind(this), 250);
-	};
-
-	ChunkScheduler.prototype._onEnded = function() {
-
-		this.emit('ended');
 	};
 
 	SimpleDash.ChunkScheduler = ChunkScheduler;

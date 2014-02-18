@@ -13,16 +13,22 @@ var SimpleDash = SimpleDash || {};
 		this._manifestReader = manifestReader;
 		this._chunks = [];
 		this._currentBuffer = 0;
-		this._minBuffer = options.minBuffer || 5000; // TODO: Tweak value
+		this._minBuffer = options.minBuffer || 15000; // TODO: Tweak value
 		this._maxBuffer = options.maxBuffer || 120000; // TODO: Tweak value
 		this._minBufferFilled = false;
 		this._busyBuffering = false;
 		this._stopBuffering = true;
+		this._canPlay = false;
 	};
 
 	// Extend Eventable
 	ChunkBuffer.prototype = Object.create(Eventable.prototype);
 	ChunkBuffer.prototype.constructor = ChunkBuffer;
+
+	ChunkBuffer.prototype.canPlay = function() {
+	
+		return this._canPlay;
+	};
 
 	/**
 	 * Buffers a new chunk from the manifest reader.
@@ -61,6 +67,8 @@ var SimpleDash = SimpleDash || {};
 			if( !this._minBufferFilled && this._currentBuffer >= this._minBuffer ) {
 
 				this._minBufferFilled = true;
+				this._canPlay = true;
+
 				this.emit('canplay');
 			}
 
@@ -101,6 +109,8 @@ var SimpleDash = SimpleDash || {};
 		this._stopBuffering = false;
 		this._bufferChunk();
 	};
+
+	ChunkBuffer.prototype.pause = function() {};
 
 	/**
 	 * Stops the buffering proccess.

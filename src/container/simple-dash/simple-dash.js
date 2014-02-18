@@ -27,20 +27,26 @@ var SimpleDash = SimpleDash || {};
 
 	Player.prototype.play = function() {
 
+		this._buffer.start();
 		this._scheduler.start();
+
 		this._pbPlayer.emit('play');
 	};
 
 	Player.prototype.pause = function() {
+
+		this._scheduler.pause();
 
 		this._pbPlayer.emit('pause');
 	};
 
 	Player.prototype.stop = function() {
 
-		this._reader.reset();
-		this._buffer.reset();
-		this._scheduler.reset();
+		this._buffer.pause();
+		this._scheduler.pause();
+
+		this._buffer.empty();
+		this._scheduler.empty();
 
 		this._pbPlayer.emit('stop');
 	};
