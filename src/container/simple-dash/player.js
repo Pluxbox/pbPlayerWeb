@@ -11,9 +11,6 @@
 
 		Eventable.call(this);
 
-		this._reader = new ManifestReader(src);
-		this._buffer = new Buffer(this._reader);
-
 		this._start = 0;
 		this._position = 0;
 		this._scheduledChunks = [];
@@ -21,6 +18,10 @@
 		this._cachedChunks = [];
 		this._minChunks = 2;
 		this._gainNode = audioContext.createGain();
+		this._reportProgressTimer = null;
+
+		this._reader = new ManifestReader(src);
+		this._buffer = new Buffer(this._reader);
 
 		this._reader.on('duration', this.emit.bind(this, 'duration'));
 
@@ -41,12 +42,16 @@
 		}
 
 		this._buffer.on('canplay', this._onBufferCanPlay, this);
+
+		this._reportProgressTimer = window.setInterval(this._onReportProgress.bind(this), 250);
 	};
 
 	Player.prototype.pause = function() {
 
 		// Stop listening to buffer events
 		this._buffer.off('canplay', this._onBufferCanPlay);
+
+		window.clearInterval(this._reportProgressTimer);
 
 		// Move scheduled chunks to cache
 		this._cachedChunks = this._scheduledChunks.slice(0);
@@ -85,6 +90,13 @@
 		this._gainNode.gain.value = volume;
 
 		this.emit('volumechange', { volume: volume });
+	};
+
+	Player.prototype._onReportProgress = function() {
+
+		var progress = audioContext.currentTime - this._start;
+
+		this.emit('progress', { progress: progress });
 	};
 
 	Player.prototype._onBufferCanPlay = function() {

@@ -60,15 +60,7 @@
 
 	Container.prototype._onProgress = function( evt ) {
 
-		var args = {};
-
-		args.position = evt.position;
-
-		if( this._duration !== Infinity ) {
-			args.progress = (evt.position / this._duration) * 100;
-		}
-
-		this._pbPlayer.emit('timeupdate', args);
+		this._pbPlayer.emit('timeupdate', evt);
 	};
 
 	Container.prototype._onEnded = function() {
