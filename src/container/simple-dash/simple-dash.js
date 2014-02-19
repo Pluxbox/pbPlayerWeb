@@ -14,7 +14,10 @@
 		this._player.on('ended', this._onEnded, this);
 	};
 
-	Container.prototype.destroy = function() {};
+	Container.prototype.destroy = function() {
+
+		this._player.stop();
+	};
 
 	Container.prototype.play = function() {
 
