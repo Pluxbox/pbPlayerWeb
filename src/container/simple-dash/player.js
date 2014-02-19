@@ -163,8 +163,14 @@
 		this._scheduledChunks.shift();
 		this._scheduledSources.shift();
 
-		// TODO: Check for end of stream
-		this._scheduleChunk();
+		if( this._reader.hasChunk() ) {
+
+			this._scheduleChunk();
+			return;
+		}
+
+		this.emit('ended');
+		this.stop();
 	};
 
 	SimpleDash.Player = Player;
