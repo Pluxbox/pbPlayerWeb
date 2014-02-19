@@ -5,7 +5,7 @@
 
 	var audioContext = new AudioContext();
 
-	var ChunkScheduler = function( buffer ) {
+	var Player = function( buffer ) {
 
 		Eventable.call(this);
 
@@ -21,10 +21,10 @@
 		this._gainNode.connect(audioContext.destination);
 	};
 
-	ChunkScheduler.prototype = Object.create(Eventable.prototype);
-	ChunkScheduler.prototype.constructor = ChunkScheduler;
+	Player.prototype = Object.create(Eventable.prototype);
+	Player.prototype.constructor = Player;
 
-	ChunkScheduler.prototype.start = function() {
+	Player.prototype.start = function() {
 
 		if( this._buffer.canPlay() ) {
 
@@ -35,7 +35,7 @@
 		this._buffer.on('canplay', this._onBufferCanPlay, this);
 	};
 
-	ChunkScheduler.prototype.pause = function() {
+	Player.prototype.pause = function() {
 
 		// Stop listening to buffer events
 		this._buffer.off('canplay', this._onBufferCanPlay);
@@ -57,24 +57,24 @@
 		this._position = 0;
 	};
 
-	ChunkScheduler.prototype.setVolume = function( volume ) {
+	Player.prototype.setVolume = function( volume ) {
 
 		this._gainNode.gain.value = volume;
 	};
 
-	ChunkScheduler.prototype._onBufferCanPlay = function() {
+	Player.prototype._onBufferCanPlay = function() {
 
 		this._buffer.off('canplay', this._onBufferCanPlay);
 
 		this._scheduleChunk();
 	};
 
-	ChunkScheduler.prototype._enoughScheduled = function() {
+	Player.prototype._enoughScheduled = function() {
 
 		return this._scheduledChunks.length >= this._minChunks;
 	};
 
-	ChunkScheduler.prototype._scheduleChunk = function() {
+	Player.prototype._scheduleChunk = function() {
 
 		// Buffer has no chunks, prevent scheduling.
 		if( !this._buffer.hasChunk() ) {
@@ -109,14 +109,14 @@
 		this._scheduleChunk();
 	};
 
-	ChunkScheduler.prototype._onSourceEnded = function( evt ) {
+	Player.prototype._onSourceEnded = function( evt ) {
 
 		this._scheduledChunks.shift();
 		this._scheduledSources.shift();
 		this._scheduleChunk();
 	};
 
-	ChunkScheduler.prototype._createSource = function( buffer ) {
+	Player.prototype._createSource = function( buffer ) {
 
 		var source = audioContext.createBufferSource();
 
@@ -126,6 +126,6 @@
 		return source;
 	};
 
-	SimpleDash.ChunkScheduler = ChunkScheduler;
+	SimpleDash.Player = Player;
 
 })(SimpleDash, window);

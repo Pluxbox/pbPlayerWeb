@@ -50,8 +50,8 @@ module.exports = function(grunt) {
 					'src/container/simple-dash/chunk.js',
 					'src/container/simple-dash/manifest.js',
 					'src/container/simple-dash/manifest-reader.js',
-					'src/container/simple-dash/chunk-buffer.js',
-					'src/container/simple-dash/chunk-scheduler.js',
+					'src/container/simple-dash/buffer.js',
+					'src/container/simple-dash/player.js',
 					'src/container/simple-dash/simple-dash.js',
 
 					// Outro

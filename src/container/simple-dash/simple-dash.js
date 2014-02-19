@@ -4,56 +4,56 @@ var SimpleDash = SimpleDash || {};
 
 	var	Eventable = SimpleDash.Eventable,
 		ManifestReader = SimpleDash.ManifestReader,
-		ChunkBuffer = SimpleDash.ChunkBuffer,
-		ChunkScheduler = SimpleDash.ChunkScheduler;
+		Buffer = SimpleDash.Buffer,
+		Player = SimpleDash.Player;
 
-	var Player = function( pbPlayer, src ) {
+	var Container = function( pbPlayer, src ) {
 
 		this._pbPlayer = pbPlayer;
 		this._reader = new ManifestReader(src);
-		this._buffer = new ChunkBuffer(this._reader);
-		this._scheduler = new ChunkScheduler(this._buffer);
+		this._buffer = new Buffer(this._reader);
+		this._player = new Player(this._buffer);
 
 		this._reader.on('duration', this._onReportDuration, this);
 		this._reader.on('module', this._onModule, this);
-		this._scheduler.on('progress', this._onReportTimeUpdate, this);
-		this._scheduler.on('ended', this._onEnded, this);
+		this._player.on('progress', this._onReportTimeUpdate, this);
+		this._player.on('ended', this._onEnded, this);
 	};
 
-	Player.prototype.destroy = function() {
+	Container.prototype.destroy = function() {
 
 		this.stop();
 	};
 
-	Player.prototype.play = function() {
+	Container.prototype.play = function() {
 
 		this._buffer.start();
-		this._scheduler.start();
+		this._player.start();
 
 		this._pbPlayer.emit('play');
 	};
 
-	Player.prototype.pause = function() {
+	Container.prototype.pause = function() {
 
-		this._scheduler.pause();
+		this._player.pause();
 
 		this._pbPlayer.emit('pause');
 	};
 
-	Player.prototype.stop = function() {
+	Container.prototype.stop = function() {
 
 		this._buffer.pause();
-		this._scheduler.pause();
+		this._player.pause();
 
 		this._buffer.empty();
-		this._scheduler.empty();
+		this._player.empty();
 
 		this._pbPlayer.emit('stop');
 	};
 
-	Player.prototype.setVolume = function( volume ) {
+	Container.prototype.setVolume = function( volume ) {
 
-		this._scheduler.setVolume(volume / 100);
+		this._player.setVolume(volume / 100);
 
 		// Trigger volume changed event
 		this._pbPlayer.emit('volumechange', {
@@ -61,20 +61,20 @@ var SimpleDash = SimpleDash || {};
 		});
 	};
 
-	Player.prototype.playAt = function() {};
+	Container.prototype.playAt = function() {};
 
-	Player.prototype.mute = function() {};
+	Container.prototype.mute = function() {};
 
-	Player.prototype.unmute = function() {};
+	Container.prototype.unmute = function() {};
 
-	Player.prototype._onReportDuration = function( evt ) {
+	Container.prototype._onReportDuration = function( evt ) {
 
 		this._duration = evt.length;
 
 		this._pbPlayer.emit('duration', { length: evt.length });
 	};
 
-	Player.prototype._onReportTimeUpdate = function( evt ) {
+	Container.prototype._onReportTimeUpdate = function( evt ) {
 
 		var args = {};
 
@@ -87,23 +87,23 @@ var SimpleDash = SimpleDash || {};
 		this._pbPlayer.emit('timeupdate', args);
 	};
 
-	Player.prototype._onEnded = function() {
+	Container.prototype._onEnded = function() {
 
 		this._reader.reset();
 		this._buffer.reset();
-		this._scheduler.reset();
+		this._player.reset();
 
 		this._pbPlayer.emit('ended');
 	};
 
-	Player.prototype._onModule = function( evt ) {
+	Container.prototype._onModule = function( evt ) {
 
 		var module = evt.module;
 
 		this._pbPlayer.emit('module:' + module.type, module.data);
 	};
 
-	Player.canPlayType = function ( codec ) {
+	Container.canPlayType = function ( codec ) {
 
 		// Only support simpledash
 		if( codec !== 'simpledash' ) {
@@ -114,9 +114,9 @@ var SimpleDash = SimpleDash || {};
 		return !!(window.AudioContext || window.webkitAudioContext);
 	};
 
-	pbPlayer.registerMediaContainer('simpledash', Player);
+	pbPlayer.registerMediaContainer('simpledash', Container);
 
-	SimpleDash.Player = Player;
+	SimpleDash.Container = Container;
 
 })(SimpleDash, PB, pbPlayer, window);
 

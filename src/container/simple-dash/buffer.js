@@ -4,7 +4,7 @@ var SimpleDash = SimpleDash || {};
 
 	var Eventable = SimpleDash.Eventable;
 
-	var ChunkBuffer = function( manifestReader, options ) {
+	var Buffer = function( manifestReader, options ) {
 
 		Eventable.call(this);
 
@@ -22,10 +22,10 @@ var SimpleDash = SimpleDash || {};
 	};
 
 	// Extend Eventable
-	ChunkBuffer.prototype = Object.create(Eventable.prototype);
-	ChunkBuffer.prototype.constructor = ChunkBuffer;
+	Buffer.prototype = Object.create(Eventable.prototype);
+	Buffer.prototype.constructor = Buffer;
 
-	ChunkBuffer.prototype.canPlay = function() {
+	Buffer.prototype.canPlay = function() {
 	
 		return this._canPlay;
 	};
@@ -33,7 +33,7 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 * Buffers a new chunk from the manifest reader.
 	 */
-	ChunkBuffer.prototype._bufferChunk = function() {
+	Buffer.prototype._bufferChunk = function() {
 
 		// Prevent buffering if we're already buffering or buffering has stopped
 		if( this._busyBuffering || this._stopBuffering ) {
@@ -104,18 +104,18 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 * Starts the buffering proccess.
 	 */
-	ChunkBuffer.prototype.start = function() {
+	Buffer.prototype.start = function() {
 
 		this._stopBuffering = false;
 		this._bufferChunk();
 	};
 
-	ChunkBuffer.prototype.pause = function() {};
+	Buffer.prototype.pause = function() {};
 
 	/**
 	 * Stops the buffering proccess.
 	 */
-	ChunkBuffer.prototype.reset = function() {
+	Buffer.prototype.reset = function() {
 
 		// TODO: Might cause error if request for data completes after the buffer was stopped
 		// Should cancel request somehow
@@ -130,7 +130,7 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 * Clears the buffer.
 	 */
-	ChunkBuffer.prototype.clear = function() {
+	Buffer.prototype.clear = function() {
 
 		this._chunks = [];
 		this._currentBuffer = 0;
@@ -141,7 +141,7 @@ var SimpleDash = SimpleDash || {};
 		this._bufferChunk();
 	};
 
-	ChunkBuffer.prototype.hasChunk = function() {
+	Buffer.prototype.hasChunk = function() {
 
 		return this._chunks.length !== 0;
 	};
@@ -150,7 +150,7 @@ var SimpleDash = SimpleDash || {};
 	 * Takes a filled chunk from the buffer.
 	 * @returns {Chunk} The filled chunk.
 	 */
-	ChunkBuffer.prototype.getChunk = function() {
+	Buffer.prototype.getChunk = function() {
 
 		var chunk = this._chunks.shift();
 
@@ -172,6 +172,6 @@ var SimpleDash = SimpleDash || {};
 		return chunk;
 	};
 
-	SimpleDash.ChunkBuffer = ChunkBuffer;
+	SimpleDash.Buffer = Buffer;
 
 })(SimpleDash);
