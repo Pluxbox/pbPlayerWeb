@@ -37,13 +37,13 @@
 
 		if( this._buffer.canPlay() ) {
 
+			this._reportProgressTimer = window.setInterval(this._onReportProgress.bind(this), 250);
 			this._scheduleChunk();
+
 			return;
 		}
 
 		this._buffer.on('canplay', this._onBufferCanPlay, this);
-
-		this._reportProgressTimer = window.setInterval(this._onReportProgress.bind(this), 250);
 	};
 
 	Player.prototype.pause = function() {
@@ -102,6 +102,7 @@
 	Player.prototype._onBufferCanPlay = function() {
 
 		this._buffer.off('canplay', this._onBufferCanPlay);
+		this._reportProgressTimer = window.setInterval(this._onReportProgress.bind(this), 250);
 
 		this._scheduleChunk();
 	};
