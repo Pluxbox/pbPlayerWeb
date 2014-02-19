@@ -50,7 +50,10 @@
 		this._pbPlayer.emit('volumechange', { volume: volume });
 	};
 
-	Container.prototype.playAt = function() {};
+	Container.prototype.playAt = function( target ) {
+
+		this._player.seekTo(target);
+	};
 
 	Container.prototype.mute = function() {};
 

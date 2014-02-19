@@ -79,6 +79,13 @@
 		this._buffer.empty();
 	};
 
+	Player.prototype.seekTo = function( target ) {
+
+		this._reader.reset();
+		this._reader.seekTo(target);
+		this._buffer.empty();
+	};
+
 	Player.prototype.setVolume = function( volume ) {
 
 		if( volume < 0 ) {

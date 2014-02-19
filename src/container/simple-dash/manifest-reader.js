@@ -109,7 +109,7 @@ var SimpleDash = SimpleDash || {};
 
 			segment = this._segments[i];
 
-			if( segment instanceof Manifest || !segment.duration ) {
+			if( segment instanceof Manifest ) {
 
 				continue;
 			}
@@ -160,8 +160,6 @@ var SimpleDash = SimpleDash || {};
 			existingSegmentIds = this._getSegmentIds(existingSegments),
 			newSegmentIds = this._getSegmentIds(newSegments);
 
-
-
 		// TODO: Find existing by new ids, not the other way around.
 		// Replace existing unloaded segments
 		existingSegments = existingSegments.map(function( existingSegment ) {
@@ -179,7 +177,7 @@ var SimpleDash = SimpleDash || {};
 		// Filter out any segments with the same id
 		newSegments = newSegments.filter(function( newSegment ) {
 
-			// TEMP: Always keep manifests
+			// Always keep manifests
 			if( newSegment instanceof Manifest ) {
 
 				return true;

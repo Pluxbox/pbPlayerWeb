@@ -83,15 +83,12 @@ var SimpleDash = SimpleDash || {};
 
 			this._busyBuffering = false;
 
-			this.emit('progress');
-
 			this._bufferChunk();
 
 		}.bind(this)).catch(function( reason ) {
 
 			this._busyBuffering = false;
 
-			// TODO: Make sure this timer gets destroyed
 			window.setTimeout(function() {
 
 				this._bufferChunk();
@@ -109,8 +106,6 @@ var SimpleDash = SimpleDash || {};
 		this._stopBuffering = false;
 		this._bufferChunk();
 	};
-
-	Buffer.prototype.pause = function() {};
 
 	/**
 	 * Stops the buffering proccess.
