@@ -1,15 +1,19 @@
 (function( SimpleDash, window ) {
 
 	var AudioContext = window.AudioContext || window.webkitAudioContext,
-		Eventable = SimpleDash.Eventable;
+		Eventable = SimpleDash.Eventable,
+		ManifestReader = SimpleDash.ManifestReader,
+		Buffer = SimpleDash.Buffer;
 
 	var audioContext = new AudioContext();
 
-	var Player = function( buffer ) {
+	var Player = function( src ) {
 
 		Eventable.call(this);
 
-		this._buffer = buffer;
+		this._reader = new ManifestReader(src);
+		this._buffer = new Buffer(this._reader);
+
 		this._start = 0;
 		this._position = 0;
 		this._scheduledChunks = [];
@@ -25,6 +29,8 @@
 	Player.prototype.constructor = Player;
 
 	Player.prototype.start = function() {
+
+		this._buffer.start();
 
 		if( this._buffer.canPlay() ) {
 
@@ -55,6 +61,13 @@
 
 		// Reset current position
 		this._position = 0;
+	};
+
+	Player.prototype.stop = function() {
+
+		this.pause();
+
+		// TODO: Cleanup internals
 	};
 
 	Player.prototype.setVolume = function( volume ) {
@@ -92,6 +105,7 @@
 			source = this._createSource(chunk.buffer),
 			duration = source.buffer.duration - chunk.startOffset - chunk.endOffset;
 
+		// Reset start postion
 		if( this._start === 0 || this._position === 0 ) {
 
 			this._start = this._position = audioContext.currentTime;
@@ -109,13 +123,6 @@
 		this._scheduleChunk();
 	};
 
-	Player.prototype._onSourceEnded = function( evt ) {
-
-		this._scheduledChunks.shift();
-		this._scheduledSources.shift();
-		this._scheduleChunk();
-	};
-
 	Player.prototype._createSource = function( buffer ) {
 
 		var source = audioContext.createBufferSource();
@@ -124,6 +131,15 @@
 		source.connect(this._gainNode);
 
 		return source;
+	};
+
+	Player.prototype._onSourceEnded = function( evt ) {
+
+		this._scheduledChunks.shift();
+		this._scheduledSources.shift();
+
+		// TODO: Check for end of stream
+		this._scheduleChunk();
 	};
 
 	SimpleDash.Player = Player;

@@ -1,35 +1,27 @@
 var SimpleDash = SimpleDash || {};
 
-(function( SimpleDash, PB, pbPlayer, window ) {
+(function( SimpleDash, pbPlayer, window ) {
 
-	var	Eventable = SimpleDash.Eventable,
-		ManifestReader = SimpleDash.ManifestReader,
-		Buffer = SimpleDash.Buffer,
-		Player = SimpleDash.Player;
+	var Player = SimpleDash.Player;
 
 	var Container = function( pbPlayer, src ) {
 
 		this._pbPlayer = pbPlayer;
-		this._reader = new ManifestReader(src);
-		this._buffer = new Buffer(this._reader);
-		this._player = new Player(this._buffer);
+		this._player = new Player(src);
 
-		this._reader.on('duration', this._onReportDuration, this);
-		this._reader.on('module', this._onModule, this);
-		this._player.on('progress', this._onReportTimeUpdate, this);
+		this._player.on('duration', this._onDuration, this);
+		this._player.on('progress', this._onProgress, this);
+		this._player.on('module', this._onModule, this);
 		this._player.on('ended', this._onEnded, this);
 	};
 
-	Container.prototype.destroy = function() {
-
-		this.stop();
-	};
+	Container.prototype.destroy = function() {};
 
 	Container.prototype.play = function() {
 
-		this._buffer.start();
 		this._player.start();
 
+		// TODO: Trigger play event when player actually starts playing
 		this._pbPlayer.emit('play');
 	};
 
@@ -42,11 +34,7 @@ var SimpleDash = SimpleDash || {};
 
 	Container.prototype.stop = function() {
 
-		this._buffer.pause();
-		this._player.pause();
-
-		this._buffer.empty();
-		this._player.empty();
+		this._player.stop();
 
 		this._pbPlayer.emit('stop');
 	};
@@ -67,14 +55,12 @@ var SimpleDash = SimpleDash || {};
 
 	Container.prototype.unmute = function() {};
 
-	Container.prototype._onReportDuration = function( evt ) {
-
-		this._duration = evt.length;
+	Container.prototype._onDuration = function( evt ) {
 
 		this._pbPlayer.emit('duration', { length: evt.length });
 	};
 
-	Container.prototype._onReportTimeUpdate = function( evt ) {
+	Container.prototype._onProgress = function( evt ) {
 
 		var args = {};
 
@@ -89,10 +75,6 @@ var SimpleDash = SimpleDash || {};
 
 	Container.prototype._onEnded = function() {
 
-		this._reader.reset();
-		this._buffer.reset();
-		this._player.reset();
-
 		this._pbPlayer.emit('ended');
 	};
 
@@ -104,6 +86,8 @@ var SimpleDash = SimpleDash || {};
 	};
 
 	Container.canPlayType = function ( codec ) {
+
+		// TODO: Improve codec detection
 
 		// Only support simpledash
 		if( codec !== 'simpledash' ) {
@@ -118,7 +102,7 @@ var SimpleDash = SimpleDash || {};
 
 	SimpleDash.Container = Container;
 
-})(SimpleDash, PB, pbPlayer, window);
+})(SimpleDash, pbPlayer, window);
 
 // For debugging purposes
 window.SimpleDash = SimpleDash;
