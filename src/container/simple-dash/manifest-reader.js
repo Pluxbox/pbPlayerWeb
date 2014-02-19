@@ -17,11 +17,7 @@ var SimpleDash = SimpleDash || {};
 		this._currentManifest = null;
 		this._metaDataGiven = false;
 
-		// Add main manifest
-		this._segments.push(new Manifest({
-
-			url: src
-		}));
+		this._segments.push(new Manifest({ url: src }));
 	};
 
 	// Extend Eventable
@@ -60,13 +56,11 @@ var SimpleDash = SimpleDash || {};
 			return segment.getSegments().then(function( segments ) {
 
 				// Detect if metadata events should be triggered
-				if( !this._metaDataGiven && this._currentSegment === 0 ) {
-
-					var meta = segment.metaData;
+				if( !this._metaDataGiven ) {
 
 					this._metaDataGiven = true;
 
-					this.emit('duration', { length: meta.duration });
+					this.emit('duration', { duration: segment.duration });
 				}
 
 				this._addSegments(segments);

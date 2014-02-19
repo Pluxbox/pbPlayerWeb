@@ -22,6 +22,8 @@
 		this._minChunks = 2;
 		this._gainNode = audioContext.createGain();
 
+		this._reader.on('duration', this.emit.bind(this, 'duration'));
+
 		this._gainNode.connect(audioContext.destination);
 	};
 
@@ -72,7 +74,17 @@
 
 	Player.prototype.setVolume = function( volume ) {
 
+		if( volume < 0 ) {
+			volume = 0;
+		}
+
+		if( volume > 1 ) {
+			volume = 0;
+		}
+
 		this._gainNode.gain.value = volume;
+
+		this.emit('volumechange', { volume: volume });
 	};
 
 	Player.prototype._onBufferCanPlay = function() {

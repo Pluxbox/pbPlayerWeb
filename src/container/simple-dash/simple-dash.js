@@ -1,5 +1,3 @@
-var SimpleDash = SimpleDash || {};
-
 (function( SimpleDash, pbPlayer, window ) {
 
 	var Player = SimpleDash.Player;
@@ -9,6 +7,7 @@ var SimpleDash = SimpleDash || {};
 		this._pbPlayer = pbPlayer;
 		this._player = new Player(src);
 
+		// Set up event proxies
 		this._player.on('duration', this._onDuration, this);
 		this._player.on('progress', this._onProgress, this);
 		this._player.on('module', this._onModule, this);
@@ -41,12 +40,11 @@ var SimpleDash = SimpleDash || {};
 
 	Container.prototype.setVolume = function( volume ) {
 
+		volume = parseInt(volume);
+
 		this._player.setVolume(volume / 100);
 
-		// Trigger volume changed event
-		this._pbPlayer.emit('volumechange', {
-			volume: volume
-		});
+		this._pbPlayer.emit('volumechange', { volume: volume });
 	};
 
 	Container.prototype.playAt = function() {};
@@ -57,7 +55,7 @@ var SimpleDash = SimpleDash || {};
 
 	Container.prototype._onDuration = function( evt ) {
 
-		this._pbPlayer.emit('duration', { length: evt.length });
+		this._pbPlayer.emit('duration', { length: evt.duration });
 	};
 
 	Container.prototype._onProgress = function( evt ) {
@@ -103,6 +101,3 @@ var SimpleDash = SimpleDash || {};
 	SimpleDash.Container = Container;
 
 })(SimpleDash, pbPlayer, window);
-
-// For debugging purposes
-window.SimpleDash = SimpleDash;
