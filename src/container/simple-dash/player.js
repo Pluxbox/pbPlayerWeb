@@ -37,7 +37,7 @@
 
 		if( this._buffer.canPlay() ) {
 
-			this._reportProgressTimer = window.setInterval(this._onReportProgress.bind(this), 250);
+			this._reportProgressTimer = window.setInterval(this._reportProgress.bind(this), 250);
 			this._scheduleChunk();
 
 			return;
@@ -74,7 +74,9 @@
 
 		this.pause();
 
-		// TODO: Cleanup internals
+		this._cachedChunks.length = 0;
+		this._reader.reset();
+		this._buffer.empty();
 	};
 
 	Player.prototype.setVolume = function( volume ) {
@@ -92,17 +94,24 @@
 		this.emit('volumechange', { volume: volume });
 	};
 
-	Player.prototype._onReportProgress = function() {
+	Player.prototype._reportProgress = function() {
 
-		var progress = audioContext.currentTime - this._start;
+		var args = {};
 
-		this.emit('progress', { progress: progress });
+		args.position = audioContext.currentTime - this._start;
+
+		if( this._reader.getDuration() !== Infinity ) {
+
+			args.progress = args.position / this._reader.getDuration();
+		}
+
+		this.emit('progress', args);
 	};
 
 	Player.prototype._onBufferCanPlay = function() {
 
 		this._buffer.off('canplay', this._onBufferCanPlay);
-		this._reportProgressTimer = window.setInterval(this._onReportProgress.bind(this), 250);
+		this._reportProgressTimer = window.setInterval(this._reportProgress.bind(this), 250);
 
 		this._scheduleChunk();
 	};
@@ -163,14 +172,16 @@
 		this._scheduledChunks.shift();
 		this._scheduledSources.shift();
 
-		if( this._reader.hasChunk() ) {
+		if( this._scheduledChunks.length === 0 &&
+			!this._reader.hasChunk() ) {
 
-			this._scheduleChunk();
+			this.emit('ended');
+			this.stop();
+			
 			return;
 		}
 
-		this.emit('ended');
-		this.stop();
+		this._scheduleChunk();
 	};
 
 	SimpleDash.Player = Player;

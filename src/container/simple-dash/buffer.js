@@ -115,30 +115,14 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 * Stops the buffering proccess.
 	 */
-	Buffer.prototype.reset = function() {
-
-		// TODO: Might cause error if request for data completes after the buffer was stopped
-		// Should cancel request somehow
+	Buffer.prototype.empty = function() {
 
 		this._chunks = [];
 		this._currentBuffer = 0;
 		this._minBufferFilled = false;
 		this._busyBuffering = false;
 		this._stopBuffering = true;
-	};
-
-	/**
-	 * Clears the buffer.
-	 */
-	Buffer.prototype.clear = function() {
-
-		this._chunks = [];
-		this._currentBuffer = 0;
-		this._minBufferFilled = false;
-
-		this.emit('empty');
-
-		this._bufferChunk();
+		this._canPlay = false;
 	};
 
 	Buffer.prototype.hasChunk = function() {

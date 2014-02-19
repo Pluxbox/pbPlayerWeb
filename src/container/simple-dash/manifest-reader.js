@@ -12,12 +12,12 @@ var SimpleDash = SimpleDash || {};
 
 		this._src = src;
 		this._segments = [];
-		this._modules = [];
 		this._currentSegment = 0;
 		this._currentManifest = null;
 		this._metaDataGiven = false;
+		this._duration = 0;
 
-		this._segments.push(new Manifest({ url: src }));
+		this._segments.push(new Manifest({ url: this._src }));
 	};
 
 	// Extend Eventable
@@ -59,8 +59,9 @@ var SimpleDash = SimpleDash || {};
 				if( !this._metaDataGiven ) {
 
 					this._metaDataGiven = true;
+					this._duration = segment.duration;
 
-					this.emit('duration', { duration: segment.duration });
+					this.emit('duration', { duration: this._duration });
 				}
 
 				this._addSegments(segments);
@@ -74,6 +75,11 @@ var SimpleDash = SimpleDash || {};
 
 		// The segment is of an unknown type, reject.
 		return Promise.reject('Got an unknown segment on index ' + this._currentSegment);
+	};
+
+	ManifestReader.prototype.getDuration = function() {
+
+		return this._duration;
 	};
 
 	/**
@@ -126,10 +132,12 @@ var SimpleDash = SimpleDash || {};
 
 		this._segments = [];
 		this._currentSegment = 0;
+		this._currentManifest = null;
 		this._metaDataGiven = false;
+		this._duration = 0;
 
 		// Add main manifest
-		this._segments.push(new Manifest(this._src));
+		this._segments.push(new Manifest({ url: this._src }));
 	};
 
 	ManifestReader.prototype.scaleUp = function() {
