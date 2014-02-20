@@ -98,34 +98,42 @@ var SimpleDash = SimpleDash || {};
 	/**
 	 * Seeks the manifest to a specific point in time.
 	 * @param {Number} target The target to seek to in seconds.
+	 * @param {Number} startOffset The offset to start the seek with.
 	 */
 	ManifestReader.prototype.seekTo = function( target ) {
 
 		var i = 0,
 			segment,
-			now = 0;
+			now = 0,
+			duration;
 
 		for( ; i < this._segments.length; i++ ) {
 
 			segment = this._segments[i];
+			duration = (segment.duration - segment.startOffset - segment.endOffset) / 1000;
 
-			if( segment instanceof Manifest ) {
+			// Skip to next segment as long as the target isn't reached
+			if( now + duration <= target ) {
+
+				now += duration;
 
 				continue;
 			}
 
-			// TODO: Handle unloaded manifests
+			// Load targeted manifest if it isn't loaded
+			if( segment instanceof Manifest && !segment.isLoaded() ) {
 
-			now += (segment.duration - segment.startOffset - segment.endOffset) / 1000;
-
-			if( now > target ) {
-
-				this._currentSegment = i;
-				break;
+				return segment.getSegments()
+					.then(this.seekTo.bind(this, target));
 			}
 
+			// Set correct segment index & resolve
+			this._currentSegment = i;
+			return Promise.resolve();
 		}
 
+		// Segment not found, what a shame.
+		return Promise.reject('Couln\'t seek to segment, segment not found');
 	};
 
 	ManifestReader.prototype.reset = function() {
