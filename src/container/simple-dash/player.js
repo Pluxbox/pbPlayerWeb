@@ -24,6 +24,7 @@
 		this._buffer = new Buffer(this._reader);
 
 		this._reader.on('duration', this.emit.bind(this, 'duration'));
+		this._reader.on('module', this.emit.bind(this, 'module'));
 
 		this._gainNode.connect(audioContext.destination);
 	};
