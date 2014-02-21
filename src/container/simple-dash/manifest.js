@@ -140,15 +140,13 @@ var SimpleDash = SimpleDash || {};
 
 			switch( segment.type ) {
 				case 'chunk':
-				
+
 					chunk = new Chunk(segment);
 
 					if( container.content_type.indexOf('audio/aac') !== -1 ) {
 
 						chunk.startOffset += 0.02130;
 					}
-
-					console.log(chunk);
 
 					return chunk;
 				case 'manifest':
