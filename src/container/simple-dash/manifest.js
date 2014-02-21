@@ -130,17 +130,29 @@ var SimpleDash = SimpleDash || {};
 		return this._containers = containers;
 	};
 
-	Manifest.prototype._parseSegments = function( segments ) {
+	Manifest.prototype._parseSegments = function( segments, startOffset ) {
+
+		var container = this._containers[this._currentContainerIndex];
 
 		return segments.map(function( segment ) {
 
+			var chunk;
+
 			switch( segment.type ) {
 				case 'chunk':
-					return new Chunk(segment);
-					break;
+				
+					chunk = new Chunk(segment);
+
+					if( container.content_type.indexOf('audio/aac') !== -1 ) {
+
+						chunk.startOffset += 0.02130;
+					}
+
+					console.log(chunk);
+
+					return chunk;
 				case 'manifest':
 					return new Manifest(segment);
-					break;
 			}
 
 			return segment;
