@@ -5,8 +5,6 @@ var SimpleDash = SimpleDash || {};
 	var Eventable = SimpleDash.Eventable,
 		Chunk = SimpleDash.Chunk;
 
-	var _lastRequest = null;
-
 	var Manifest = function( data ) {
 
 		this.url = data.url;
@@ -17,6 +15,8 @@ var SimpleDash = SimpleDash || {};
 		this._modules = [];
 		this._currentContainerIndex = 0;
 	};
+
+	Manifest._lastRequest = null;
 
 	Manifest.prototype.getModules = function() {
 
@@ -30,7 +30,7 @@ var SimpleDash = SimpleDash || {};
 			return Promise.resolve(this._segments);
 		}
 
-		if( Date.now() - _lastRequest < 5000 ) {
+		if( Date.now() - Manifest._lastRequest < 5000 ) {
 
 			return Promise.reject('Manifest requested too fast after request for other manifest.');
 		}
@@ -60,7 +60,7 @@ var SimpleDash = SimpleDash || {};
 
 				this._isLoaded = true;
 
-				_lastRequest = Date.now();
+				Manifest._lastRequest = Date.now();
 
 				resolve(this._segments);
 
@@ -68,7 +68,7 @@ var SimpleDash = SimpleDash || {};
 
 			request.onerror = function() {
 
-				_lastRequest = Date.now();
+				Manifest._lastRequest = Date.now();
 
 				reject('Could not load manifest from server');
 			};

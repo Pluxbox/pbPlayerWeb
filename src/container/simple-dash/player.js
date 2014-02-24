@@ -2,6 +2,7 @@
 
 	var AudioContext = window.AudioContext || window.webkitAudioContext,
 		Eventable = SimpleDash.Eventable,
+		Manifest = SimpleDash.Manifest,
 		ManifestReader = SimpleDash.ManifestReader,
 		Buffer = SimpleDash.Buffer;
 
@@ -74,6 +75,8 @@
 	Player.prototype.stop = function() {
 
 		this.pause();
+
+		Manifest._lastRequest = null;
 
 		this._cachedChunks.length = 0;
 		this._reader.reset();
