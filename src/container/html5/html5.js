@@ -29,7 +29,7 @@ var Html5 = PB.Class({
 		// Set src
 		this.element.src = src;
 
-		// 
+		//
 		this.setVolume(pbPlayer._playerData.volume);
 
 		// Trigger progress when progress event fails
@@ -280,7 +280,7 @@ var Html5 = PB.Class({
 
 Html5.codecs = {
 
-	mp3: 'audio/mpeg; codecs="mp3"',
+	mp3: 'audio/mpeg',
 	ogg: 'audio/ogg; codecs="vorbis, opus"',
 	opus: 'audio/ogg; codecs="opus"',
 	wav: 'audio/wav; codecs="1"',
@@ -326,4 +326,3 @@ Html5.canPlayType = function ( codec ) {
 };
 
 pbPlayer.registerMediaContainer('html5', Html5);
-
