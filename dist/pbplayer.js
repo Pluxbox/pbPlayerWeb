@@ -8,7 +8,7 @@
  * Copyright 2013 - 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2014-01-30 15:26
+ * Build date 2014-07-21 13:36
  */
 (function ( name, context, definition ) {
 	
@@ -641,7 +641,7 @@ var Html5 = PB.Class({
 		// Set src
 		this.element.src = src;
 
-		// 
+		//
 		this.setVolume(pbPlayer._playerData.volume);
 
 		// Trigger progress when progress event fails
@@ -892,7 +892,7 @@ var Html5 = PB.Class({
 
 Html5.codecs = {
 
-	mp3: 'audio/mpeg; codecs="mp3"',
+	mp3: 'audio/mpeg',
 	ogg: 'audio/ogg; codecs="vorbis, opus"',
 	opus: 'audio/ogg; codecs="opus"',
 	wav: 'audio/wav; codecs="1"',
@@ -938,7 +938,6 @@ Html5.canPlayType = function ( codec ) {
 };
 
 pbPlayer.registerMediaContainer('html5', Html5);
-
 
 var flashVersion;
 
