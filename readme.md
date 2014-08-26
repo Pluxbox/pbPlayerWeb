@@ -179,7 +179,7 @@ pbplayer.addMedia({
 Custom Skin
 -----------
 
-Creating your own skin for the player is straight forward. You just need to declare some HTML markup and specify some CSS. Further details can be found in the [skins/template.js](...).
+Creating your own skin for the player is straight forward. You just need to declare some HTML markup and specify some CSS. 
 
 
 Browser support
