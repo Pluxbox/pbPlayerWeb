@@ -8,7 +8,7 @@
  * Copyright 2013 - 2014 Pluxbox
  * Licensed MIT
  *
- * Build date 2014-07-21 13:36
+ * Build date 2014-11-05 10:27
  */
 (function ( name, context, definition ) {
 	
@@ -64,7 +64,7 @@ pbPlayer = PB.Class(PB.Observer, {
 
 	/**
 	 * Constructs the pbPlayer.
-	 * 
+	 *
 	 * @param {String|DOMElement|PB.$} The DOM node reference for the player to attach to, can be a selector, DOM Node or PB.$.
 	 * @param {Object} Options for the pbPlayer, various stuff can be set here.
 	 */
@@ -132,8 +132,10 @@ pbPlayer = PB.Class(PB.Observer, {
 
 		this.playlist.add(media);
 
+		// TODO: Move this to HTML5 container since this behaviour
+		// is exclusive to the audio element and not other solutions.
 		// Autoplay, does not work on some mobile/handheld devices
-		if( this.options.autoplay && this.playlist.size() === 1 && !/(iPod|iPad|iPhone).*AppleWebKit/.test(window.navigator.userAgent) ) {
+		if( this.options.autoplay && this.playlist.size() >= 1 && !/(iPod|iPad|iPhone).*AppleWebKit/.test(window.navigator.userAgent) ) {
 
 			this.play();
 		}
@@ -271,7 +273,7 @@ pbPlayer = PB.Class(PB.Observer, {
 			type: type,
 			target: this
 		};
-		
+
 		PB.overwrite(eventObject, data);
 
 		// Debug
@@ -422,6 +424,7 @@ PB.each(proxyPlayerControlls, function ( key, value ) {
 		this.mediaContainer[value].apply(this.mediaContainer, PB.toArray(arguments));
 	};
 });
+
 // pbPlayer default options
 pbPlayer.defaults = {
 
