@@ -1,3 +1,7 @@
+> **⚠️ Warning: This package is deprecated!**
+> 
+> This package is no longer maintained and may not be compatible with future versions.
+
 pbPlayer
 ========
 
